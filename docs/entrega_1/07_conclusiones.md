@@ -134,6 +134,7 @@ dirección y valoración** (HT2, HT3, HF1–HF4), donde el resultado es no apoya
 | Dependencia entre observaciones | Ventanas de 12 semanas solapadas; IC por bloques de 4 semanas | Los IC por régimen son más estrechos de lo debido | [nb04](../../notebooks/04_eda_relaciones.ipynb) §6 |
 | Un único periodo fuera de muestra para GARCH | 2020+, con el choque de 2020 | La ventaja de GARCH-t (28 de 34) es moderada | [nb03](../../notebooks/03_eda_series.ipynb) §10 |
 | Split y dividendos | Correcciones por splits ya aplicadas a EPS y valor en libros; el precio de los múltiplos es sin ajuste por dividendos | Sin riesgo de múltiplos distorsionados por splits | [nb03](../../notebooks/03_eda_series.ipynb) §8 |
+| Frecuencia anual de fundamentales | El pipeline ingiere solo 10-K: 8 a 16 reportes anuales por ticker (mediana 13) en la ventana de 432 a 885 semanas (mediana 850) del múltiplo | Su denominador cambia unas 13 veces; ADF y OU miden sobre todo la reversión del precio, y la conclusión de HF1 y HF2 se lee con esa n efectiva. Los 10-Q (EPS TTM) quedan para la entrega siguiente | [nb03](../../notebooks/03_eda_series.ipynb) §8 |
 | Merton | Deuda de largo plazo como único insumo; resultado débil (HF4) | Solo exploratorio | [nb04](../../notebooks/04_eda_relaciones.ipynb) §10 |
 
 ## 7.4 Acciones próximas (priorizadas)

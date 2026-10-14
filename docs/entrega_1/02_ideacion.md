@@ -33,7 +33,7 @@ Los dolores se priorizan por el costo que declaró el usuario y por su efecto so
 
 | Prioridad | Dolor (evidencia) | Funcionalidad | KPI |
 |---|---|---|---|
-| 1 | Latencia tras cada reporte: 2 a 3 horas, a veces días, y los niveles por múltiplo quedan desactualizados | Recálculo automático de los niveles definidos por múltiplo cuando EDGAR publica un reporte (precio = múltiplo × EPS, según `filed`), con la divergencia entre el nivel en precio y en múltiplo como señal | KPI 3 (latencia ≤ 1 día) y KPI 1 (tiempo) |
+| 1 | Latencia tras cada reporte: 2 a 3 horas, a veces días, y los niveles por múltiplo quedan desactualizados | Recálculo automático de los niveles definidos por múltiplo cuando EDGAR publica un reporte, diseñado para 10-K y 10-Q (precio = múltiplo × EPS, según `filed`; en esta entrega solo se ingieren los 10-K y los 10-Q con EPS TTM quedan para la entrega siguiente), con la divergencia entre el nivel en precio y en múltiplo como señal | KPI 3 (latencia ≤ 1 día) y KPI 1 (tiempo) |
 | 2 | Fragmentación: 2 a 15 cambios de pantalla y comparación "mental" | Vista única con los 6 niveles, las 3 lecturas y el panel de riesgo | KPI 2 (cambios de pantalla) y KPI 1 |
 | 3 | Riesgo medido a ojo o con una alarma | Panel de riesgo por activo (volatilidad, VaR/ES, β, drawdown, Merton PD) | KPI 5 (confianza) |
 | 4 | No hay dónde anotar lo que se concluye | Registro de decisiones con fecha, nivel, lectura y nota | KPI 4 (decisiones documentadas) |
@@ -50,7 +50,7 @@ Los requerimientos se priorizan con MoSCoW (Must, Should, Could, Won't para esta
 | RF2 | Lectura fundamental comparativa por nivel: múltiplo implícito, percentil en la historia propia y percentil en la industria | Must | Cada fila muestra ambos percentiles, calculados con datos ≤ t |
 | RF3 | Lectura técnica por nivel de entrada: P(SVM) con la línea base GBM al lado y su incertidumbre | Must | La probabilidad se muestra junto a la línea base y al desempeño histórico del modelo |
 | RF4 | Lectura probabilística por nivel: P(Monte Carlo) calculada con y sin el componente del sector (`simular_indice_unico` con `con_sector` verdadero y falso) | Must | Cada nivel muestra ambas probabilidades; su diferencia indica cuánto cambia el resultado al incluir el sector (no es una descomposición aditiva) |
-| RF5 | Recalcular los niveles por múltiplo al aparecer un reporte nuevo en EDGAR | Must | La fecha de recálculo menos la fecha `filed` es ≤ 1 día (KPI 3) |
+| RF5 | Recalcular los niveles por múltiplo al aparecer un reporte nuevo en EDGAR (diseño para 10-K y 10-Q; esta entrega ingiere solo 10-K, los 10-Q con EPS TTM son de la entrega siguiente) | Must | La fecha de recálculo menos la fecha `filed` es ≤ 1 día (KPI 3) |
 | RF6 | Panel de riesgo con volatilidad, VaR/ES, β, drawdown y Merton PD | Must | Las cinco métricas aparecen para cada ticker del universo |
 | RF7 | Permitir que el usuario ajuste sus niveles y umbrales | Should | El usuario edita un nivel y la pantalla se recalcula |
 | RF8 | Registro de decisiones con fecha, nivel y nota | Should | Hay una entrada por decisión (KPI 4) |
