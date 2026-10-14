@@ -13,14 +13,15 @@ CONCEPTOS: dict[str, tuple[list[str], str]] = {
     "ingresos": (["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax", "SalesRevenueNet"], "USD"),
     "utilidad_bruta": (["GrossProfit"], "USD"),
     "utilidad_operativa": (["OperatingIncomeLoss"], "USD"),
-    "utilidad_neta": (["NetIncomeLoss"], "USD"),
+    "utilidad_neta": (["NetIncomeLoss", "ProfitLoss", "NetIncomeLossAvailableToCommonStockholdersBasic"], "USD"),
     "patrimonio": (["StockholdersEquity",
                     "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"], "USD"),
     "deuda_lp": (["LongTermDebt", "LongTermDebtNoncurrent"], "USD"),
     "caja": (["CashAndCashEquivalentsAtCarryingValue"], "USD"),
     "cfo": (["NetCashProvidedByUsedInOperatingActivities"], "USD"),
     "capex": (["PaymentsToAcquirePropertyPlantAndEquipment"], "USD"),
-    "acciones": (["WeightedAverageNumberOfDilutedSharesOutstanding"], "shares"),
+    "acciones": (["WeightedAverageNumberOfDilutedSharesOutstanding",
+                  "WeightedAverageNumberOfSharesOutstandingBasic"], "shares"),
 }
 _DURACION_ANUAL = (330, 400)  # días; filtra flujos que no son de año completo
 
@@ -72,6 +73,7 @@ def serie_anual(hechos: pd.DataFrame, alternativas: list[str], unidad: str) -> p
         })
     dur = (d["end"] - d["start"]).dt.days
     d = d[d["start"].isna() | dur.between(*_DURACION_ANUAL)]
+    d = d[d["filed"] >= d["end"]]  # publicado antes del cierre del período: imposible
     d["prioridad"] = d["concepto"].map({c: i for i, c in enumerate(alternativas)})
     d = d.sort_values(["end", "filed", "prioridad"]).drop_duplicates("end", keep="first")
     return d[cols].reset_index(drop=True)
@@ -79,6 +81,9 @@ def serie_anual(hechos: pd.DataFrame, alternativas: list[str], unidad: str) -> p
 
 def alinear_por_filed(precios: pd.DataFrame, fundamentales: pd.DataFrame) -> pd.DataFrame:
     """Une a cada fecha de precio el último dato fundamental ya publicado (filed <= fecha)."""
-    p = precios.dropna(subset=["fecha"]).sort_values("fecha")
-    f = fundamentales.dropna(subset=["filed"]).sort_values("filed")
+    p = precios.dropna(subset=["fecha"]).copy()
+    f = fundamentales.dropna(subset=["filed"]).copy()
+    p["fecha"] = p["fecha"].astype("datetime64[ns]")  # merge_asof exige la misma resolución
+    f["filed"] = f["filed"].astype("datetime64[ns]")
+    p, f = p.sort_values("fecha"), f.sort_values("filed")
     return pd.merge_asof(p, f, left_on="fecha", right_on="filed", direction="backward")

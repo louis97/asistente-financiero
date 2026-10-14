@@ -67,13 +67,13 @@ def test_descargar_json_exige_user_agent(monkeypatch):
 def test_serie_anual_primera_publicacion_gana_sobre_prioridad():
     cf = {"facts": {"us-gaap": {
         "A": {"units": {"USD": [_fact(105, "2020-12-31", "2021-02-10", start="2020-01-01")]}},
-        "B": {"units": {"USD": [_fact(100, "2020-12-31", "2020-02-10", start="2020-01-01")]}},
+        "B": {"units": {"USD": [_fact(100, "2020-12-31", "2021-01-10", start="2020-01-01")]}},
     }}}
     df = edgar.hechos_a_df(cf)
     s = edgar.serie_anual(df, ["A", "B"], "USD")
     assert len(s) == 1
     assert s.iloc[0]["val"] == 100
-    assert s.iloc[0]["filed"] == pd.Timestamp("2020-02-10")
+    assert s.iloc[0]["filed"] == pd.Timestamp("2021-01-10")
 
 
 def test_serie_anual_vacia_tiene_dtypes_tipados():
@@ -100,3 +100,28 @@ def test_alinear_ignora_filas_con_filed_nulo():
                          "val": [90.0, 120.0]})
     out = edgar.alinear_por_filed(precios, fund)
     assert out.loc[0, "val"] == 120.0
+
+
+def test_alinear_por_filed_unidades_de_fecha_distintas():
+    precios = pd.DataFrame({"fecha": pd.to_datetime(["2021-01-15", "2021-02-12"]).astype("datetime64[us]"),
+                            "close": [10.0, 11.0]})
+    fund = pd.DataFrame({"filed": pd.to_datetime(["2021-02-10"]).astype("datetime64[ms]"), "val": [120.0]})
+    out = edgar.alinear_por_filed(precios, fund)
+    assert pd.isna(out.loc[0, "val"])
+    assert out.loc[1, "val"] == 120.0
+
+
+def test_serie_anual_descarta_hechos_con_filed_anterior_a_end():
+    cf = {"facts": {"us-gaap": {"Revenues": {"units": {"USD": [
+        _fact(1, "2012-12-31", "2012-03-27", start="2012-01-01"),   # imposible: publicado antes del cierre
+        _fact(2, "2012-12-31", "2013-02-20", start="2012-01-01"),
+    ]}}}}}
+    s = edgar.serie_anual(edgar.hechos_a_df(cf), ["Revenues"], "USD")
+    assert list(s["val"]) == [2]
+
+
+def test_utilidad_neta_acepta_profitloss():
+    cf = {"facts": {"us-gaap": {"ProfitLoss": {"units": {"USD": [
+        _fact(7, "2020-12-31", "2021-02-10", start="2020-01-01")]}}}}}
+    alt, unidad = edgar.CONCEPTOS["utilidad_neta"]
+    assert not edgar.serie_anual(edgar.hechos_a_df(cf), alt, unidad).empty
