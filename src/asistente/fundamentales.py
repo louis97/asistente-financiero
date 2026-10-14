@@ -40,7 +40,32 @@ def ratios_anuales(tabla: pd.DataFrame, tasa_impuesto: float = 0.21) -> pd.DataF
     return r
 
 
+def ajustar_por_splits(ratios: pd.DataFrame, splits: pd.DataFrame) -> pd.DataFrame:
+    """Lleva eps/bvps/acciones de un ticker a las unidades de acciones actuales.
+
+    Factor por fila = producto de los ratios de splits con fecha > filed. eps y bvps se
+    dividen por el factor y acciones se multiplica. NaN se conserva; sin splits no cambia
+    nada; filas con filed NaT quedan sin ajustar (factor 1).
+    """
+    out = ratios.copy()
+    if splits is None or splits.empty:
+        return out
+    fechas = pd.to_datetime(splits["fecha"]).to_numpy()
+    razones = splits["ratio"].to_numpy(dtype=float)
+    factor = out["filed"].map(
+        lambda f: 1.0 if pd.isna(f) else float(np.prod(razones[fechas > np.datetime64(f)])))
+    out["eps"] = out["eps"] / factor
+    out["bvps"] = out["bvps"] / factor
+    out["acciones"] = out["acciones"] * factor
+    return out
+
+
 def multiplos_semanales(precios: pd.DataFrame, ratios: pd.DataFrame) -> pd.DataFrame:
+    """Múltiplos semanales sin look-ahead (alineados por filed).
+
+    Espera eps/bvps/acciones ajustados por splits (ver ajustar_por_splits) y un precio
+    ajustado por splits pero NO por dividendos (descargar_precios(ajuste_dividendos=False)).
+    """
     m = edgar.alinear_por_filed(precios, ratios[["filed", "eps", "bvps", "fcf", "acciones"]])
     m["pe"] = m["close"] / m["eps"].where(m["eps"] > 0)      # EPS <= 0 → P/E sin sentido (T2)
     m["pb"] = m["close"] / m["bvps"].where(m["bvps"] > 0)

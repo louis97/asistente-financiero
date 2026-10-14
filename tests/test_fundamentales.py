@@ -74,3 +74,32 @@ def test_tabla_anual_concepto_ausente_es_nan_y_tiene_filed():
     assert t["ingresos"].notna().all()
     fila_2019 = t[t["end"] == pd.Timestamp("2019-12-31")].iloc[0]
     assert fila_2019["filed"] == pd.Timestamp("2020-02-15")  # la última publicación entre conceptos del año
+
+
+def _r(filed):
+    return pd.DataFrame({"filed": pd.to_datetime(filed), "eps": [8.0, 8.0],
+                         "bvps": [40.0, 40.0], "acciones": [100.0, 100.0]})
+
+
+def _sp(*pares):
+    return pd.DataFrame({"fecha": pd.to_datetime([p[0] for p in pares]), "ratio": [p[1] for p in pares]})
+
+
+def test_ajustar_por_splits_posterior_divide():
+    out = fu.ajustar_por_splits(_r(["2020-02-01", "2021-02-01"]), _sp(("2020-08-31", 4.0)))
+    assert out.eps.tolist() == [2.0, 8.0] and out.bvps.tolist() == [10.0, 40.0]
+    assert out.acciones.tolist() == [400.0, 100.0]
+
+
+def test_ajustar_por_splits_compuesto_y_nan():
+    r = _r(["2020-02-01", "2021-02-01"]); r.loc[0, "eps"] = np.nan
+    out = fu.ajustar_por_splits(r, _sp(("2020-08-31", 2.0), ("2021-06-01", 3.0)))
+    assert np.isnan(out.eps[0]) and out.eps[1] == pytest.approx(8 / 3)
+    assert out.bvps[0] == pytest.approx(40 / 6)
+
+
+def test_ajustar_por_splits_sin_splits_no_muta():
+    r = _r(["2020-02-01", "2021-02-01"])
+    out = fu.ajustar_por_splits(r, _sp())
+    pd.testing.assert_frame_equal(out, r)
+    assert out is not r

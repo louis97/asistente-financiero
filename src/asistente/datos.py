@@ -38,11 +38,39 @@ def a_formato_largo(raw: pd.DataFrame, tickers: list[str]) -> tuple[pd.DataFrame
 
 
 def descargar_precios(tickers: list[str], inicio: str, fin: str | None = None,
-                      intervalo: str = "1wk") -> tuple[pd.DataFrame, list[str]]:
+                      intervalo: str = "1wk",
+                      ajuste_dividendos: bool = True) -> tuple[pd.DataFrame, list[str]]:
+    """Descarga precios. Con ajuste_dividendos=False el Close solo está ajustado por splits."""
     import yfinance as yf
     raw = yf.download(tickers, start=inicio, end=fin, interval=intervalo,
-                      auto_adjust=True, progress=False, group_by="column")
+                      auto_adjust=ajuste_dividendos, progress=False, group_by="column")
     return a_formato_largo(raw, tickers)
+
+
+_COLUMNAS_SPLITS = ["ticker", "fecha", "ratio"]
+
+
+def splits_a_df(series_by_ticker: dict[str, pd.Series]) -> pd.DataFrame:
+    """Reformatea {ticker: serie de splits indexada por fecha} a ticker, fecha (naive), ratio."""
+    partes = []
+    for t, s in series_by_ticker.items():
+        if s is None or len(s) == 0:
+            continue
+        fechas = pd.DatetimeIndex(s.index)
+        if fechas.tz is not None:
+            fechas = fechas.tz_localize(None)
+        partes.append(pd.DataFrame({"ticker": t, "fecha": fechas.normalize(),
+                                    "ratio": s.to_numpy(dtype=float)}))
+    if not partes:
+        return pd.DataFrame({"ticker": pd.Series(dtype=object),
+                             "fecha": pd.Series(dtype="datetime64[ns]"),
+                             "ratio": pd.Series(dtype=float)})[_COLUMNAS_SPLITS]
+    return pd.concat(partes, ignore_index=True)[_COLUMNAS_SPLITS]
+
+
+def descargar_splits(tickers: list[str]) -> pd.DataFrame:
+    import yfinance as yf
+    return splits_a_df({t: yf.Ticker(t).splits for t in tickers})
 
 
 def a_ancho(df_largo: pd.DataFrame, campo: str = "close") -> pd.DataFrame:
