@@ -7,3 +7,4 @@ data/raw/
 *.env
 entrega_1/.claude/
 .claude/settings.local.json
+.superpowers/

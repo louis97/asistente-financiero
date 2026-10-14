@@ -1,10 +1,10 @@
 [project]
 name = "asistente"
 version = "0.1.0"
-description = "Add your description here"
+description = "Asistente bursátil para el inversor value colombiano (MINE-4101, Uniandes)"
 readme = "README.md"
 authors = [
-    { name = "lgualtero", email = "lgualtero@lgualteros-MacBook-Pro.local" }
+    { name = "Louis Gualtero" }
 ]
 requires-python = ">=3.12"
 dependencies = [
