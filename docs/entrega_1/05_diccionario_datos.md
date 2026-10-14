@@ -41,7 +41,7 @@ Fuente: SEC EDGAR `companyfacts` (us-gaap). Solo se usan periodos de 330 a 400 d
 | `utilidad_operativa` | `OperatingIncomeLoss` | real | USD | cualquier signo | 0: punto de equilibrio operativo. Vacío: no reportado (bancos) | Utilidad antes de intereses e impuestos. Margen operativo y ROIC (HF1, HF2) |
 | `utilidad_neta` | `NetIncomeLoss` | real | USD | cualquier signo | 0: equilibrio. Negativo: pérdida. Vacío: no reportado | Resultado final del año. ROE, EPS y margen neto (HF1, HF3) |
 | `patrimonio` | `StockholdersEquity`, `...IncludingPortionAttributableToNoncontrollingInterest` | real | USD | cualquier signo (puede ser negativo por recompras) | Vacío: no reportado. Patrimonio <= 0 vuelve sin sentido a ROE y P/B | Patrimonio de los accionistas. ROE, BVPS, deuda/patrimonio (HF1, HF3) |
-| `deuda_lp` | `LongTermDebt`, `LongTermDebtNoncurrent` | real | USD | >= 0 | 0: sin deuda de largo plazo. Vacío: no reportada (puede ser 0 real o no reportada; no se distingue) | Deuda financiera de largo plazo. Apalancamiento, ROIC y Merton (HF2, HP3) |
+| `deuda_lp` | `LongTermDebt`, `LongTermDebtNoncurrent` | real | USD | >= 0 | 0: sin deuda de largo plazo. Vacío: no reportada (puede ser 0 real o no reportada; no se distingue) | Deuda financiera de largo plazo. Apalancamiento, ROIC y Merton (HF3, HF4) |
 | `caja` | `CashAndCashEquivalentsAtCarryingValue` | real | USD | >= 0 | 0: sin efectivo (raro). Vacío: no reportado | Efectivo y equivalentes. Se resta del capital invertido (HF2) |
 | `cfo` | `NetCashProvidedByUsedInOperatingActivities` | real | USD | cualquier signo | Vacío: no reportado | Flujo de caja operativo. Base del FCF (HF3) |
 | `capex` | `PaymentsToAcquirePropertyPlantAndEquipment` | real | USD | >= 0 (pago positivo) | 0: sin inversión en activos fijos. Vacío: no reportado (no es 0) | Inversión en activos fijos. `capex_ventas` y FCF (HF2, HF3) |
@@ -87,5 +87,5 @@ Toda razón divide con `_div`: si el denominador es 0 el resultado queda vacío,
 | `es_95` | derivado de `r` | real | fracción por semana | <= `var_95` | Vacío: sin retornos | Media de los retornos peores que el VaR (HP0) |
 | `beta` | derivado | real | adimensional | típico 0 a 2 | 0: sin relación con SPY. Vacío: sin datos solapados | Pendiente de `r` contra SPY (HP0, HP3) |
 | `alpha` | derivado | real | fracción por semana | cercano a 0 | 0: sin exceso sobre el mercado. Vacío: sin datos solapados | Intercepto de la regresión contra SPY (HP3) |
-| `d2` | derivado (Merton) | real | adimensional | cualquier signo | Vacío: entradas inválidas (E, sigma, D o T <= 0) o el solver no converge | Distancia al incumplimiento (HP3) |
-| `pd_merton` | derivado (Merton) | real | probabilidad | 0 a 1 | 0: riesgo despreciable. Vacío: igual que `d2` | `N(-d2)`, devuelto como `pd` por `riesgo.merton` (HP3) |
+| `d2` | derivado (Merton) | real | adimensional | cualquier signo | Vacío: entradas inválidas (E, sigma, D o T <= 0) o el solver no converge | Distancia al incumplimiento (HF4) |
+| `pd_merton` | derivado (Merton) | real | probabilidad | 0 a 1 | 0: riesgo despreciable. Vacío: igual que `d2` | `N(-d2)`, devuelto como `pd` por `riesgo.merton` (HF4) |

@@ -20,7 +20,7 @@ author: "Louis Gualtero · MINE-4101 · Entrega 1"
 
 - Sin recomendación de compra o venta (Ley 964 de 2005); aviso en cada pantalla
 - Datos personales anonimizados (Ley 1581 de 2012)
-- SVM lineal explicable, con línea base GBM y error histórico
+- SVM lineal explicable, frente a la tasa de toque por decil de σ (GBM como referencia) y con error histórico
 - Sin look-ahead: fecha `filed`, purga y embargo
 
 ## 4. Enfoque analítico
@@ -28,7 +28,7 @@ author: "Louis Gualtero · MINE-4101 · Entrega 1"
 - Preguntas de negocio a hipótesis HT, HF y HP con H0 y H1
 - Etiqueta de triple barrera solo-largo (k = 1, N = 12)
 - Validación walk-forward con purga y embargo
-- Cuatro líneas base; IC bootstrap para declarar una hipótesis apoyada
+- Cuatro líneas base (decide HT1 la tasa de toque por decil de σ); IC bootstrap para declarar una hipótesis apoyada
 
 ## 5. Datos
 
@@ -56,6 +56,6 @@ author: "Louis Gualtero · MINE-4101 · Entrega 1"
 ## 7. Conclusiones y próximos pasos
 
 - Indicadores técnicos solos: señal débil; la probabilidad depende de σ y del régimen
-- Diseño: GARCH-t con innovaciones t, línea base GBM con deriva (no calibrada, rival justo), múltiplos como contexto
+- Diseño: GARCH-t con innovaciones t; rival del SVM: tasa de toque por decil de σ (GBM con deriva solo como referencia teórica, no calibrado); múltiplos como contexto
 - Siguiente: SVM walk-forward (HT1 preparada, no probada), Monte Carlo, validación con el stakeholder
 - Repositorio: github.com/louis97/asistente-financiero (rama entrega-1). Video: pendiente

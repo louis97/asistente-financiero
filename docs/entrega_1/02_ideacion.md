@@ -38,7 +38,7 @@ Los dolores se priorizan por el costo que declaró el usuario y por su efecto so
 | 3 | Riesgo medido a ojo o con una alarma | Panel de riesgo por activo (volatilidad, VaR/ES, β, drawdown, d₂ de Merton como orden relativo de apalancamiento) | KPI 5 (confianza) |
 | 4 | No hay dónde anotar lo que se concluye | Registro de decisiones con fecha, nivel, lectura y nota | KPI 4 (decisiones documentadas) |
 | 5 | No se sabe si el nivel es razonable frente a la historia y la industria | Lectura fundamental comparativa (percentil en la historia y en la industria) | KPI 1 y KPI 5 |
-| 6 | Timing de entrada solo con gráficos y patrones básicos | Lectura técnica: P(SVM) frente a la línea base GBM (con deriva ≤ t y tasa por decil de σ_t, 04 §4.3.4) | KPI 5 (la calidad del score se evalúa con las métricas de la sección 4.4 de [04_enfoque_analitico.md](04_enfoque_analitico.md)) |
+| 6 | Timing de entrada solo con gráficos y patrones básicos | Lectura técnica: P(SVM) frente a la línea base (tasa empírica por decil de σ_t, con el GBM con deriva ≤ t como referencia teórica; 04 §4.3.4) | KPI 5 (la calidad del score se evalúa con las métricas de la sección 4.4 de [04_enfoque_analitico.md](04_enfoque_analitico.md)) |
 
 ## 2.4 Requerimientos
 
@@ -48,7 +48,7 @@ Los requerimientos se priorizan con MoSCoW (Must, Should, Could, Won't para esta
 |---|---|---|---|
 | RF1 | Mostrar 3 niveles de entrada (deep value, value, valoración histórica) y 3 de salida (negativo, base, positivo), definidos en precio y en múltiplo en paralelo | Must | Para un ticker, aparecen los 6 niveles con ambas definiciones |
 | RF2 | Lectura fundamental comparativa por nivel: múltiplo implícito, percentil en la historia propia y percentil en la industria | Must | Cada fila muestra ambos percentiles, calculados con datos ≤ t |
-| RF3 | Lectura técnica por nivel de entrada: P(SVM) con la línea base GBM al lado y su incertidumbre | Must | La probabilidad se muestra junto a la línea base y al desempeño histórico del modelo |
+| RF3 | Lectura técnica por nivel de entrada: P(SVM) con su línea base (tasa de toque por decil de σ) al lado y su incertidumbre | Must | La probabilidad se muestra junto a la línea base y al desempeño histórico del modelo |
 | RF4 | Lectura probabilística por nivel: P(Monte Carlo) calculada con y sin el componente del sector (`simular_indice_unico` con `con_sector` verdadero y falso) | Must | Cada nivel muestra ambas probabilidades; su diferencia indica cuánto cambia el resultado al incluir el sector (no es una descomposición aditiva) |
 | RF5 | Recalcular los niveles por múltiplo al aparecer un reporte nuevo en EDGAR (diseño para 10-K y 10-Q; esta entrega ingiere solo 10-K, los 10-Q con EPS TTM son de la entrega siguiente) | Must | La fecha de recálculo menos la fecha `filed` es ≤ 1 día (KPI 3) |
 | RF6 | Panel de riesgo con volatilidad, VaR/ES, β, drawdown y d₂ de Merton (orden relativo de apalancamiento, no una PD calibrada) | Must | Las cinco métricas aparecen para cada ticker del universo |
@@ -75,7 +75,7 @@ El producto se compone de cuatro módulos analíticos y tres tecnológicos. Cada
 |---|---|---|---|---|
 | Analítico (ML) | SVM lineal, comparado con un SVM RBF, con indicadores técnicos y rasgos de volatilidad y régimen calculados solo con precios pasados (sin fundamentales) | Estima P(el precio toca el nivel de entrada en N semanas antes de escaparse hacia arriba), con la etiqueta de triple barrera solo-largo | El modelo lineal permite explicar los coeficientes directamente; el RBF mide si la no linealidad aporta | RF3, RN1 |
 | Analítico | Percentiles y proceso de Ornstein-Uhlenbeck | Ubica el múltiplo implícito de cada nivel en la historia de la empresa y en la industria (pares y Damodaran) | Responde si el nivel es razonable para la empresa (HF1, HF2) | RF2 |
-| Analítico | Monte Carlo con modelo de índice único, r = α + β·r_ETF + ε (GBM o GARCH-t) | Probabilidad y tiempo de alcanzar cada nivel, con y sin el componente del sector | Es la lectura de las salidas y de los escenarios del sector (HP0, HP3); no es la línea base del SVM, que es el GBM de 04 §4.3.4 | RF4, RF9 |
+| Analítico | Monte Carlo con modelo de índice único, r = α + β·r_ETF + ε (GARCH-t; GBM solo como referencia) | Probabilidad y tiempo de alcanzar cada nivel, con y sin el componente del sector | Es la lectura de las salidas y de los escenarios del sector (HP0, HP3); no es la línea base del SVM, que es la tasa por decil de σ_t de 04 §4.3.4 | RF4, RF9 |
 | Analítico | Métricas de riesgo | Volatilidad (histórica, EWMA, GARCH), VaR y ES, β, drawdown, d₂ de Merton (orden relativo de apalancamiento) | Cuantifica el riesgo que hoy se mide a ojo | RF6 |
 | Tecnológico | Capa de datos: yfinance, EDGAR y Damodaran, en pandas en memoria | Lee las fuentes y reconstruye el panel con la fecha `filed` | No es un proyecto de ingeniería de datos; solo se guarda una instantánea con fecha para reproducir el análisis | RN2, RN4 |
 | Tecnológico | API REST (FastAPI) | Endpoints de niveles, análisis fundamental, probabilidad y riesgo | Separa el cálculo de la presentación y permite probar cada módulo | RF1 a RF6, RF8 |
@@ -134,7 +134,7 @@ Segundo, el score se presenta como una probabilidad acompañada de su incertidum
 
 ### 2.6.5 Mockup
 
-El wireframe muestra, para un ticker, el encabezado (ticker, precio y fecha del último reporte `filed`), la tabla de los seis niveles con sus tres lecturas (percentiles con la etiqueta "p", P(SVM) con su intervalo y la línea base GBM, P(Monte Carlo) con y sin el componente del sector y un marcador cuando el nivel en precio y en múltiplo divergen), un recuadro de desempeño histórico del modelo (AUC y Brier del SVM y del GBM, y porcentaje de errores), el panel de riesgo, el gráfico de precio con los seis niveles, una línea con los indicadores que más pesaron, los botones "Editar nivel" y "Registrar decisión" y el disclaimer. Los valores son ilustrativos y están marcados como tales en la imagen. Se generó con `scripts/mockup.py`.
+El wireframe muestra, para un ticker, el encabezado (ticker, precio y fecha del último reporte `filed`), la tabla de los seis niveles con sus tres lecturas (percentiles con la etiqueta "p", P(SVM) con su intervalo y la línea base por decil de σ, P(Monte Carlo) con y sin el componente del sector y un marcador cuando el nivel en precio y en múltiplo divergen), un recuadro de desempeño histórico del modelo (AUC y Brier del SVM y de la línea base por decil de σ, y porcentaje de errores), el panel de riesgo, el gráfico de precio con los seis niveles, una línea con los rasgos que más pesaron (σ condicional, drawdown del SPY y RSI), los botones "Editar nivel" y "Registrar decisión" y el disclaimer. Los valores son ilustrativos y están marcados como tales en la imagen. Se generó con `scripts/mockup.py`.
 
 ![Mockup del dashboard (valores ilustrativos)](../../entregables/entrega_1/assets/mockup.png)
 
@@ -145,7 +145,7 @@ La tabla relaciona cada elemento del mockup con los requerimientos de la secció
 | Encabezado con ticker, precio y fecha `filed`; nota de recálculo tras el reporte | RF5, RN2, RN3 |
 | Filas de los 6 niveles con precio y múltiplo implícito, y marcador de divergencia precio frente a múltiplo | RF1 |
 | Columnas de percentil histórico y de la industria (p8, p15, ...) | RF2 |
-| Columna P(SVM) con intervalo y línea base GBM al lado | RF3, RN1 |
+| Columna P(SVM) con intervalo y línea base por decil de σ al lado | RF3, RN1 |
 | Recuadro "Desempeño histórico" (AUC y Brier del SVM y del GBM, % de errores) | RF3, RN1 |
 | Línea "Indicadores que más pesaron" | RN1 |
 | Columna P(Monte Carlo) con y sin componente del sector | RF4 |

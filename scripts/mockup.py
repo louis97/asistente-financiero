@@ -17,11 +17,11 @@ SALIDA = Path(__file__).resolve().parents[1] / "entregables/entrega_1/assets/moc
 TICKER, PRECIO, FILED = "XXXX", 100.0, "2026-08-01"
 
 # nivel, tipo, precio, multiplo implicito (P/E), pct historico, pct industria,
-# P(SVM) [IC] / base GBM (solo entradas), P(MC) con sector / sin sector, divergencia precio vs multiplo
+# P(SVM) [IC] / base tasa por decil de σ (solo entradas), P(MC) con sector / sin sector, divergencia precio vs multiplo
 NIVELES = [
-    ("Deep value", "Entrada", 82.0, 11.0, 8, 15, "0.31 [0.24-0.38] · GBM 0.22", "con sector 0.28 · sin sector 0.11", False),
-    ("Value", "Entrada", 90.0, 12.1, 18, 28, "0.47 [0.40-0.54] · GBM 0.38", "con sector 0.44 · sin sector 0.19", True),
-    ("Valoración histórica", "Entrada", 97.0, 13.0, 45, 52, "0.62 [0.55-0.69] · GBM 0.55", "con sector 0.60 · sin sector 0.31", False),
+    ("Deep value", "Entrada", 82.0, 11.0, 8, 15, "0.31 [0.24-0.38] · base σ 0.22", "con sector 0.28 · sin sector 0.11", False),
+    ("Value", "Entrada", 90.0, 12.1, 18, 28, "0.47 [0.40-0.54] · base σ 0.38", "con sector 0.44 · sin sector 0.19", True),
+    ("Valoración histórica", "Entrada", 97.0, 13.0, 45, 52, "0.62 [0.55-0.69] · base σ 0.55", "con sector 0.60 · sin sector 0.31", False),
     ("Negativo (conservador)", "Salida", 108.0, 14.5, 62, 60, "n/a", "con sector 0.55 · sin sector 0.40", False),
     ("Base", "Salida", 120.0, 16.1, 78, 71, "n/a", "con sector 0.36 · sin sector 0.21", False),
     ("Positivo", "Salida", 140.0, 18.8, 92, 88, "n/a", "con sector 0.15 · sin sector 0.09", False),
@@ -53,7 +53,7 @@ def main():
     # Tabla de 6 niveles
     ax = fig.add_subplot(gs[1, :]); ax.axis("off")
     cols = ["Nivel", "Tipo", "Precio", "Múltiplo\nimplícito (P/E)", "Percentil\nhistórico", "Percentil\nindustria",
-            "P(SVM) [intervalo] · base GBM\n(solo entradas)", "P(Monte Carlo)\ncon vs sin componente sector"]
+            "P(SVM) [intervalo] · base decil σ\n(solo entradas)", "P(Monte Carlo)\ncon vs sin componente sector"]
     filas = []
     for n, t, p_, m, h, i_, svm, mc, div in NIVELES:
         filas.append([n + ("  ▲ diverge" if div else ""), t, f"${p_:.0f}", f"{m:.1f}x", f"p{h}", f"p{i_}", svm, mc])
@@ -90,8 +90,8 @@ def main():
     ax = fig.add_subplot(sub[0]); ax.axis("off")
     ax.add_patch(plt.Rectangle((0, 0), 1, 1, transform=ax.transAxes, fill=False, ec="#1b6ca8", lw=1.2))
     ax.text(0.02, 0.88, "Desempeño histórico (ilustrativo)", fontsize=10, weight="bold", va="center")
-    hist = [("AUC walk-forward: SVM / GBM", "0.61 / 0.54"),
-            ("Brier: SVM / GBM", "0.21 / 0.24"),
+    hist = [("AUC walk-forward: SVM / base decil σ", "0.61 / 0.54"),
+            ("Brier: SVM / base decil σ", "0.21 / 0.24"),
             ("% de errores (falsas entradas, umbral 0.5)", "37%")]
     for k, (a, b) in enumerate(hist):
         y = 0.62 - k * 0.22
@@ -114,8 +114,8 @@ def main():
         ax.plot([0, 1], [y - 0.05, y - 0.05], color="#ddd", lw=0.6)
 
     # Franja inferior: indicadores, botones, disclaimer
-    fig.text(0.05, 0.14, "Indicadores que más pesaron en P(SVM) del nivel Deep value (ilustrativo): "
-             "RSI(14) bajo (+), distancia a SMA(50) (+), volumen relativo (-).\n"
+    fig.text(0.05, 0.14, "Rasgos que más pesaron en P(SVM) del nivel Deep value (ilustrativo): "
+             "σ condicional alta (-), drawdown del SPY (+), RSI(14) alto (+).\n"
              "Un score es una probabilidad con su intervalo, su línea base y sus errores históricos; no es una señal.",
              fontsize=9, color="#222", va="center")
     for k, txt in enumerate(["Editar nivel", "Registrar decisión"]):
