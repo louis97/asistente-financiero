@@ -3,7 +3,7 @@ title: "Asistente Bursátil para el inversor value colombiano — Entrega 1"
 author: "Louis Gualtero · MINE-4101 Ciencia de Datos Aplicada · Universidad de los Andes"
 mainfont: Arial
 fontsize: 12pt
-geometry: margin=2cm
+geometry: a4paper, margin=2cm
 lang: es
 colorlinks: true
 linkcolor: blue
@@ -18,7 +18,7 @@ header-includes:
 
 ## 1. Problema y negocio
 
-El inversor value colombiano que compra acciones de EE.UU. actúa como enrutador manual de datos: usa un screener, otra pantalla para fundamentales y otra para el gráfico, y no tiene dónde anotar sus decisiones. Con la evidencia cualitativa de una entrevista y un formulario (un participante más el autor): **de 2 a 15 cambios de pantalla por activo**, **2 a 3 horas** para actualizar el análisis tras cada reporte trimestral y riesgo medido "a ojo". El contexto crece: el volumen del Mercado Global Colombiano pasó de $1,60 a $3,75 billones entre 2024 y 2025 (+134 %, BVC). Objetivo: una vista única con niveles de compra y venta, y probabilidades explicables. KPIs: tiempo por activo < 5 min, 1 cambio de pantalla, latencia tras reporte ≤ 1 día, 100 % de decisiones registradas.
+El inversor value colombiano que compra acciones de EE.UU. actúa como enrutador manual de datos: usa un screener, otra pantalla para fundamentales y otra para el gráfico, y no tiene dónde anotar sus decisiones. Con la evidencia cualitativa de una entrevista y un formulario (un participante más el autor; evidencia exploratoria, no representativa): **de 2 a 15 cambios de pantalla por activo**, **2 a 3 horas** para actualizar el análisis tras cada reporte trimestral y riesgo medido "a ojo". El contexto crece: el volumen del Mercado Global Colombiano pasó de $1,60 a $3,75 billones entre 2024 y 2025 (+134 %, BVC). Objetivo: una vista única con niveles de compra y venta, y probabilidades explicables. KPIs: tiempo por activo < 5 min, 1 cambio de pantalla, latencia tras reporte ≤ 1 día, 100 % de decisiones registradas.
 
 Detalle: [01_negocio.md](https://github.com/louis97/asistente-financiero/blob/entrega-1/docs/entrega_1/01_negocio.md)
 
@@ -56,7 +56,7 @@ Detalle: [05_diccionario_datos.md](https://github.com/louis97/asistente-financie
 
 ![GARCH-t frente a EWMA](assets/vol_ewma_garch.png){width=62%}
 
-**Dirección del precio.** ADF no rechaza la raíz unitaria en 33 de 34 log-precios y |ρ lag 1| mediana es 0.068 (HT0 apoyada). Con k = 1, N = 12, un GBM con μ = 0 sobreestima la clase 1 en 9.5 pp (0.178 observada frente a 0.274); con deriva pasada la brecha es −0.8 pp.
+**Dirección del precio.** ADF no rechaza la raíz unitaria en 33 de 34 log-precios y |ρ lag 1| mediana es 0.068 (HT0 apoyada). Con k = 1, N = 12, un GBM con μ = 0 sobreestima la clase 1 en 9.5 pp (0.178 observada frente a 0.274) y, con deriva pasada, la sobreestima en 0.8 pp.
 
 **Indicadores técnicos.** La señal es débil e inestable: AUC por indicador de 0.496 a 0.514, ningún IC por bloques excluye 0.5. Por régimen sube a 0.64–0.79 solo en COVID y 2022, eventos únicos (HT2 no concluyente, HT3 no apoyada).
 
