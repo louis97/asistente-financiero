@@ -35,7 +35,7 @@ Resultado esperado del EDA (Cont, 2001): los retornos tienen poca autocorrelaci�
 |---|---|---|---|---|
 | ★ HP0 | **Supuesto del modelo:** un GBM normal (caminata aleatoria con volatilidad constante) es adecuado para simular el precio semanal; si no, se pasa a GARCH-t | ACF de r y r², ARCH-LM, Jarque-Bera + QQ-plot | Cont (2001); Engle (1982); curso XI–XIV, XXIII | ✔ |
 | HP1 | Un GBM normal subestima las colas; GARCH con errores t describe mejor el riesgo | Jarque-Bera + QQ-plot; ajuste normal vs. t; VaR backtesting (Kupiec, Christoffersen) | Cont (2001); Christoffersen (2012); Kupiec (1995) | ✔ |
-| HP2 | Las probabilidades del Monte Carlo están calibradas: en la historia, los niveles con P≈x% se alcanzaron cerca del x% de las veces | Simulación walk-forward sobre niveles históricos (±k·σ); diagrama de calibración; Brier | Glasserman (2013); López de Prado (2018) | ◐ |
+| HP2 | Las probabilidades del Monte Carlo están calibradas: en la historia, los niveles con P≈x% se alcanzaron cerca del x% de las veces | Simulación walk-forward sobre niveles históricos (±k·σ); diagrama de calibración; Brier | Glasserman (2004); López de Prado (2018) | ◐ |
 | ★ HP3 | El ETF sectorial explica una parte importante del movimiento de cada acción, así que la probabilidad de llegar a un objetivo depende en buena medida del sector | R² y β (móvil) del modelo de índice único; descomposición de la varianza en sistemática e idiosincrática | Sharpe (1964); curso VaR III | ✔ |
 
 ## Cómo se combinan en el producto
@@ -45,4 +45,4 @@ Resultado esperado del EDA (Cont, 2001): los retornos tienen poca autocorrelaci�
 
 ## Pendiente
 - Ajustar la redacción con el usuario. Las hipótesis deben ser comprobables con los datos reales; si el EDA muestra que no lo son, se replantean.
-- Verificar con DOI las referencias que no aparecen en las diapositivas (Jegadeesh 1990, Bollerslev 1986, Kupiec 1995, Sharpe 1964, Glasserman 2013).
+- Verificar con DOI las referencias que no aparecen en las diapositivas (Jegadeesh 1990, Bollerslev 1986, Kupiec 1995, Christoffersen 1998, Politis & Romano 1994, Sharpe 1964, Glasserman 2004). Verificadas el 14 de octubre de 2026 en Crossref (DOI); Glasserman es de 2004 (Springer), no 2013. Acerbi & Tasche (2002), Jensen (1968) y Hurst (1951) no se citan en los entregables.

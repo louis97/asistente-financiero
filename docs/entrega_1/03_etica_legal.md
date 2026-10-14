@@ -64,4 +64,4 @@ Consultadas el 13 de octubre de 2026.
 - Bailey, D. H., y López de Prado, M. (2014). The deflated Sharpe ratio. *The Journal of Portfolio Management*, 40(5), 94-107. https://doi.org/10.3905/jpm.2014.40.5.094
 - Bailey, D. H., Borwein, J., López de Prado, M., y Zhu, Q. J. (2017). The probability of backtest overfitting. *The Journal of Computational Finance*, 20(4). https://doi.org/10.21314/JCF.2016.322
 - Brown, S. J., Goetzmann, W., Ibbotson, R. G., y Ross, S. A. (1992). Survivorship bias in performance studies. *The Review of Financial Studies*, 5(4), 553-580. https://doi.org/10.1093/rfs/5.4.553
-- López de Prado, M. (2018). *Advances in Financial Machine Learning*. Wiley. *(Pendiente de verificar: ISBN o DOI de la edición citada.)*
+- López de Prado, M. (2018). *Advances in Financial Machine Learning*. Wiley. (Libro; ISBN 978-1-119-48208-6.)
