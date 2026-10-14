@@ -35,7 +35,7 @@ Los dolores se priorizan por el costo que declaró el usuario y por su efecto so
 |---|---|---|---|
 | 1 | Latencia tras cada reporte: 2 a 3 horas, a veces días, y los niveles por múltiplo quedan desactualizados | Recálculo automático de los niveles definidos por múltiplo cuando EDGAR publica un reporte, diseñado para 10-K y 10-Q (precio = múltiplo × EPS, según `filed`; en esta entrega solo se ingieren los 10-K y los 10-Q con EPS TTM quedan para la entrega siguiente), con la divergencia entre el nivel en precio y en múltiplo como señal | KPI 3 (latencia ≤ 1 día) y KPI 1 (tiempo) |
 | 2 | Fragmentación: 2 a 15 cambios de pantalla y comparación "mental" | Vista única con los 6 niveles, las 3 lecturas y el panel de riesgo | KPI 2 (cambios de pantalla) y KPI 1 |
-| 3 | Riesgo medido a ojo o con una alarma | Panel de riesgo por activo (volatilidad, VaR/ES, β, drawdown, Merton PD) | KPI 5 (confianza) |
+| 3 | Riesgo medido a ojo o con una alarma | Panel de riesgo por activo (volatilidad, VaR/ES, β, drawdown, d₂ de Merton como orden relativo de apalancamiento) | KPI 5 (confianza) |
 | 4 | No hay dónde anotar lo que se concluye | Registro de decisiones con fecha, nivel, lectura y nota | KPI 4 (decisiones documentadas) |
 | 5 | No se sabe si el nivel es razonable frente a la historia y la industria | Lectura fundamental comparativa (percentil en la historia y en la industria) | KPI 1 y KPI 5 |
 | 6 | Timing de entrada solo con gráficos y patrones básicos | Lectura técnica: P(SVM) frente a la línea base GBM (con deriva ≤ t y tasa por decil de σ_t, 04 §4.3.4) | KPI 5 (la calidad del score se evalúa con las métricas de la sección 4.4 de [04_enfoque_analitico.md](04_enfoque_analitico.md)) |
@@ -51,7 +51,7 @@ Los requerimientos se priorizan con MoSCoW (Must, Should, Could, Won't para esta
 | RF3 | Lectura técnica por nivel de entrada: P(SVM) con la línea base GBM al lado y su incertidumbre | Must | La probabilidad se muestra junto a la línea base y al desempeño histórico del modelo |
 | RF4 | Lectura probabilística por nivel: P(Monte Carlo) calculada con y sin el componente del sector (`simular_indice_unico` con `con_sector` verdadero y falso) | Must | Cada nivel muestra ambas probabilidades; su diferencia indica cuánto cambia el resultado al incluir el sector (no es una descomposición aditiva) |
 | RF5 | Recalcular los niveles por múltiplo al aparecer un reporte nuevo en EDGAR (diseño para 10-K y 10-Q; esta entrega ingiere solo 10-K, los 10-Q con EPS TTM son de la entrega siguiente) | Must | La fecha de recálculo menos la fecha `filed` es ≤ 1 día (KPI 3) |
-| RF6 | Panel de riesgo con volatilidad, VaR/ES, β, drawdown y Merton PD | Must | Las cinco métricas aparecen para cada ticker del universo |
+| RF6 | Panel de riesgo con volatilidad, VaR/ES, β, drawdown y d₂ de Merton (orden relativo de apalancamiento, no una PD calibrada) | Must | Las cinco métricas aparecen para cada ticker del universo |
 | RF7 | Permitir que el usuario ajuste sus niveles y umbrales | Should | El usuario edita un nivel y la pantalla se recalcula |
 | RF8 | Registro de decisiones con fecha, nivel y nota | Should | Hay una entrada por decisión (KPI 4) |
 | RF9 | Escenarios del sector en el Monte Carlo (por ejemplo, el ETF sectorial cae o sube) | Could | El usuario cambia el supuesto del ETF y ve el efecto |
@@ -76,7 +76,7 @@ El producto se compone de cuatro módulos analíticos y tres tecnológicos. Cada
 | Analítico (ML) | SVM lineal, comparado con un SVM RBF, con indicadores técnicos y rasgos de volatilidad y régimen calculados solo con precios pasados (sin fundamentales) | Estima P(el precio toca el nivel de entrada en N semanas antes de escaparse hacia arriba), con la etiqueta de triple barrera solo-largo | El modelo lineal permite explicar los coeficientes directamente; el RBF mide si la no linealidad aporta | RF3, RN1 |
 | Analítico | Percentiles y proceso de Ornstein-Uhlenbeck | Ubica el múltiplo implícito de cada nivel en la historia de la empresa y en la industria (pares y Damodaran) | Responde si el nivel es razonable para la empresa (HF1, HF2) | RF2 |
 | Analítico | Monte Carlo con modelo de índice único, r = α + β·r_ETF + ε (GBM o GARCH-t) | Probabilidad y tiempo de alcanzar cada nivel, con y sin el componente del sector | Es la lectura de las salidas y de los escenarios del sector (HP0, HP3); no es la línea base del SVM, que es el GBM de 04 §4.3.4 | RF4, RF9 |
-| Analítico | Métricas de riesgo | Volatilidad (histórica, EWMA, GARCH), VaR y ES, β, drawdown, Merton PD | Cuantifica el riesgo que hoy se mide a ojo | RF6 |
+| Analítico | Métricas de riesgo | Volatilidad (histórica, EWMA, GARCH), VaR y ES, β, drawdown, d₂ de Merton (orden relativo de apalancamiento) | Cuantifica el riesgo que hoy se mide a ojo | RF6 |
 | Tecnológico | Capa de datos: yfinance, EDGAR y Damodaran, en pandas en memoria | Lee las fuentes y reconstruye el panel con la fecha `filed` | No es un proyecto de ingeniería de datos; solo se guarda una instantánea con fecha para reproducir el análisis | RN2, RN4 |
 | Tecnológico | API REST (FastAPI) | Endpoints de niveles, análisis fundamental, probabilidad y riesgo | Separa el cálculo de la presentación y permite probar cada módulo | RF1 a RF6, RF8 |
 | Tecnológico | Dashboard (Streamlit) | Muestra la vista única y consume la API | Es rápido de construir y suficiente para la validación con el usuario | RF1 a RF8 |
@@ -124,7 +124,7 @@ La lectura probabilística responde qué tan probable es alcanzar el nivel y en 
 
 ### 2.6.3 Panel de riesgo
 
-Cada activo trae su volatilidad anualizada (histórica, EWMA y GARCH(1,1)), el VaR histórico y paramétrico al 95 % y 99 % junto con el Expected Shortfall, la β y la α frente a SPY y al ETF sectorial con su parte sistemática e idiosincrática, el máximo drawdown y el Sharpe por activo, y la distancia al default de Merton (PD = N(−d₂)).
+Cada activo trae su volatilidad anualizada (histórica, EWMA y GARCH(1,1)), el VaR histórico y paramétrico al 95 % y 99 % junto con el Expected Shortfall, la β y la α frente a SPY y al ETF sectorial con su parte sistemática e idiosincrática, el máximo drawdown y el Sharpe por activo, y la distancia al default de Merton (d₂), que se presenta como un orden relativo de apalancamiento entre emisores y no como una probabilidad de default calibrada (la PD mediana del universo es ≈ 10⁻⁴⁵, sin contenido informativo en su nivel).
 
 ### 2.6.4 Principios de diseño
 
@@ -149,7 +149,7 @@ La tabla relaciona cada elemento del mockup con los requerimientos de la secció
 | Recuadro "Desempeño histórico" (AUC y Brier del SVM y del GBM, % de errores) | RF3, RN1 |
 | Línea "Indicadores que más pesaron" | RN1 |
 | Columna P(Monte Carlo) con y sin componente del sector | RF4 |
-| Panel de riesgo (volatilidad, VaR histórico y paramétrico, ES, β y α, R², Sharpe, drawdown, Merton PD) | RF6 |
+| Panel de riesgo (volatilidad, VaR histórico y paramétrico, ES, β y α, R², Sharpe, drawdown, d₂ de Merton como orden relativo) | RF6 |
 | Gráfico de precio con los 6 niveles | RF1 |
 | Botón "Editar nivel" | RF7 |
 | Botón "Registrar decisión" | RF8 |

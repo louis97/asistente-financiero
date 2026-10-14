@@ -36,19 +36,21 @@ sección 3 (dos celdas, μ = 0 y con deriva). Figura: `nb04_calibracion_gbm.png`
 
 **C3. Los indicadores técnicos, solos, aportan señal débil e inestable (HT2 no concluyente, HT3 no
 apoyada).** Con k = 1 y N = 12 las AUC por indicador van de 0.496 a 0.514 y ningún intervalo por
-bloques de fechas excluye 0.5 (`vol_rel20` 0.5137, IC 0.486–0.542); la información mutua es ≤ 0.0064.
-Los dos primeros componentes del PCA explican 79.4 % de la varianza y su AUC es 0.503 y 0.507. Por
-régimen, la AUC de momentum y RSI es 0.497–0.519 en expansión y periodo reciente (≈ 87 % de las
-observaciones) y sube a 0.64–0.79 solo en COVID y en la caída de 2022, que son eventos únicos y comunes
-a todos los tickers. La regla de HT2 se cumple en 0 de 7 indicadores (los 7 IC por fechas incluyen
-0.5; solo RSI, `vol_rel20` y `mom_12_1` tienen p_BH < 0.05), de ahí "no concluyente". HT3 pide signo
-estable en la mayoría de los regímenes con muestra suficiente: `vol_rel20` 2/5, `mom_12_1` 3/4 y
-`rsi14` 5/5. Desviación documentada: la convención adoptada exige estabilidad en todos los
-indicadores analizados, por lo que no se apoya; con la lectura por mayoría (2 de 3 estables) sería
-apoyada, pero los tres indicadores se eligieron por su AUC en §4 (selección post hoc) y los 6 IC por régimen que se calculan (Expansión y Reciente) incluyen 0.5; COVID, 2022 y
-Crisis 2009 (menos de 10·N = 120 semanas) son puntos sin IC, y la AUC de 0.95 del RSI en Crisis 2009 es el timing
-de un evento (76 positivos en pocas fechas), no discriminación. Fuente: [nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 4, 6 y 9.
-Figura: `nb04_auc_por_regimen.png`.
+bloques de fechas excluye 0.5 (`vol_rel20` 0.5137, IC 0.486–0.542); la información mutua es ≤
+0.0064. Los dos primeros componentes del PCA explican 79.4 % de la varianza y su AUC es 0.503 y
+0.507. Por régimen, la AUC de momentum y RSI es 0.497–0.519 en expansión y periodo reciente (≈ 87 %
+de las observaciones) y sube a 0.64–0.79 solo en COVID y en la caída de 2022, que son eventos únicos
+y comunes a todos los tickers. La regla de HT2 se cumple en 0 de 7 indicadores (los 7 IC por fechas
+incluyen 0.5; solo RSI, `vol_rel20` y `mom_12_1` tienen p_BH < 0.05), de ahí "no concluyente". HT3
+pide signo estable en la mayoría de los regímenes con muestra suficiente: `vol_rel20` 2/5,
+`mom_12_1` 3/4 y `rsi14` 5/5. Desviación documentada: la convención adoptada exige estabilidad en
+todos los indicadores analizados, por lo que no se apoya; con la lectura por mayoría (2 de 3
+estables) sería apoyada, pero los tres indicadores se eligieron por su AUC en §4 (selección post
+hoc) y los 6 IC por régimen que se calculan (Expansión y Reciente) incluyen 0.5; COVID, 2022 y
+Crisis 2009 (menos de 10·N = 120 semanas) son puntos sin IC, y la AUC de 0.95 del RSI en Crisis 2009
+es el timing de un evento (76 positivos en pocas fechas), no discriminación. Fuente:
+[nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 4, 6 y 9. Figura:
+`nb04_auc_por_regimen.png`.
 
 ![AUC por régimen](../../entregables/entrega_1/assets/nb04_auc_por_regimen.png)
 
@@ -129,7 +131,7 @@ dirección y valoración** (HT2, HT3, HF1–HF4), donde el resultado es no apoya
 | Muestra desde enero de 2009 | La crisis 2008–09 solo entra en su tramo final; "Crisis 2009" tiene 1 428 filas y 76 positivas | Régimen de crisis profunda poco representado | [nb04](../../notebooks/04_eda_relaciones.ipynb) §1 y §6 |
 | Pocos eventos de régimen | COVID ≈ 13 semanas; 2022 es un solo ciclo común a todos los tickers | La AUC alta de 0.64–0.79 es indicativa de un evento, no un resultado estable | [nb04](../../notebooks/04_eda_relaciones.ipynb) §6 |
 | Sesgo de supervivencia | 30 emisores grandes y vigentes en 2026 | Sobreestima retornos y subestima el riesgo de caída | [nb02](../../notebooks/02_calidad.ipynb) §6 |
-| Fundamentales incompletos | Utilidad bruta presente en solo 14 de 30 (ausente en 16); capex en 22 (65.0 %); GOOGL sin P/E (cobertura de P/E de 10 %) | Los modelos no pueden depender de esos conceptos; se excluye GOOGL de HF1 y HF2 | [nb02](../../notebooks/02_calidad.ipynb) §3 |
+| Fundamentales incompletos | Utilidad bruta presente en solo 14 de 30 (ausente en 16); capex en 22 de 30 emisores (completitud media 65,0 %); GOOGL sin P/E (cobertura de P/E de 10 %) | Los modelos no pueden depender de esos conceptos; se excluye GOOGL de HF1 y HF2 | [nb02](../../notebooks/02_calidad.ipynb) §3 |
 | Verificación externa parcial | 3 de 30 emisores contrastados con el 10-K | HF5 no se extrapola a los demás | [nb02](../../notebooks/02_calidad.ipynb) §4 |
 | Censura de la etiqueta | 360 observaciones censuradas por horizonte a 12 semanas (1.32 %), más 30 sin σ por calentamiento (390 filas sin etiqueta en nb04); la última semana es parcial | Se excluyen de las etiquetas | [nb02](../../notebooks/02_calidad.ipynb) §6 |
 | Dependencia entre observaciones | Ventanas de 12 semanas solapadas; IC por bloques de 12 semanas solo en regímenes de al menos 120 semanas | COVID, 2022 y Crisis 2009 se reportan sin IC | [nb04](../../notebooks/04_eda_relaciones.ipynb) §6 |

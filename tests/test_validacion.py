@@ -23,7 +23,7 @@ def test_kupiec_valor_conocido():
     assert 0 < p < 0.05
 
 
-def test_christoffersen_alternada_iid_sin_agrupamiento():
+def test_christoffersen_iid_no_rechaza_independencia():
     exc = pd.Series(np.random.default_rng(3).uniform(size=2000) < 0.05)
     r = christoffersen(exc, p=0.05)
     assert set(r) == {"lr_ind", "p_ind", "lr_cc", "p_cc"}

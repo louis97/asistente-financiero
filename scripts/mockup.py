@@ -107,7 +107,7 @@ def main():
               ("Beta vs ETF sectorial · R2 (parte sistemática)", "0.95 · 0.58"),
               ("Sharpe (anualizado)", "0.42"),
               ("Max drawdown (ventana)", "-34%"),
-              ("Merton: PD = N(-d2)", "0.4%")]
+              ("Merton d2 (orden relativo de apalancamiento)", "11.3")]
     for k, (a, b) in enumerate(riesgo):
         y = 0.94 - k * 0.108
         ax.text(0.0, y, a, fontsize=8.5, va="center"); ax.text(1.0, y, b, fontsize=8.5, va="center", ha="right", weight="bold")
