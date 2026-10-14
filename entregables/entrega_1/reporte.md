@@ -44,7 +44,7 @@ Detalle: [04_enfoque_analitico.md](https://github.com/louis97/asistente-financie
 
 ## 5. Recolección y calidad de datos
 
-Tres fuentes gratuitas: yfinance (precios semanales y mensuales desde 2009), SEC EDGAR (hechos XBRL con fecha `filed`) y Damodaran (múltiplos por industria). Universo: 30 acciones grandes de EE.UU. y 4 ETF (SPY, XLK, XLP, XLF), con 27 326 filas en el panel semanal. Calidad: precios sin nulos, duplicados ni semanas faltantes; 73 saltos > 5σ que son movimientos reales. La utilidad bruta está presente en solo 14 de 30 emisores (ausente en 16) y las financieras no tienen utilidad operativa. Las cifras de EDGAR coinciden en 6 de 6 con el 10-K de AAPL, KO y JPM.
+Tres fuentes gratuitas: yfinance (precios semanales y mensuales desde 2009), SEC EDGAR (hechos XBRL con fecha `filed`) y Damodaran (múltiplos por industria). Universo: 30 acciones grandes de EE.UU. y 4 ETF (SPY, XLK, XLP, XLF), con 27 326 filas en el panel semanal. Calidad: precios sin nulos, duplicados ni semanas faltantes; 73 saltos > 5σ que son movimientos reales. La utilidad bruta está presente en solo 14 de 30 emisores (ausente en 16) y las financieras no tienen utilidad operativa. Las cifras de EDGAR coinciden en 6 de 6 con el 10-K de AAPL, KO y JPM (HF5 apoyada).
 
 ![Completitud de conceptos de EDGAR](assets/completitud_edgar.png){width=62%}
 
@@ -52,7 +52,7 @@ Detalle: [05_diccionario_datos.md](https://github.com/louis97/asistente-financie
 
 ## 6. Análisis exploratorio (EDA)
 
-**Volatilidad y colas.** La volatilidad se agrupa y las colas son pesadas: curtosis en exceso mediana 4.63, ν mediano 4.15 (ν < 10 en 34 de 34 series); GARCH(1,1)-t supera a la volatilidad constante fuera de muestra en 28 de 34 series. Un GBM normal no describe el riesgo (HP0 apoyada).
+**Volatilidad y colas.** La volatilidad se agrupa y las colas son pesadas: curtosis en exceso mediana 4.63, ν mediano 4.15 (ν < 10 en 34 de 34 series); GARCH(1,1)-t supera a la volatilidad constante fuera de muestra en 28 de 34 series. Un GBM normal no describe el riesgo (HP0 y HT4 apoyadas).
 
 ![GARCH-t frente a EWMA](assets/vol_ewma_garch.png){width=62%}
 
@@ -72,6 +72,6 @@ Detalle: [03_eda_series](https://github.com/louis97/asistente-financiero/blob/en
 
 ## 7. Conclusiones e insights
 
-El EDA no muestra que los indicadores técnicos, por sí solos, separen las clases; la probabilidad de la etiqueta depende de σ (de 20.6 % en el decil 1 a 7.8 % en el decil 10) y del régimen. Decisiones de diseño: etiqueta k = 1, N = 12; simulación con GARCH-t e innovaciones t, no GBM normal; línea base GBM con deriva ≤ t (no está calibrada, pero es el rival justo que el SVM debe superar, junto con la tasa por decil de σ); múltiplos solo como contexto; VaR 99 % histórico con advertencia. **Limitaciones**: muestra desde 2009, pocos eventos de régimen, sesgo de supervivencia y fundamentales incompletos. **Próximas acciones**: entrenar el SVM con walk-forward (HT1 queda preparada, no probada; se espera una mejora pequeña o nula), añadir rasgos de régimen calculados hacia atrás, construir el Monte Carlo y validar el mockup con el stakeholder.
+El EDA no muestra que los indicadores técnicos, por sí solos, separen las clases; la probabilidad de la etiqueta depende de σ (de 20.6 % en el decil 1 a 7.8 % en el decil 10) y del régimen. Decisiones de diseño: etiqueta k = 1, N = 12; simulación con GARCH-t e innovaciones t, no GBM normal; línea base GBM con deriva ≤ t (no está calibrada, pero es el rival justo que el SVM debe superar, junto con la tasa por decil de σ); múltiplos solo como contexto; VaR 99 % histórico con advertencia. **Limitaciones**: muestra desde 2009, pocos eventos de régimen, sesgo de supervivencia y fundamentales incompletos. **Próximas acciones**: entrenar el SVM con walk-forward (HT1 y HP2 quedan preparadas, no probadas; se espera una mejora pequeña o nula), añadir rasgos de régimen calculados hacia atrás, construir el Monte Carlo y validar el mockup con el stakeholder.
 
 Detalle: [07_conclusiones.md](https://github.com/louis97/asistente-financiero/blob/entrega-1/docs/entrega_1/07_conclusiones.md)

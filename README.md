@@ -35,7 +35,7 @@ Detalle y fuentes en [`docs/entrega_1/07_conclusiones.md`](docs/entrega_1/07_con
 7. **Datos aptos para riesgo, incompletos para fundamentales (HF5 apoyada).** Utilidad bruta ausente en 16 de 30 emisores; 6 de 6 cifras coinciden con el 10-K.
 
 Decisiones de diseño que se derivan: etiqueta k = 1, N = 12; volatilidad GARCH-t/EWMA con innovaciones t;
-línea base GBM con deriva ≤ t (no calibrada, pero es el rival justo del SVM); 5 indicadores retenidos (`rsi14`, `dist_sma20`, `vol_rel20`, `donchian20`,
+línea base GBM con deriva ≤ t (no calibrada, pero es el rival justo del SVM; HT1 y HP2 preparadas, pendientes de la entrega final); 5 indicadores retenidos (`rsi14`, `dist_sma20`, `vol_rel20`, `donchian20`,
 `mom_12_1`); ratios propios para financieras; percentil de múltiplos solo como contexto.
 
 ## 4. Organización del repositorio
