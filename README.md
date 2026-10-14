@@ -52,7 +52,7 @@ proyecto_final/
 │   ├── guia_entrega_1.md, hipotesis.md, bitacora_ideas.md
 │   ├── research/, plans/, superpowers/   (literatura, planes y especificación)
 ├── scripts/           mockup.py (genera el mockup)
-└── entregables/entrega_1/   reporte.pdf (pendiente), assets/ (mockup y figuras de los notebooks)
+└── entregables/entrega_1/   [reporte.pdf](entregables/entrega_1/reporte.pdf), presentacion.pptx, assets/ (mockup y figuras de los notebooks)
 ```
 
 ## 5. Instrucciones de ejecución
@@ -101,6 +101,6 @@ Para generar el reporte en PDF (opcional): `pandoc` y `tectonic` (`brew install 
 
 ## 8. Entregables
 
-- Reporte PDF (máximo 6 páginas): `entregables/entrega_1/reporte.pdf` (pendiente).
+- Reporte PDF (máximo 6 páginas): [`entregables/entrega_1/reporte.pdf`](entregables/entrega_1/reporte.pdf).
 - Video en YouTube: (pendiente).
-- Diapositivas: `entregables/entrega_1/presentacion.pdf` (pendiente).
+- Diapositivas: [`entregables/entrega_1/presentacion.pptx`](entregables/entrega_1/presentacion.pptx); versión PDF: pendiente de exportar.

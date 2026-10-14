@@ -73,7 +73,7 @@ operativa. Las cifras de EDGAR coinciden en 6 de 6 con el 10-K de AAPL, KO y JPM
 
 | Insight | Decisión de diseño | Fuente |
 |---|---|---|
-| Con k = 1, N = 12 la clase 1 es 17.1 % (≈ 2 245 ventanas no solapadas); con k = 2 es rara (≈ 4 %) | Etiqueta de triple barrera **k = 1, N = 12** | [nb04](../../notebooks/04_eda_relaciones.ipynb) §2 |
+| Con k = 1, N = 12 la clase 1 es 17.1 % en la muestra etiquetada completa (17.8 % en la muestra de la línea base con deriva, que exige 52 semanas de historia) (≈ 2 245 ventanas no solapadas); con k = 2 es rara (≈ 4 %) | Etiqueta de triple barrera **k = 1, N = 12** | [nb04](../../notebooks/04_eda_relaciones.ipynb) §2 |
 | GARCH-t gana a la volatilidad constante en 28 de 34 series | Simulación con **volatilidad GARCH-t / EWMA e innovaciones t**, no GBM normal; barreras escaladas con σ | [nb03](../../notebooks/03_eda_series.ipynb) §5 |
 | El GBM con μ = 0 sobreestima 9.5 pp; con deriva pasada, 0.8 pp | Línea base del SVM: **GBM con deriva ≤ t** y tasa empírica por decil de σ; el μ = 0 solo como referencia | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
 | La brecha crece con σ (decil 10: −19.4 pp con μ = 0 y −12.3 pp con deriva) | σ y la tasa base por régimen de volatilidad entran como rasgos | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
@@ -101,7 +101,7 @@ dirección y valoración** (HT2, HT3, HF1–HF3), donde el resultado es débil o
 
 | Limitación | Cuantificación | Efecto | Fuente |
 |---|---|---|---|
-| Muestra desde enero de 2009 | La crisis 2008–09 solo entra en su tramo final; "Crisis 2009" tiene ≈ 36 semanas y 76 positivas | Régimen de crisis profunda poco representado | [nb04](../../notebooks/04_eda_relaciones.ipynb) §1 y §6 |
+| Muestra desde enero de 2009 | La crisis 2008–09 solo entra en su tramo final; "Crisis 2009" tiene 1 428 filas y 76 positivas | Régimen de crisis profunda poco representado | [nb04](../../notebooks/04_eda_relaciones.ipynb) §1 y §6 |
 | Pocos eventos de régimen | COVID ≈ 13 semanas; 2022 es un solo ciclo común a todos los tickers | La AUC alta de 0.64–0.79 es indicativa de un evento, no un resultado estable | [nb04](../../notebooks/04_eda_relaciones.ipynb) §6 |
 | Sesgo de supervivencia | 30 emisores grandes y vigentes en 2026 | Sobreestima retornos y subestima el riesgo de caída | [nb02](../../notebooks/02_calidad.ipynb) §6 |
 | Fundamentales incompletos | Utilidad bruta presente en solo 14 de 30 (ausente en 16); capex en 22 (65.0 %); GOOGL sin P/E (cobertura de P/E de 10 %) | Los modelos no pueden depender de esos conceptos; se excluye GOOGL de HF1 y HF2 | [nb02](../../notebooks/02_calidad.ipynb) §3 |
