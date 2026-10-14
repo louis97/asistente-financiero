@@ -55,15 +55,23 @@ Los valores de k y N no se fijan a priori sino que se eligen en el EDA (`04_eda_
 
 Las últimas N semanas de cada serie no tienen la etiqueta resuelta (censura por la derecha). Se excluyen de entrenamiento y evaluación, y no se tratan como clase 0.
 
-### 4.3.2 Validación walk-forward con purga y embargo
+### 4.3.2 Variables del modelo
+
+El SVM usa solo información de precios disponible en t, en tres grupos. El primero son los indicadores técnicos que quedaron tras el filtro de redundancia (VIF < 10) de `04_eda_relaciones`: `rsi14`, `dist_sma20`, `vol_rel20`, `donchian20` y `mom_12_1`. El segundo es la volatilidad condicional σ_t de la acción (EWMA y GARCH-t con ventana expansiva). El tercero son rasgos de régimen calculados hacia atrás: el drawdown acumulado del SPY desde su máximo y su volatilidad reciente. Los fundamentales no entran al modelo para que la lectura técnica sea independiente de la fundamental.
+
+Los rasgos de volatilidad y régimen se incluyen por evidencia del EDA y no por suposición. Ningún indicador técnico separó las clases por sí solo (AUC univariada entre 0,496 y 0,514, HT2 no concluyente). En cambio, la tasa observada de la etiqueta baja de 20,6 % en el decil 1 de σ a 7,8 % en el decil 10, y la relación cambia entre regímenes (HT3). Esto concuerda con el agrupamiento de la volatilidad (Engle, 1982; Bollerslev, 1986; HT4 apoyada) y con la dependencia de los retornos del régimen de mercado (Ang y Timmermann, 2012). Los regímenes que el EDA definió con fechas (2008-09, COVID, 2022) se fijaron ex post y no se usan como variable, porque eso sería look-ahead. Se sustituyen por las medidas hacia atrás descritas arriba, cada una con una prueba de que su valor en t no cambia si se trunca la serie después de t.
+
+Como σ_t entra al modelo, la línea base también la usa (4.3.4). Así, HT1 mide si los indicadores técnicos y el régimen aportan algo más allá de la volatilidad, y no solo si el SVM redescubre que σ importa.
+
+### 4.3.3 Validación walk-forward con purga y embargo
 
 Los datos se dividen en el tiempo, nunca al azar. La validación es walk-forward con ventana expansiva: el modelo se entrena con todo lo observado hasta una fecha y se evalúa en el bloque siguiente, y el procedimiento se repite avanzando el bloque. Como cada etiqueta usa información de las N semanas siguientes, dos observaciones vecinas comparten ventana y la muestra efectiva es mucho menor que el número de filas. Por eso se aplican dos controles de López de Prado (2018). La purga elimina del entrenamiento toda observación cuya ventana de etiqueta [t, t + N] se solape con el bloque de prueba. El embargo descarta además una franja de semanas inmediatamente posterior al bloque de prueba (al menos N). Con varios tickers en el mismo modelo, la purga y el embargo se aplican por fecha para todos los tickers, porque los retornos de la misma semana están correlacionados entre acciones. Los hiperparámetros del SVM (C y, para el RBF, γ) se eligen con una validación temporal anidada dentro del tramo de entrenamiento. Se reserva un tramo final que no se usa para elegir k, N ni hiperparámetros, y se evalúa una sola vez.
 
-### 4.3.3 Líneas base
+### 4.3.4 Líneas base
 
-Las cuatro líneas base son obligatorias y se evalúan con exactamente los mismos bloques, purgas y embargos que el SVM. La primera es la probabilidad GBM, que es la caminata aleatoria sin deriva con la σ_t del mismo instante y da la probabilidad teórica de tocar la barrera inferior antes que la superior en N semanas. La segunda es predecir siempre la clase mayoritaria. La tercera es la regresión logística con los mismos indicadores, que mide cuánto aporta el SVM frente a un modelo lineal simple. La cuarta es el momentum 12-1 (Jegadeesh, 1990) usado como puntaje de un solo indicador, que mide si un indicador clásico basta.
+Las cuatro líneas base son obligatorias y se evalúan con exactamente los mismos bloques, purgas y embargos que el SVM. La primera es la probabilidad GBM con la σ_t del mismo instante, que da la probabilidad teórica de tocar la barrera inferior antes que la superior en N semanas. Se usa con la deriva estimada solo con datos ≤ t, porque el EDA mostró que con μ = 0 sobreestima la tasa de toque en 9,5 pp y con deriva pasada solo en 0,8 pp (`04_eda_relaciones`, §3). Se complementa con la tasa empírica de toque por decil de σ_t, calculada con datos ≤ t: como σ_t es una variable del SVM, esta línea base mide cuánto aporta el modelo más allá de la volatilidad. La segunda es predecir siempre la clase mayoritaria. La tercera es la regresión logística con las mismas variables, que mide cuánto aporta el SVM frente a un modelo lineal simple. La cuarta es el momentum 12-1 (Jegadeesh, 1990) usado como puntaje de un solo indicador, que mide si un indicador clásico basta.
 
-### 4.3.4 Cómo se evita el look-ahead y la fuga de información
+### 4.3.5 Cómo se evita el look-ahead y la fuga de información
 
 La pregunta de control, por la lección T6 de la guía, es si el inversor tiene este dato hoy. La etiqueta es lo único que mira al futuro; todo lo demás se calcula con información disponible en t.
 
@@ -71,7 +79,7 @@ La pregunta de control, por la lección T6 de la guía, es si el inversor tiene 
 |---|---|---|
 | Fundamentales publicados después | Ratios y múltiplos con EDGAR | Se usa la fecha `filed` y no la de cierre del período; un valor solo existe desde que se publicó |
 | Estadísticos de toda la muestra | Escalado, percentiles, medias de los múltiplos, parámetros OU, GARCH | Se calculan con ventana expansiva hasta t; el escalador se ajusta solo con el entrenamiento de cada bloque |
-| Solape de ventanas de etiqueta | Entrenamiento y prueba contiguos | Purga y embargo (4.3.2) |
+| Solape de ventanas de etiqueta | Entrenamiento y prueba contiguos | Purga y embargo (4.3.3) |
 | Elegir k, N o hiperparámetros mirando la prueba | Selección de modelo | k y N se eligen en el EDA con balance de clases y literatura; los hiperparámetros con validación anidada; tramo final intocado |
 | Etiquetas sin resolver | Últimas N semanas | Se excluyen (censura, T3) |
 | Ventanas incompletas | Inicio de la serie (SMA200, GARCH) | Se descartan hasta completar la ventana |

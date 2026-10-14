@@ -90,7 +90,9 @@ probabilidad de la etiqueta depende de σ (la tasa observada baja de 20.6 % en e
 ([nb04](../../notebooks/04_eda_relaciones.ipynb) §6). Por eso el SVM no debe presentarse como
 "los indicadores predicen": el resultado honesto a esperar es una mejora pequeña o nula sobre la
 línea base justa (GBM con deriva y tasa por decil de σ), y la ganancia, si existe, vendrá de
-rasgos de volatilidad o de régimen y de interacciones. HT1 queda **preparada, no probada**: se
+rasgos de volatilidad o de régimen y de interacciones. Por eso el SVM incorpora, además de los
+cinco indicadores retenidos, σ_t y rasgos de régimen calculados hacia atrás, sin fundamentales
+([04_enfoque_analitico.md](04_enfoque_analitico.md), 4.3.2). HT1 queda **preparada, no probada**: se
 decide con AUC y Brier en validación walk-forward, no con este EDA.
 
 ## 7.3 Suficiencia y limitaciones de los datos
