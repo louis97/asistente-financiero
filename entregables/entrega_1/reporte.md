@@ -2,6 +2,7 @@
 title: "Asistente Bursátil para el inversor value colombiano — Entrega 1"
 author: "Louis Gualtero · MINE-4101 Ciencia de Datos Aplicada · Universidad de los Andes"
 mainfont: Arial
+monofont: Arial
 fontsize: 12pt
 geometry: a4paper, margin=2cm
 lang: es
@@ -66,12 +67,12 @@ Detalle: [05_diccionario_datos.md](https://github.com/louis97/asistente-financie
 
 ![Índice único: R² por ticker](assets/nb04_hp3_indice_unico.png){width=62%}
 
-**Múltiplos y VaR.** Solo 7 de 29 tickers muestran reversión del P/E o P/B (HF1 no apoyada) y 10 de 29 con el múltiplo relativo (HF2 no apoyada); calidad y valoración (HF3) y d₂ de Merton (HF4) no son concluyentes. El VaR 95 % fuera de muestra tiene 7.49 % de excepciones con GARCH-t y 6.78 % con el histórico, frente al 5 % esperado; GARCH-t es adecuado en 14 de 30 (HP1 no apoyada).
+**Múltiplos y VaR.** Solo 7 de 29 tickers muestran reversión del P/E o P/B (HF1 no apoyada) y 10 de 29 con el múltiplo relativo (HF2 no apoyada); calidad y valoración (HF3) y d2 de Merton (HF4) no son concluyentes. El VaR 95 % fuera de muestra tiene 7.49 % de excepciones con GARCH-t y 6.78 % con el histórico, frente al 5 % esperado; GARCH-t es adecuado en 14 de 30 (HP1 no apoyada).
 
 Detalle: [03_eda_series](https://github.com/louis97/asistente-financiero/blob/entrega-1/notebooks/03_eda_series.ipynb) · [04_eda_relaciones](https://github.com/louis97/asistente-financiero/blob/entrega-1/notebooks/04_eda_relaciones.ipynb) · [07_conclusiones.md](https://github.com/louis97/asistente-financiero/blob/entrega-1/docs/entrega_1/07_conclusiones.md)
 
 ## 7. Conclusiones e insights
 
-El EDA no muestra que los indicadores técnicos, por sí solos, separen las clases; la probabilidad de la etiqueta depende de σ (de 20.6 % en el decil 1 a 7.8 % en el decil 10) y del régimen. Decisiones de diseño: etiqueta k = 1, N = 12; simulación con GARCH-t e innovaciones t, no GBM normal; línea base GBM con deriva ≤ t (no está calibrada, pero es el rival justo que el SVM debe superar, junto con la tasa por decil de σ); 5 indicadores retenidos + σ_t y rasgos de régimen calculados hacia atrás; múltiplos solo como contexto; VaR 99 % histórico con advertencia. **Limitaciones**: muestra desde 2009, pocos eventos de régimen, sesgo de supervivencia y fundamentales incompletos. **Próximas acciones**: entrenar el SVM con walk-forward (HT1 y HP2 quedan preparadas, no probadas; se espera una mejora pequeña o nula), añadir rasgos de régimen calculados hacia atrás, construir el Monte Carlo y validar el mockup con el stakeholder.
+El EDA no muestra que los indicadores técnicos, por sí solos, separen las clases; la probabilidad de la etiqueta depende de σ (de 20.6 % en el decil 1 a 7.8 % en el decil 10) y del régimen. Decisiones de diseño: etiqueta k = 1, N = 12; simulación con GARCH-t e innovaciones t, no GBM normal; línea base GBM con deriva ≤ t (no está calibrada, pero es el rival justo que el SVM debe superar, junto con la tasa por decil de σ); 5 indicadores retenidos + σ condicional y rasgos de régimen calculados hacia atrás; múltiplos solo como contexto; VaR 99 % histórico con advertencia. **Limitaciones**: muestra desde 2009, pocos eventos de régimen, sesgo de supervivencia y fundamentales incompletos. **Próximas acciones**: entrenar el SVM con walk-forward (HT1 y HP2 quedan preparadas, no probadas; se espera una mejora pequeña o nula), añadir rasgos de régimen calculados hacia atrás, construir el Monte Carlo y validar el mockup con el stakeholder.
 
 Detalle: [07_conclusiones.md](https://github.com/louis97/asistente-financiero/blob/entrega-1/docs/entrega_1/07_conclusiones.md)
