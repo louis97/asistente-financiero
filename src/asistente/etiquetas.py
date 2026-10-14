@@ -20,6 +20,9 @@ def etiqueta_entrada(close: pd.Series, sigma: pd.Series, k_inf: float, k_sup: fl
         etiqueta[t], resultado[t] = 0.0, "tiempo"
         for h in range(1, n + 1):
             p = precios[t + h]
+            if np.isnan(p):  # hueco de precio antes de tocar: no se puede etiquetar
+                etiqueta[t], resultado[t], semanas[t] = np.nan, None, np.nan
+                break
             if p <= inferior:
                 etiqueta[t], resultado[t], semanas[t] = 1.0, "entrada", h
                 break
@@ -32,6 +35,10 @@ def etiqueta_entrada(close: pd.Series, sigma: pd.Series, k_inf: float, k_sup: fl
 
 def etiqueta_retorno(close: pd.Series, n: int, benchmark: pd.Series | None = None) -> pd.Series:
     futuro = close.shift(-n) / close - 1
-    umbral = 0.0 if benchmark is None else (benchmark.shift(-n) / benchmark - 1).reindex(close.index)
+    if benchmark is None:
+        umbral = pd.Series(0.0, index=close.index)
+    else:
+        b = benchmark.reindex(close.index)  # alinear antes de desplazar: n pasos = n semanas de close
+        umbral = b.shift(-n) / b - 1
     etiqueta = (futuro > umbral).astype(float)
-    return etiqueta.where(futuro.notna() & (pd.Series(umbral, index=close.index).notna()))
+    return etiqueta.where(futuro.notna() & umbral.notna())
