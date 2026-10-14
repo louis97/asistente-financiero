@@ -25,7 +25,7 @@ sobre r a la vez y solo 15 de 30 tickers pasan (tecnología 8/10, consumo defens
 sobre residuos estandarizados de GARCH-t, es decir, la dependencia viene de la volatilidad; con ese
 criterio pasarían 26 de 30, pero la regla de 4.4 no lo contempla y el estado sigue el criterio
 literal. Con la etiqueta k = 1, N = 12, un GBM con μ = 0 sobreestima la clase 1 en 9.5 pp (0.178
-observada frente a 0.274) y con deriva pasada la brecha es −0.8 pp. Aun así P_GBM no está calibrada:
+observada frente a 0.274) y con deriva pasada, en 0.8 pp (misma muestra, GBM menos observada). Aun así P_GBM no está calibrada:
 en la regresión logística de la etiqueta sobre logit P_GBM (deriva ≤ t) el intercepto es a = −1.983
 (IC −2.672 a −1.429) y la pendiente b = −0.294 (IC −0.641 a −0.011), que excluyen 0 y 1, es decir,
 el orden entre filas está invertido; con μ = 0 tampoco se calibra.
@@ -95,8 +95,8 @@ operativa. Las cifras de EDGAR coinciden en 6 de 6 con el 10-K de AAPL, KO y JPM
 |---|---|---|
 | Con k = 1, N = 12 la clase 1 es 17.1 % en la muestra etiquetada completa (17.8 % en la muestra de la línea base con deriva, que exige 52 semanas de historia) (≈ 2 245 ventanas no solapadas); con k = 2 es rara (≈ 4 %) | Etiqueta de triple barrera **k = 1, N = 12** | [nb04](../../notebooks/04_eda_relaciones.ipynb) §2 |
 | GARCH-t gana a la volatilidad constante en 28 de 34 series | Simulación con **volatilidad GARCH-t / EWMA e innovaciones t**, no GBM normal; barreras escaladas con σ | [nb03](../../notebooks/03_eda_series.ipynb) §5 |
-| El GBM con μ = 0 sobreestima 9.5 pp; con deriva pasada, 0.8 pp, pero P_GBM no está calibrada (HT0 calibración no apoyada: b = −0.294, IC −0.641 a −0.011) | Línea base del SVM: **GBM con deriva ≤ t** y tasa empírica por decil de σ; el μ = 0 solo como referencia | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
-| La brecha crece con σ (decil 10: −19.4 pp con μ = 0 y −12.3 pp con deriva) | σ y la tasa base por régimen de volatilidad entran como rasgos | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
+| El GBM sobreestima la clase 1 en 9.5 pp con μ = 0 y en 0.8 pp con deriva pasada, pero P_GBM no está calibrada (HT0 calibración no apoyada: b = −0.294, IC −0.641 a −0.011) | Línea base del SVM: **GBM con deriva ≤ t** y tasa empírica por decil de σ; el μ = 0 solo como referencia | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
+| La sobreestimación del GBM crece con σ (decil 10: 19.4 pp con μ = 0 y 12.3 pp con deriva) | σ y la tasa base por régimen de volatilidad entran como rasgos | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
 | VIF ≥ 10 en `dist_ema20` (55.6) y `dist_sma50` (11.6) | Indicadores retenidos: `rsi14`, `dist_sma20`, `vol_rel20`, `donchian20`, `mom_12_1` | [nb04](../../notebooks/04_eda_relaciones.ipynb) §5 |
 | Financieras sin margen bruto, margen operativo ni ROIC (0 % de completitud) | **Set de ratios propio** para financieras (ROE, P/B, margen neto); NaN sin imputar en las demás | [nb02](../../notebooks/02_calidad.ipynb) §3 |
 | Sector explica R² 0.525 (financieras 0.700, tecnología 0.387; HP3 apoyada, IC de β excluye 0 en 30 de 30) | La simulación incluye el factor del **ETF sectorial** y reporta la parte idiosincrática en tecnología | [nb04](../../notebooks/04_eda_relaciones.ipynb) §7 |

@@ -38,7 +38,7 @@ Los dolores se priorizan por el costo que declaró el usuario y por su efecto so
 | 3 | Riesgo medido a ojo o con una alarma | Panel de riesgo por activo (volatilidad, VaR/ES, β, drawdown, Merton PD) | KPI 5 (confianza) |
 | 4 | No hay dónde anotar lo que se concluye | Registro de decisiones con fecha, nivel, lectura y nota | KPI 4 (decisiones documentadas) |
 | 5 | No se sabe si el nivel es razonable frente a la historia y la industria | Lectura fundamental comparativa (percentil en la historia y en la industria) | KPI 1 y KPI 5 |
-| 6 | Timing de entrada solo con gráficos y patrones básicos | Lectura técnica: P(SVM) frente a la línea base GBM | KPI 5 (la calidad del score se evalúa con las métricas de la sección 4.4 de [04_enfoque_analitico.md](04_enfoque_analitico.md)) |
+| 6 | Timing de entrada solo con gráficos y patrones básicos | Lectura técnica: P(SVM) frente a la línea base GBM (con deriva ≤ t y tasa por decil de σ_t, 04 §4.3.4) | KPI 5 (la calidad del score se evalúa con las métricas de la sección 4.4 de [04_enfoque_analitico.md](04_enfoque_analitico.md)) |
 
 ## 2.4 Requerimientos
 
@@ -75,7 +75,7 @@ El producto se compone de cuatro módulos analíticos y tres tecnológicos. Cada
 |---|---|---|---|---|
 | Analítico (ML) | SVM lineal, comparado con un SVM RBF, con indicadores técnicos y rasgos de volatilidad y régimen calculados solo con precios pasados (sin fundamentales) | Estima P(el precio toca el nivel de entrada en N semanas antes de escaparse hacia arriba), con la etiqueta de triple barrera solo-largo | El modelo lineal permite explicar los coeficientes directamente; el RBF mide si la no linealidad aporta | RF3, RN1 |
 | Analítico | Percentiles y proceso de Ornstein-Uhlenbeck | Ubica el múltiplo implícito de cada nivel en la historia de la empresa y en la industria (pares y Damodaran) | Responde si el nivel es razonable para la empresa (HF1, HF2) | RF2 |
-| Analítico | Monte Carlo con modelo de índice único, r = α + β·r_ETF + ε (GBM o GARCH-t) | Probabilidad y tiempo de alcanzar cada nivel, con y sin el componente del sector | Es la línea base del SVM y la lectura de las salidas (HP0, HP3) | RF4, RF9 |
+| Analítico | Monte Carlo con modelo de índice único, r = α + β·r_ETF + ε (GBM o GARCH-t) | Probabilidad y tiempo de alcanzar cada nivel, con y sin el componente del sector | Es la lectura de las salidas y de los escenarios del sector (HP0, HP3); no es la línea base del SVM, que es el GBM de 04 §4.3.4 | RF4, RF9 |
 | Analítico | Métricas de riesgo | Volatilidad (histórica, EWMA, GARCH), VaR y ES, β, drawdown, Merton PD | Cuantifica el riesgo que hoy se mide a ojo | RF6 |
 | Tecnológico | Capa de datos: yfinance, EDGAR y Damodaran, en pandas en memoria | Lee las fuentes y reconstruye el panel con la fecha `filed` | No es un proyecto de ingeniería de datos; solo se guarda una instantánea con fecha para reproducir el análisis | RN2, RN4 |
 | Tecnológico | API REST (FastAPI) | Endpoints de niveles, análisis fundamental, probabilidad y riesgo | Separa el cálculo de la presentación y permite probar cada módulo | RF1 a RF6, RF8 |
@@ -92,7 +92,10 @@ flowchart LR
     D --> M2[Ratios, percentiles y Ornstein-Uhlenbeck]
     D --> M3[Índice único y Monte Carlo]
     D --> M4[Métricas de riesgo]
+    D --> R[Régimen hacia atrás - SPY]
     M1 --> S[SVM lineal y RBF]
+    M4 -->|σ_t| S
+    R --> S
     S --> API[API REST FastAPI]
     M2 --> API
     M3 --> API
@@ -117,7 +120,7 @@ La lectura fundamental comparativa responde si el nivel es razonable para esta e
 
 La lectura técnica responde si el usuario compra ya o espera. Un SVM estima la probabilidad de que el precio toque el nivel de entrada en N semanas antes de escaparse hacia arriba, con una etiqueta de triple barrera solo-largo cuyas barreras son múltiplos de σ. El SVM solo usa información de precios: los indicadores técnicos que sobrevivieron al filtro de redundancia del EDA y rasgos de volatilidad (σ_t) y de régimen de mercado calculados hacia atrás. No usa fundamentales, de modo que la lectura fundamental y la técnica sean independientes y el usuario pueda contrastarlas. Los rasgos de volatilidad y régimen se agregaron porque el EDA mostró que la probabilidad de la etiqueta depende de σ y del régimen, mientras que ningún indicador técnico separó las clases por sí solo (ver 4.3.2 de [04_enfoque_analitico.md](04_enfoque_analitico.md)). Aplica a los niveles de entrada.
 
-La lectura probabilística responde qué tan probable es alcanzar el nivel y en cuánto tiempo. Un Monte Carlo con el modelo de índice único, r = α + β·r_ETF + ε, se simula con y sin el componente del sector (`simular_indice_unico` con `con_sector` verdadero y falso), de modo que el usuario compara las dos probabilidades y ve cuánto cambia el resultado por el sector, y permite escenarios del sector. No es una descomposición aditiva: la diferencia entre ambas no se reparte entre sector y empresa. Aplica a las salidas y, en las entradas, sirve como línea base del SVM.
+La lectura probabilística responde qué tan probable es alcanzar el nivel y en cuánto tiempo. Un Monte Carlo con el modelo de índice único, r = α + β·r_ETF + ε, se simula con y sin el componente del sector (`simular_indice_unico` con `con_sector` verdadero y falso), de modo que el usuario compara las dos probabilidades y ve cuánto cambia el resultado por el sector, y permite escenarios del sector. No es una descomposición aditiva: la diferencia entre ambas no se reparte entre sector y empresa. Aplica a las salidas y a los escenarios del sector; no es la línea base del SVM, que es el GBM con deriva ≤ t más la tasa empírica de toque por decil de σ_t (04 §4.3.4).
 
 ### 2.6.3 Panel de riesgo
 

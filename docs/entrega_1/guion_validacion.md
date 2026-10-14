@@ -12,7 +12,7 @@ Cada tarea se plantea en voz alta mientras el participante mira el mockup. El en
 2. "¿Qué te dice la columna de probabilidad del SVM? ¿Qué harías con ese número?"
 3. "¿Qué entiendes por la columna de percentil histórico y la de percentil en la industria? ¿Un percentil bajo te dice que la acción está barata?"
 4. "Sale un reporte trimestral y los niveles por múltiplo se recalculan solos. ¿Qué esperarías ver en la pantalla para enterarte de que cambiaron?"
-5. "En la columna de Monte Carlo, ¿entiendes la separación entre la parte del sector y la parte propia de la empresa? ¿Te sirve para decidir?"
+5. "¿Te sirve ver cómo cambia la probabilidad de alcanzar el nivel si el sector se mueve o si se queda quieto?"
 6. "Mira el panel de riesgo. ¿Qué número usarías en 5 segundos y cuál no entiendes o no usarías?"
 7. "¿Encuentras todo lo que necesitas para decidir en esta sola pantalla? ¿Qué haces hoy que aquí no puedes hacer?"
 
@@ -26,7 +26,7 @@ Escala de 1 a 5 (1 = nada de acuerdo, 5 = totalmente de acuerdo). Se pide una fr
 | 2.2 | Entiendo la diferencia entre la lectura fundamental, la técnica y la probabilística. | Claridad |
 | 2.3 | La pantalla me deja ver rápido qué nivel merece atención. | Claridad |
 | 2.4 | Confiaría en la probabilidad del SVM para decidir el momento de una compra. | Confianza |
-| 2.5 | Confiaría más en la probabilidad si veo la línea base (probabilidad de una caminata aleatoria) y los errores históricos del modelo. | Confianza (Dietvorst et al., 2015; Parasuraman & Manzey, 2010) |
+| 2.5 | Confiaría más en la probabilidad si veo la línea base (probabilidad GBM con deriva pasada y tasa histórica por nivel de volatilidad) y los errores históricos del modelo. | Confianza (Dietvorst et al., 2015; Parasuraman & Manzey, 2010) |
 | 2.6 | Si el modelo me muestra qué indicadores pesaron en su estimación, me siento en condiciones de contradecirlo. | Explicabilidad |
 | 2.7 | Prefiero ajustar yo mismo los niveles y los umbrales a recibir niveles calculados por el modelo. | Control (Dietvorst et al., 2018) |
 | 2.8 | Una etiqueta de "compra" o "venta" me daría más confianza que una probabilidad con su incertidumbre. | Presentación del score |

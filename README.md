@@ -11,10 +11,13 @@ Repositorio: <https://github.com/louis97/asistente-financiero>
 
 ## 2. Alcance
 
-Un asistente para un inversor value colombiano que compra acciones de EE. UU. Para cada acción
-estima, a 12 semanas, la probabilidad de tocar una barrera superior (+1σ√N), una inferior o ninguna
-(etiqueta de triple barrera, k = 1, N = 12), con un SVM, un motor Monte Carlo (GARCH-t con factor
-sectorial) y niveles de entrada basados en percentiles de múltiplos.
+Un asistente para un inversor value colombiano que compra acciones de EE. UU. El usuario define seis
+niveles (tres de entrada y tres de salida), cada uno en precio y en múltiplo. Para cada nivel el
+asistente da tres lecturas: el percentil del múltiplo implícito en la historia y la industria; la
+probabilidad de un SVM de que el precio toque el nivel de entrada en 12 semanas antes de escaparse
+hacia arriba (triple barrera solo-largo, k = 1, N = 12), frente a su línea base GBM; y la
+probabilidad de un Monte Carlo de índice único, con y sin el componente del sector. Añade un panel
+de riesgo y un registro de decisiones.
 
 Esta primera entrega cubre los puntos 1 a 7: problema, ideación, ética, enfoque analítico,
 recolección de datos, entendimiento de los datos (calidad y EDA) y conclusiones. **No incluye el
@@ -36,7 +39,7 @@ Detalle y fuentes en [`docs/entrega_1/07_conclusiones.md`](docs/entrega_1/07_con
 
 Decisiones de diseño que se derivan: etiqueta k = 1, N = 12; volatilidad GARCH-t/EWMA con innovaciones t;
 línea base GBM con deriva ≤ t (no calibrada, pero es el rival justo del SVM; HT1 y HP2 preparadas, pendientes de la entrega final); 5 indicadores retenidos (`rsi14`, `dist_sma20`, `vol_rel20`, `donchian20`,
-`mom_12_1`); ratios propios para financieras; percentil de múltiplos solo como contexto.
+`mom_12_1`) más σ_t y rasgos de régimen calculados hacia atrás; ratios propios para financieras; percentil de múltiplos solo como contexto.
 
 ## 4. Organización del repositorio
 
