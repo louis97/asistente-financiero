@@ -56,23 +56,29 @@ def hechos_a_df(companyfacts: dict, taxonomia: str = "us-gaap") -> pd.DataFrame:
 def serie_anual(hechos: pd.DataFrame, alternativas: list[str], unidad: str) -> pd.DataFrame:
     """Un valor anual (10-K, FY) por fin de período, tomando la PRIMERA publicación.
 
-    Para cada período usa el primer nombre XBRL disponible en el orden de `alternativas`.
+    Para cada período gana la publicación más temprana (`filed`); `alternativas` solo desempata
+    entre nombres XBRL publicados el mismo día, en su orden de prioridad.
     Un concepto ausente devuelve un DataFrame vacío (nunca ceros).
     """
     cols = ["end", "filed", "val", "concepto"]
     d = hechos[(hechos.concepto.isin(alternativas)) & (hechos.unidad == unidad)
                & (hechos.form == "10-K") & (hechos.fp == "FY")].copy()
     if d.empty:
-        return pd.DataFrame(columns=cols)
+        return pd.DataFrame({
+            "end": pd.Series(dtype=hechos["end"].dtype),
+            "filed": pd.Series(dtype=hechos["filed"].dtype),
+            "val": pd.Series(dtype="float64"),
+            "concepto": pd.Series(dtype=object),
+        })
     dur = (d["end"] - d["start"]).dt.days
     d = d[d["start"].isna() | dur.between(*_DURACION_ANUAL)]
     d["prioridad"] = d["concepto"].map({c: i for i, c in enumerate(alternativas)})
-    d = d.sort_values(["end", "prioridad", "filed"]).drop_duplicates("end", keep="first")
+    d = d.sort_values(["end", "filed", "prioridad"]).drop_duplicates("end", keep="first")
     return d[cols].reset_index(drop=True)
 
 
 def alinear_por_filed(precios: pd.DataFrame, fundamentales: pd.DataFrame) -> pd.DataFrame:
     """Une a cada fecha de precio el último dato fundamental ya publicado (filed <= fecha)."""
-    p = precios.sort_values("fecha")
-    f = fundamentales.sort_values("filed")
+    p = precios.dropna(subset=["fecha"]).sort_values("fecha")
+    f = fundamentales.dropna(subset=["filed"]).sort_values("filed")
     return pd.merge_asof(p, f, left_on="fecha", right_on="filed", direction="backward")
