@@ -16,12 +16,19 @@ síntesis HP0. Figura: `vol_ewma_garch.png`.
 
 ![GARCH-t y EWMA](../../entregables/entrega_1/assets/vol_ewma_garch.png)
 
-**C2. La dirección del precio se comporta como caminata aleatoria con deriva (HT0 apoyada), pero la
-línea base justa para la etiqueta es un GBM con deriva estimada solo con datos pasados.** ADF no
-rechaza la raíz unitaria en 33 de 34 log-precios y la rechaza en los retornos de 34 de 34;
-|ρ₁| mediana 0.068; Ljung-Box sobre r es significativo en 50 % de las series pero en 11.8 % sobre
-residuos estandarizados de GARCH-t. Con la etiqueta k = 1, N = 12, un GBM con μ = 0 sobreestima la
-clase 1 en 9.5 pp (0.178 observada frente a 0.274) y con deriva pasada la brecha es −0.8 pp.
+**C2. La caminata aleatoria con deriva no se sostiene como regla (HT0 no apoyada, en caminata aleatoria
+y en calibración de P_GBM), aunque el GBM con deriva estimada solo con datos pasados sigue siendo la
+línea base justa para la etiqueta.** ADF no rechaza la raíz unitaria en 33 de 34 log-precios y la
+rechaza en los retornos de 34 de 34; |ρ₁| mediana 0.068, pero la regla exige ADF, KPSS y Ljung-Box
+sobre r a la vez y solo 15 de 30 tickers pasan (tecnología 8/10, consumo defensivo 5/10, financieros
+2/10). Desviación documentada: Ljung-Box sobre r es significativo en 50 % de las series y en 11.8 %
+sobre residuos estandarizados de GARCH-t, es decir, la dependencia viene de la volatilidad; con ese
+criterio pasarían 26 de 30, pero la regla de 4.4 no lo contempla y el estado sigue el criterio
+literal. Con la etiqueta k = 1, N = 12, un GBM con μ = 0 sobreestima la clase 1 en 9.5 pp (0.178
+observada frente a 0.274) y con deriva pasada la brecha es −0.8 pp. Aun así P_GBM no está calibrada:
+en la regresión logística de la etiqueta sobre logit P_GBM (deriva ≤ t) el intercepto es a = −1.983
+(IC −2.672 a −1.429) y la pendiente b = −0.294 (IC −0.641 a −0.011), que excluyen 0 y 1, es decir,
+el orden entre filas está invertido; con μ = 0 tampoco se calibra.
 Fuente: [nb03](../../notebooks/03_eda_series.ipynb), secciones 5b y 6; [nb04](../../notebooks/04_eda_relaciones.ipynb),
 sección 3 (dos celdas, μ = 0 y con deriva). Figura: `nb04_calibracion_gbm.png`.
 
@@ -33,38 +40,51 @@ bloques de fechas excluye 0.5 (`vol_rel20` 0.5137, IC 0.486–0.542); la informa
 Los dos primeros componentes del PCA explican 79.4 % de la varianza y su AUC es 0.503 y 0.507. Por
 régimen, la AUC de momentum y RSI es 0.497–0.519 en expansión y periodo reciente (≈ 87 % de las
 observaciones) y sube a 0.64–0.79 solo en COVID y en la caída de 2022, que son eventos únicos y comunes
-a todos los tickers. Fuente: [nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 4, 6 y 9.
+a todos los tickers. La regla de HT2 se cumple en 0 de 7 indicadores (los 7 IC por fechas incluyen
+0.5; solo RSI, `vol_rel20` y `mom_12_1` tienen p_BH < 0.05), de ahí "no concluyente". HT3 pide signo
+estable en la mayoría de los regímenes con muestra suficiente: `vol_rel20` 2/5, `mom_12_1` 3/4 y
+`rsi14` 5/5. Desviación documentada: la convención adoptada exige estabilidad en todos los
+indicadores analizados, por lo que no se apoya; con la lectura por mayoría (2 de 3 estables) sería
+apoyada, pero los tres indicadores se eligieron por su AUC en §4 (selección post hoc) y 10 de 14 IC
+por régimen incluyen 0.5. Fuente: [nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 4, 6 y 9.
 Figura: `nb04_auc_por_regimen.png`.
 
 ![AUC por régimen](../../entregables/entrega_1/assets/nb04_auc_por_regimen.png)
 
-**C4. El sector explica buena parte del retorno de cada acción (HP3 apoyada con matices).** El R²
-mediano del modelo de índice único con el ETF sectorial es 0.525 (financieras 0.700, consumo
-defensivo 0.495, tecnología 0.387), y las industrias se agrupan solas por correlación de retornos
+**C4. El sector explica buena parte del retorno de cada acción (HP3 apoyada).** El IC de β excluye 0
+en 30 de 30 tickers y el R² mediano del modelo de índice único con el ETF sectorial es 0.525
+(financieras 0.700, consumo defensivo 0.495, tecnología 0.387; todas las industrias ≥ 0.30). Matiz
+por régimen que no cambia el estado: en tecnología, periodo Reciente, el R² mediano es 0.283 < 0.30. Además, las industrias se agrupan solas por correlación de retornos
 (ARI 0.898; correlación intra-industria 0.526 frente a 0.261 entre industrias). Fuente:
 [nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 7 y 9. Figura: `nb04_hp3_indice_unico.png`.
 
 ![Índice único](../../entregables/entrega_1/assets/nb04_hp3_indice_unico.png)
 
-**C5. Los múltiplos no revierten a su historia como regla general (HF1 no apoyada; HF2 parcial).**
+**C5. Los múltiplos no revierten a su historia como regla general (HF1 no apoyada; HF2 no apoyada).**
 Solo 7 de 29 tickers evaluables muestran reversión del P/E o P/B (ADF con p < 0.05 y vida media
 finita; 6 sin META, que depende de un valor atípico) y 10 de 29 con el múltiplo relativo a su industria
-(5 de 10 en consumo defensivo, 2 de 10 en financieras). Los mayores descuentos actuales (GIS 0.31,
+(tecnología 3/9, consumo defensivo 5/10, financieras 2/10; ninguna industria supera la mitad). HF3
+(calidad y valoración, exploratoria) es no concluyente: Spearman 0.001, IC −0.093 a 0.064; HF4
+(d₂ de Merton) también: 0.171 global (p = 0.012, descriptivo) pero −0.056 y +0.071 dentro de industria. Los mayores descuentos actuales (GIS 0.31,
 KHC 0.40, ADBE 0.45) no pasan la prueba de reversión. Fuente: [nb03](../../notebooks/03_eda_series.ipynb),
 sección 8; [nb04](../../notebooks/04_eda_relaciones.ipynb), sección 8. Figura: `multiplos_percentil.png`.
 
 ![Percentil de múltiplos](../../entregables/entrega_1/assets/multiplos_percentil.png)
 
-**C6. El VaR histórico y el de GARCH-t no están bien calibrados (HP1 parcialmente apoyada).** Las colas
-son más pesadas que la normal (VaR 99 % histórico más extremo que el normal en 30 de 30), pero fuera
-de muestra (2020+) el VaR 95 % de GARCH-t tiene 7.49 % de excepciones (mediana; Kupiec rechaza en
-15 de 30) y el histórico móvil 6.78 % (8 de 30), frente al 5 % esperado. Fuente:
+**C6. El VaR histórico y el de GARCH-t no están bien calibrados (HP1 no apoyada).** Las colas
+son más pesadas que la normal (VaR 99 % histórico más extremo que el normal en 30 de 30; ν < 10 en
+34 de 34), pero la regla de HP1 decide con el backtest: fuera de muestra (2020+) el VaR 95 % de
+GARCH-t tiene 7.49 % de excepciones (mediana; Kupiec rechaza en 15 de 30) y el histórico móvil 6.78 %
+(8 de 30), frente al 5 % esperado. La independencia de las excepciones (Christoffersen) casi nunca
+falla (se rechaza en 2 de 30 con GARCH-t y 3 de 30 con el histórico), así que el problema es la
+cobertura, no el agrupamiento; GARCH-t resulta adecuado en 14 de 30 (tecnología 3/10, consumo
+defensivo 5/10, financieros 6/10) y el histórico en 19 de 30. Fuente:
 [nb03](../../notebooks/03_eda_series.ipynb), secciones 9 y 9b y síntesis HP1.
 
-**C7. Los datos son aptos para describir riesgo, pero heterogéneos para fundamentales.** Los precios
+**C7. Los datos son aptos para describir riesgo, pero heterogéneos para fundamentales (HF5 apoyada).** Los precios
 están limpios (0 nulos, 0 duplicados, 0 semanas faltantes; 73 saltos > 5σ que son movimientos reales).
 `utilidad_bruta` falta en 16 de 30 emisores y `capex` en 8; las 10 financieras no tienen utilidad
-operativa. Las cifras de EDGAR coinciden en 6 de 6 con el 10-K de AAPL, KO y JPM. Fuente:
+operativa. Las cifras de EDGAR coinciden en 6 de 6 con el 10-K de AAPL, KO y JPM (HF5 apoyada). Fuente:
 [nb02](../../notebooks/02_calidad.ipynb), secciones 1, 3, 4 y 7 (síntesis). Figura: `completitud_edgar.png`.
 
 ![Completitud EDGAR](../../entregables/entrega_1/assets/completitud_edgar.png)
@@ -75,13 +95,13 @@ operativa. Las cifras de EDGAR coinciden en 6 de 6 con el 10-K de AAPL, KO y JPM
 |---|---|---|
 | Con k = 1, N = 12 la clase 1 es 17.1 % en la muestra etiquetada completa (17.8 % en la muestra de la línea base con deriva, que exige 52 semanas de historia) (≈ 2 245 ventanas no solapadas); con k = 2 es rara (≈ 4 %) | Etiqueta de triple barrera **k = 1, N = 12** | [nb04](../../notebooks/04_eda_relaciones.ipynb) §2 |
 | GARCH-t gana a la volatilidad constante en 28 de 34 series | Simulación con **volatilidad GARCH-t / EWMA e innovaciones t**, no GBM normal; barreras escaladas con σ | [nb03](../../notebooks/03_eda_series.ipynb) §5 |
-| El GBM con μ = 0 sobreestima 9.5 pp; con deriva pasada, 0.8 pp | Línea base del SVM: **GBM con deriva ≤ t** y tasa empírica por decil de σ; el μ = 0 solo como referencia | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
+| El GBM con μ = 0 sobreestima 9.5 pp; con deriva pasada, 0.8 pp, pero P_GBM no está calibrada (HT0 calibración no apoyada: b = −0.294, IC −0.641 a −0.011) | Línea base del SVM: **GBM con deriva ≤ t** y tasa empírica por decil de σ; el μ = 0 solo como referencia | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
 | La brecha crece con σ (decil 10: −19.4 pp con μ = 0 y −12.3 pp con deriva) | σ y la tasa base por régimen de volatilidad entran como rasgos | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
 | VIF ≥ 10 en `dist_ema20` (55.6) y `dist_sma50` (11.6) | Indicadores retenidos: `rsi14`, `dist_sma20`, `vol_rel20`, `donchian20`, `mom_12_1` | [nb04](../../notebooks/04_eda_relaciones.ipynb) §5 |
 | Financieras sin margen bruto, margen operativo ni ROIC (0 % de completitud) | **Set de ratios propio** para financieras (ROE, P/B, margen neto); NaN sin imputar en las demás | [nb02](../../notebooks/02_calidad.ipynb) §3 |
-| Sector explica R² 0.525 (financieras 0.700, tecnología 0.387) | La simulación incluye el factor del **ETF sectorial** y reporta la parte idiosincrática en tecnología | [nb04](../../notebooks/04_eda_relaciones.ipynb) §7 |
-| Múltiplos revierten en 7 de 29 (HF1) y 10 de 29 (HF2) | Percentil del múltiplo solo como **variable de contexto**, no como señal de reversión | [nb03](../../notebooks/03_eda_series.ipynb) §8; [nb04](../../notebooks/04_eda_relaciones.ipynb) §8 |
-| Cobertura VaR 95 % fuera de muestra 7.49 % (GARCH-t) y 6.78 % (histórico) | El riesgo se reporta con **VaR 99 % histórico y advertencia** de subestimación | [nb03](../../notebooks/03_eda_series.ipynb) §9 |
+| Sector explica R² 0.525 (financieras 0.700, tecnología 0.387; HP3 apoyada, IC de β excluye 0 en 30 de 30) | La simulación incluye el factor del **ETF sectorial** y reporta la parte idiosincrática en tecnología | [nb04](../../notebooks/04_eda_relaciones.ipynb) §7 |
+| Múltiplos revierten en 7 de 29 (HF1 no apoyada) y 10 de 29 (HF2 no apoyada); calidad y valoración (HF3) y d₂ (HF4) no concluyentes | Percentil del múltiplo solo como **variable de contexto**, no como señal de reversión | [nb03](../../notebooks/03_eda_series.ipynb) §8; [nb04](../../notebooks/04_eda_relaciones.ipynb) §8 |
+| Cobertura VaR 95 % fuera de muestra 7.49 % (GARCH-t) y 6.78 % (histórico); HP1 no apoyada | El riesgo se reporta con **VaR 99 % histórico y advertencia** de subestimación | [nb03](../../notebooks/03_eda_series.ipynb) §9 |
 
 **Qué implica para el SVM (HT1).** El EDA no muestra que los indicadores técnicos, por sí solos,
 separen las clases: AUC 0.496–0.514 y sin separación en el PCA. Lo que sí mostró es que la
@@ -90,16 +110,18 @@ probabilidad de la etiqueta depende de σ (la tasa observada baja de 20.6 % en e
 ([nb04](../../notebooks/04_eda_relaciones.ipynb) §6). Por eso el SVM no debe presentarse como
 "los indicadores predicen": el resultado honesto a esperar es una mejora pequeña o nula sobre la
 línea base justa (GBM con deriva y tasa por decil de σ), y la ganancia, si existe, vendrá de
-rasgos de volatilidad o de régimen y de interacciones. Por eso el SVM incorpora, además de los
+rasgos de volatilidad o de régimen y de interacciones. El GBM con deriva ≤ t sigue siendo la línea
+base justa aunque no esté calibrado (HT0 calibración no apoyada): es lo que el SVM debe superar, y la
+tasa por decil de σ existe precisamente porque el GBM está sesgado por σ. Por eso el SVM incorpora, además de los
 cinco indicadores retenidos, σ_t y rasgos de régimen calculados hacia atrás, sin fundamentales
 ([04_enfoque_analitico.md](04_enfoque_analitico.md), 4.3.2). HT1 queda **preparada, no probada**: se
 decide con AUC y Brier en validación walk-forward, no con este EDA.
 
 ## 7.3 Suficiencia y limitaciones de los datos
 
-¿Alcanzan para las hipótesis? **Sí para las de riesgo y de sector** (HP0, HT4, HP3: 34 series
-semanales, panel de 27 326 filas de 30 tickers, 2009–2026). **Solo de forma parcial para las de
-dirección y valoración** (HT2, HT3, HF1–HF3), donde el resultado es débil o no concluyente.
+¿Alcanzan para las hipótesis? **Sí para las de riesgo y de sector** (HP0, HT4, HP3, todas apoyadas: 34 series
+semanales, panel de 27 326 filas de 30 tickers, 2009–2026). **Solo de forma limitada para las de
+dirección y valoración** (HT2, HT3, HF1–HF4), donde el resultado es no apoyado o no concluyente.
 
 | Limitación | Cuantificación | Efecto | Fuente |
 |---|---|---|---|

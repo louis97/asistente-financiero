@@ -26,16 +26,16 @@ El producto es de apoyo a la decisión y no constituye una recomendación de inv
 
 Detalle y fuentes en [`docs/entrega_1/07_conclusiones.md`](docs/entrega_1/07_conclusiones.md).
 
-1. **Volatilidad agrupada y colas pesadas.** ν mediano 4.15; GARCH-t supera a la volatilidad constante en 28 de 34 series (QLIKE 3.713 frente a 3.883).
-2. **Caminata aleatoria con deriva como línea base.** Con k = 1, N = 12, el GBM con μ = 0 sobreestima la clase 1 en 9.5 pp y el GBM con deriva pasada, en 0.8 pp.
-3. **Indicadores técnicos: señal débil e inestable.** AUC 0.496–0.514, ningún IC por bloques de fechas excluye 0.5; sube a 0.64–0.79 solo en COVID y 2022.
-4. **El sector importa.** R² mediano del modelo de índice único 0.525 (financieras 0.700, tecnología 0.387).
-5. **Los múltiplos no revierten como regla general.** 7 de 29 tickers (HF1) y 10 de 29 (HF2).
-6. **El VaR no está bien calibrado.** Excepciones del 95 % fuera de muestra: 7.49 % (GARCH-t) y 6.78 % (histórico).
-7. **Datos aptos para riesgo, incompletos para fundamentales.** Utilidad bruta ausente en 16 de 30 emisores; 6 de 6 cifras coinciden con el 10-K.
+1. **Volatilidad agrupada y colas pesadas (HP0 y HT4 apoyadas).** ν mediano 4.15; GARCH-t supera a la volatilidad constante en 28 de 34 series (QLIKE 3.713 frente a 3.883).
+2. **La caminata aleatoria no se sostiene como regla (HT0 no apoyada), y P_GBM no está calibrada (HT0 calibración no apoyada).** Pasan 15 de 30 tickers (con Ljung-Box sobre residuos de GARCH-t serían 26 de 30, desviación que la regla no contempla). Con k = 1, N = 12, el GBM con μ = 0 sobreestima la clase 1 en 9.5 pp y el GBM con deriva pasada, en 0.8 pp; la pendiente de calibración es b = −0.294 (IC −0.641 a −0.011). Sigue siendo la línea base justa del SVM (HT1 preparada).
+3. **Indicadores técnicos: señal débil e inestable (HT2 no concluyente, HT3 no apoyada).** AUC 0.496–0.514, ningún IC por bloques de fechas excluye 0.5; sube a 0.64–0.79 solo en COVID y 2022.
+4. **El sector importa (HP3 apoyada).** IC de β excluye 0 en 30 de 30; R² mediano del modelo de índice único 0.525 (financieras 0.700, tecnología 0.387).
+5. **Los múltiplos no revierten como regla general (HF1 y HF2 no apoyadas).** 7 de 29 tickers (HF1) y 10 de 29 (HF2); calidad y valoración (HF3) y d₂ de Merton (HF4) no concluyentes.
+6. **El VaR no está bien calibrado (HP1 no apoyada).** Excepciones del 95 % fuera de muestra: 7.49 % (GARCH-t) y 6.78 % (histórico).
+7. **Datos aptos para riesgo, incompletos para fundamentales (HF5 apoyada).** Utilidad bruta ausente en 16 de 30 emisores; 6 de 6 cifras coinciden con el 10-K.
 
 Decisiones de diseño que se derivan: etiqueta k = 1, N = 12; volatilidad GARCH-t/EWMA con innovaciones t;
-línea base GBM con deriva ≤ t; 5 indicadores retenidos (`rsi14`, `dist_sma20`, `vol_rel20`, `donchian20`,
+línea base GBM con deriva ≤ t (no calibrada, pero es el rival justo del SVM); 5 indicadores retenidos (`rsi14`, `dist_sma20`, `vol_rel20`, `donchian20`,
 `mom_12_1`); ratios propios para financieras; percentil de múltiplos solo como contexto.
 
 ## 4. Organización del repositorio

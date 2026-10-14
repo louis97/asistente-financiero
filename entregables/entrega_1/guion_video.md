@@ -9,8 +9,8 @@ Un solo integrante (proyecto individual). Se graba con las diapositivas de `pres
 | 1:10–1:35 | 3. Ética | 3 | No es asesoría; transparencia; sin look-ahead; datos personales anonimizados |
 | 1:35–2:20 | 4. Enfoque | 4 | Hipótesis con H0 y H1, etiqueta de triple barrera, walk-forward con purga y embargo, líneas base |
 | 2:20–2:50 | 5. Datos | 5 | Tres fuentes gratuitas, 30 acciones y 4 ETF, calidad y límites (utilidad bruta en 14 de 30) |
-| 2:50–4:40 | 6. EDA (1:50) | 6 y 7 | Colas pesadas y GARCH-t (28 de 34); caminata aleatoria; indicadores con AUC 0.496–0.514 y picos solo en COVID y 2022; sector R² 0.525; múltiplos revierten en 7 de 29; VaR mal calibrado |
-| 4:40–5:20 | 7. Conclusiones | 8 | Decisiones de diseño, limitaciones, próximos pasos; HT1 preparada, no probada |
+| 2:50–4:40 | 6. EDA (1:50) | 6 y 7 | Colas pesadas y GARCH-t (28 de 34; HP0 apoyada); caminata aleatoria no apoyada (15 de 30) y P_GBM no calibrada; indicadores con AUC 0.496–0.514 (HT2 no concluyente, HT3 no apoyada) y picos solo en COVID y 2022; sector R² 0.525 (HP3 apoyada); múltiplos revierten en 7 de 29 (HF1 y HF2 no apoyadas); VaR mal calibrado (HP1 no apoyada) |
+| 4:40–5:20 | 7. Conclusiones | 8 | Decisiones de diseño, limitaciones, próximos pasos; HT1 preparada, no probada; el GBM con deriva no está calibrado pero es el rival justo |
 | 5:20–5:40 | Cierre | 8 | Enlace al repositorio y agradecimiento |
 
 Regla: no leer las diapositivas; cada cifra sale del reporte. Ensayar para quedar en 5:40 (margen de 20 s bajo el límite de 6:00).

@@ -38,7 +38,7 @@ Detalle: [03_etica_legal.md](https://github.com/louis97/asistente-financiero/blo
 
 ## 4. Enfoque analítico
 
-Tres preguntas de negocio (¿es razonable el nivel?, ¿compro ya o espero?, ¿qué tan probable es el objetivo?) se traducen en hipótesis con H0 y H1 que se pueden refutar: técnicas (HT0 caminata aleatoria, HT1 SVM frente a GBM, HT2 señal de indicadores), fundamentales (HF1 y HF2 reversión de múltiplos) y probabilísticas (HP0 colas pesadas, HP3 efecto del sector). La etiqueta es una **triple barrera solo-largo** (±k·σ, horizonte de N semanas; en el EDA se eligió k = 1, N = 12). Validación **walk-forward con purga y embargo**, con cuatro líneas base obligatorias (GBM, clase mayoritaria, regresión logística, momentum 12-1) y reglas de decisión fijadas de antemano: una hipótesis solo se declara apoyada si el IC bootstrap excluye el valor nulo. Todo es asociativo, no causal.
+Tres preguntas de negocio (¿es razonable el nivel?, ¿compro ya o espero?, ¿qué tan probable es el objetivo?) se traducen en hipótesis con H0 y H1 que se pueden refutar: técnicas (HT0 caminata aleatoria, HT1 SVM frente a GBM, HT2 señal de indicadores), fundamentales (HF1 y HF2 reversión de múltiplos) y probabilísticas (HP0 colas pesadas, HP3 efecto del sector). La etiqueta es una **triple barrera solo-largo** (±k·σ, horizonte de N semanas; en el EDA se eligió k = 1, N = 12). Validación **walk-forward con purga y embargo**, con cuatro líneas base obligatorias (GBM, clase mayoritaria, regresión logística, momentum 12-1) y reglas de decisión fijadas de antemano: una hipótesis solo se declara apoyada si cumple su regla (IC bootstrap que excluye el valor nulo), con cuatro estados: apoyada, no apoyada, no concluyente y preparada. Todo es asociativo, no causal.
 
 Detalle: [04_enfoque_analitico.md](https://github.com/louis97/asistente-financiero/blob/entrega-1/docs/entrega_1/04_enfoque_analitico.md)
 
@@ -56,22 +56,22 @@ Detalle: [05_diccionario_datos.md](https://github.com/louis97/asistente-financie
 
 ![GARCH-t frente a EWMA](assets/vol_ewma_garch.png){width=62%}
 
-**Dirección del precio.** ADF no rechaza la raíz unitaria en 33 de 34 log-precios y |ρ lag 1| mediana es 0.068 (HT0 apoyada). Con k = 1, N = 12, un GBM con μ = 0 sobreestima la clase 1 en 9.5 pp (0.178 observada frente a 0.274) y, con deriva pasada, la sobreestima en 0.8 pp.
+**Dirección del precio.** ADF no rechaza la raíz unitaria en 33 de 34 log-precios y |ρ lag 1| mediana es 0.068, pero solo 15 de 30 tickers pasan ADF, KPSS y Ljung-Box a la vez (HT0 no apoyada; con Ljung-Box sobre residuos de GARCH-t pasarían 26 de 30, desviación que la regla no contempla). Con k = 1, N = 12, un GBM con μ = 0 sobreestima la clase 1 en 9.5 pp (0.178 observada frente a 0.274) y, con deriva pasada, en 0.8 pp, pero P_GBM no está calibrada (pendiente b = −0.294, IC −0.641 a −0.011; HT0 calibración no apoyada).
 
-**Indicadores técnicos.** La señal es débil e inestable: AUC por indicador de 0.496 a 0.514, ningún IC por bloques excluye 0.5. Por régimen sube a 0.64–0.79 solo en COVID y 2022, eventos únicos (HT2 no concluyente, HT3 no apoyada).
+**Indicadores técnicos.** La señal es débil e inestable: AUC por indicador de 0.496 a 0.514, ningún IC por bloques excluye 0.5. Por régimen sube a 0.64–0.79 solo en COVID y 2022, eventos únicos (HT2 no concluyente; HT3 no apoyada, pues el signo no es estable en todos los indicadores: `vol_rel20` 2/5 regímenes; por mayoría sería apoyada).
 
 ![AUC por régimen](assets/nb04_auc_por_regimen.png){width=62%}
 
-**Sector.** El R² mediano del modelo de índice único con el ETF sectorial es 0.525 (financieras 0.700, tecnología 0.387); las industrias se agrupan solas (ARI 0.898) (HP3 apoyada con matices).
+**Sector.** El IC de β excluye 0 en 30 de 30 y el R² mediano del modelo de índice único con el ETF sectorial es 0.525 (financieras 0.700, tecnología 0.387); las industrias se agrupan solas (ARI 0.898) (HP3 apoyada; en tecnología, periodo Reciente, el R² es 0.283).
 
 ![Índice único: R² por ticker](assets/nb04_hp3_indice_unico.png){width=62%}
 
-**Múltiplos y VaR.** Solo 7 de 29 tickers muestran reversión del P/E o P/B (HF1 no apoyada) y 10 de 29 con el múltiplo relativo (HF2 parcial). El VaR 95 % fuera de muestra tiene 7.49 % de excepciones con GARCH-t y 6.78 % con el histórico, frente al 5 % esperado (HP1 parcial).
+**Múltiplos y VaR.** Solo 7 de 29 tickers muestran reversión del P/E o P/B (HF1 no apoyada) y 10 de 29 con el múltiplo relativo (HF2 no apoyada); calidad y valoración (HF3) y d₂ de Merton (HF4) no son concluyentes. El VaR 95 % fuera de muestra tiene 7.49 % de excepciones con GARCH-t y 6.78 % con el histórico, frente al 5 % esperado; GARCH-t es adecuado en 14 de 30 (HP1 no apoyada).
 
 Detalle: [03_eda_series](https://github.com/louis97/asistente-financiero/blob/entrega-1/notebooks/03_eda_series.ipynb) · [04_eda_relaciones](https://github.com/louis97/asistente-financiero/blob/entrega-1/notebooks/04_eda_relaciones.ipynb) · [07_conclusiones.md](https://github.com/louis97/asistente-financiero/blob/entrega-1/docs/entrega_1/07_conclusiones.md)
 
 ## 7. Conclusiones e insights
 
-El EDA no muestra que los indicadores técnicos, por sí solos, separen las clases; la probabilidad de la etiqueta depende de σ (de 20.6 % en el decil 1 a 7.8 % en el decil 10) y del régimen. Decisiones de diseño: etiqueta k = 1, N = 12; simulación con GARCH-t e innovaciones t, no GBM normal; línea base GBM con deriva ≤ t; múltiplos solo como contexto; VaR 99 % histórico con advertencia. **Limitaciones**: muestra desde 2009, pocos eventos de régimen, sesgo de supervivencia y fundamentales incompletos. **Próximas acciones**: entrenar el SVM con walk-forward (HT1 queda preparada, no probada; se espera una mejora pequeña o nula), añadir rasgos de régimen calculados hacia atrás, construir el Monte Carlo y validar el mockup con el stakeholder.
+El EDA no muestra que los indicadores técnicos, por sí solos, separen las clases; la probabilidad de la etiqueta depende de σ (de 20.6 % en el decil 1 a 7.8 % en el decil 10) y del régimen. Decisiones de diseño: etiqueta k = 1, N = 12; simulación con GARCH-t e innovaciones t, no GBM normal; línea base GBM con deriva ≤ t (no está calibrada, pero es el rival justo que el SVM debe superar, junto con la tasa por decil de σ); múltiplos solo como contexto; VaR 99 % histórico con advertencia. **Limitaciones**: muestra desde 2009, pocos eventos de régimen, sesgo de supervivencia y fundamentales incompletos. **Próximas acciones**: entrenar el SVM con walk-forward (HT1 queda preparada, no probada; se espera una mejora pequeña o nula), añadir rasgos de régimen calculados hacia atrás, construir el Monte Carlo y validar el mockup con el stakeholder.
 
 Detalle: [07_conclusiones.md](https://github.com/louis97/asistente-financiero/blob/entrega-1/docs/entrega_1/07_conclusiones.md)

@@ -41,18 +41,21 @@ author: "Louis Gualtero · MINE-4101 · Entrega 1"
 
 ![](assets/vol_ewma_garch.png){width=60%}
 
-- ν mediano 4.15; GARCH-t gana en 28 de 34 series
+- ν mediano 4.15; GARCH-t gana en 28 de 34 series (HP0, HT4 apoyadas)
+- Caminata aleatoria: pasan 15 de 30 (HT0 no apoyada); P_GBM no calibrada
+- VaR: GARCH-t adecuado en 14 de 30 (HP1 no apoyada)
 
 ## 6. EDA: señal débil, sector fuerte
 
 ![](assets/nb04_auc_por_regimen.png){width=55%}
 
-- AUC por indicador 0.496–0.514; sector R² mediano 0.525
-- Múltiplos revierten en solo 7 de 29 tickers
+- AUC por indicador 0.496–0.514 (HT2 no concluyente, HT3 no apoyada)
+- Sector R² mediano 0.525 (HP3 apoyada)
+- Múltiplos revierten en 7 de 29 (HF1) y 10 de 29 (HF2), no apoyadas
 
 ## 7. Conclusiones y próximos pasos
 
 - Indicadores técnicos solos: señal débil; la probabilidad depende de σ y del régimen
-- Diseño: GARCH-t con innovaciones t, línea base GBM con deriva, múltiplos como contexto
+- Diseño: GARCH-t con innovaciones t, línea base GBM con deriva (no calibrada, rival justo), múltiplos como contexto
 - Siguiente: SVM walk-forward (HT1 preparada, no probada), Monte Carlo, validación con el stakeholder
 - Repositorio: github.com/louis97/asistente-financiero (rama entrega-1). Video: pendiente

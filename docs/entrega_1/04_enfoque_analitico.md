@@ -39,7 +39,7 @@ Cada técnica de la tabla responde a al menos una hipótesis, y ninguna se lista
 | HF4 (secundaria) | Correlación entre d₂ y el drawdown o VaR posterior | Merton d₂ en el tiempo por industria | Distancia al default de Merton | `04_eda_relaciones` (nivel 3) | Exploratoria |
 | HF5 (secundaria) | Diferencias relativas por ratio; coincidencia con el 10-K en 2 o 3 empresas | Tabla de auditoría | — | `02_calidad` | Respondida |
 | HP0 | ACF de r y r², Ljung-Box, ARCH-LM, Jarque-Bera, ajuste normal y t | QQ-plot (acompaña siempre a Jarque-Bera), histogramas | GARCH(1,1) con ventana expansiva | `03_eda_series` (nivel 1) | Respondida |
-| HP1 (secundaria) | Jarque-Bera con QQ-plot, normal frente a t; Kupiec y Christoffersen (backtesting, de recorte) | QQ-plot | GARCH-t | `03_eda_series` (nivel 1) | Parcial; backtesting preparado |
+| HP1 (secundaria) | Jarque-Bera con QQ-plot, normal frente a t; Kupiec y Christoffersen (backtesting, de recorte) | QQ-plot | GARCH-t | `03_eda_series` (nivel 1) | Respondida (Kupiec y Christoffersen ejecutados) |
 | HP2 (secundaria) | Brier y calibración por niveles ±k·σ | Diagrama de calibración | Monte Carlo walk-forward | Entrega final | Preparada |
 | HP3 | R² y β móvil del modelo de índice único; descomposición de la varianza | Clustermap de correlaciones, β móvil, retornos acumulados por industria | Modelo de índice único | `04_eda_relaciones` (nivel 3) | Respondida |
 
