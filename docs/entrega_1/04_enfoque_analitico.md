@@ -90,7 +90,7 @@ Esta lista es una especificación de diseño y no una afirmación de que los con
 
 ## 4.4 Métricas de calidad y reglas de decisión
 
-Cada métrica tiene una línea base y una regla escrita antes de ver los resultados. Los umbrales numéricos (0,05 de significancia, 50 % de los tickers, 0,30 de R², 0,95 de DSR) son convenciones fijadas a priori para este proyecto y no valores tomados de la literatura; si los datos muestran que son inadecuados se ajustan y el cambio se documenta. Todos los intervalos de confianza se estiman con block bootstrap (Politis y Romano, 1994), con bloques de al menos N semanas para respetar la dependencia de las ventanas de la etiqueta. Cada hipótesis termina en uno de cuatro estados: apoyada, no apoyada, no concluyente (el intervalo incluye el valor nulo) o preparada (solo se dejó lista la línea base).
+Cada métrica tiene una línea base y una regla escrita antes de ver los resultados. Los umbrales numéricos (0,05 de significancia, 50 % de los tickers, 0,30 de R², 0,95 de DSR) son convenciones fijadas a priori para este proyecto y no valores tomados de la literatura; si los datos muestran que son inadecuados se ajustan y el cambio se documenta. Todos los intervalos de confianza se estiman con block bootstrap (Politis y Romano, 1994), con bloques de al menos N semanas para respetar la dependencia de las ventanas de la etiqueta. Con menos de 10·N semanas no se calcula IC por régimen; la AUC se reporta como punto descriptivo. Cada hipótesis termina en uno de cuatro estados: apoyada, no apoyada, no concluyente (el intervalo incluye el valor nulo) o preparada (solo se dejó lista la línea base).
 
 | Hipótesis o ámbito | Métrica | Línea base | Regla de decisión |
 |---|---|---|---|

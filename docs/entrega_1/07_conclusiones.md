@@ -45,8 +45,9 @@ a todos los tickers. La regla de HT2 se cumple en 0 de 7 indicadores (los 7 IC p
 estable en la mayoría de los regímenes con muestra suficiente: `vol_rel20` 2/5, `mom_12_1` 3/4 y
 `rsi14` 5/5. Desviación documentada: la convención adoptada exige estabilidad en todos los
 indicadores analizados, por lo que no se apoya; con la lectura por mayoría (2 de 3 estables) sería
-apoyada, pero los tres indicadores se eligieron por su AUC en §4 (selección post hoc) y 10 de 14 IC
-por régimen incluyen 0.5. Fuente: [nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 4, 6 y 9.
+apoyada, pero los tres indicadores se eligieron por su AUC en §4 (selección post hoc) y los 6 IC por régimen que se calculan (Expansión y Reciente) incluyen 0.5; COVID, 2022 y
+Crisis 2009 (menos de 10·N = 120 semanas) son puntos sin IC, y la AUC de 0.95 del RSI en Crisis 2009 es el timing
+de un evento (76 positivos en pocas fechas), no discriminación. Fuente: [nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 4, 6 y 9.
 Figura: `nb04_auc_por_regimen.png`.
 
 ![AUC por régimen](../../entregables/entrega_1/assets/nb04_auc_por_regimen.png)
@@ -61,9 +62,9 @@ por régimen que no cambia el estado: en tecnología, periodo Reciente, el R² m
 ![Índice único](../../entregables/entrega_1/assets/nb04_hp3_indice_unico.png)
 
 **C5. Los múltiplos no revierten a su historia como regla general (HF1 no apoyada; HF2 no apoyada).**
-Solo 7 de 29 tickers evaluables muestran reversión del P/E o P/B (ADF con p < 0.05 y vida media
-finita; 6 sin META, que depende de un valor atípico) y 10 de 29 con el múltiplo relativo a su industria
-(tecnología 3/9, consumo defensivo 5/10, financieras 2/10; ninguna industria supera la mitad). HF3
+Solo 7 de 29 tickers evaluables muestran reversión del P/E o P/B (ADF con p < 0.05, η > 0 y vida
+media menor que la mitad de la historia; 6 sin META, que depende de un valor atípico) y 10 de 29 con el múltiplo relativo a su industria
+(misma regla; tecnología 3/9, consumo defensivo 5/10, financieras 2/10; ninguna industria supera la mitad). HF3
 (calidad y valoración, exploratoria) es no concluyente: Spearman 0.001, IC −0.093 a 0.064; HF4
 (d₂ de Merton) también: 0.171 global (p = 0.012, descriptivo) pero −0.056 y +0.071 dentro de industria. Los mayores descuentos actuales (GIS 0.31,
 KHC 0.40, ADBE 0.45) no pasan la prueba de reversión. Fuente: [nb03](../../notebooks/03_eda_series.ipynb),
@@ -130,8 +131,8 @@ dirección y valoración** (HT2, HT3, HF1–HF4), donde el resultado es no apoya
 | Sesgo de supervivencia | 30 emisores grandes y vigentes en 2026 | Sobreestima retornos y subestima el riesgo de caída | [nb02](../../notebooks/02_calidad.ipynb) §6 |
 | Fundamentales incompletos | Utilidad bruta presente en solo 14 de 30 (ausente en 16); capex en 22 (65.0 %); GOOGL sin P/E (cobertura de P/E de 10 %) | Los modelos no pueden depender de esos conceptos; se excluye GOOGL de HF1 y HF2 | [nb02](../../notebooks/02_calidad.ipynb) §3 |
 | Verificación externa parcial | 3 de 30 emisores contrastados con el 10-K | HF5 no se extrapola a los demás | [nb02](../../notebooks/02_calidad.ipynb) §4 |
-| Censura de la etiqueta | 336 observaciones censuradas a 12 semanas (1.23 %); la última semana es parcial | Se excluyen de las etiquetas | [nb02](../../notebooks/02_calidad.ipynb) §6 |
-| Dependencia entre observaciones | Ventanas de 12 semanas solapadas; IC por bloques de 4 semanas | Los IC por régimen son más estrechos de lo debido | [nb04](../../notebooks/04_eda_relaciones.ipynb) §6 |
+| Censura de la etiqueta | 360 observaciones censuradas por horizonte a 12 semanas (1.32 %), más 30 sin σ por calentamiento (390 filas sin etiqueta en nb04); la última semana es parcial | Se excluyen de las etiquetas | [nb02](../../notebooks/02_calidad.ipynb) §6 |
+| Dependencia entre observaciones | Ventanas de 12 semanas solapadas; IC por bloques de 12 semanas solo en regímenes de al menos 120 semanas | COVID, 2022 y Crisis 2009 se reportan sin IC | [nb04](../../notebooks/04_eda_relaciones.ipynb) §6 |
 | Un único periodo fuera de muestra para GARCH | 2020+, con el choque de 2020 | La ventaja de GARCH-t (28 de 34) es moderada | [nb03](../../notebooks/03_eda_series.ipynb) §10 |
 | Split y dividendos | Correcciones por splits ya aplicadas a EPS y valor en libros; el precio de los múltiplos es sin ajuste por dividendos | Sin riesgo de múltiplos distorsionados por splits | [nb03](../../notebooks/03_eda_series.ipynb) §8 |
 | Frecuencia anual de fundamentales | El pipeline ingiere solo 10-K: 8 a 16 reportes anuales por ticker (mediana 13) en la ventana de 432 a 885 semanas (mediana 850) del múltiplo | Su denominador cambia unas 13 veces; ADF y OU miden sobre todo la reversión del precio, y la conclusión de HF1 y HF2 se lee con esa n efectiva. Los 10-Q (EPS TTM) quedan para la entrega siguiente | [nb03](../../notebooks/03_eda_series.ipynb) §8 |

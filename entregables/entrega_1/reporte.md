@@ -58,7 +58,7 @@ Detalle: [05_diccionario_datos.md](https://github.com/louis97/asistente-financie
 
 **Dirección del precio.** ADF no rechaza la raíz unitaria en 33 de 34 log-precios y |ρ lag 1| mediana es 0.068, pero solo 15 de 30 tickers pasan ADF, KPSS y Ljung-Box a la vez (HT0 no apoyada; con Ljung-Box sobre residuos de GARCH-t pasarían 26 de 30, desviación que la regla no contempla). Con k = 1, N = 12, un GBM con μ = 0 sobreestima la clase 1 en 9.5 pp (0.178 observada frente a 0.274) y, con deriva pasada, en 0.8 pp, pero P_GBM no está calibrada (pendiente b = −0.294, IC −0.641 a −0.011; HT0 calibración no apoyada).
 
-**Indicadores técnicos.** La señal es débil e inestable: AUC por indicador de 0.496 a 0.514, ningún IC por bloques excluye 0.5. Por régimen sube a 0.64–0.79 solo en COVID y 2022, eventos únicos (HT2 no concluyente; HT3 no apoyada, pues el signo no es estable en todos los indicadores: `vol_rel20` 2/5 regímenes; por mayoría sería apoyada).
+**Indicadores técnicos.** La señal es débil e inestable: AUC por indicador de 0.496 a 0.514, ningún IC por bloques excluye 0.5. Por régimen sube a 0.64–0.79 solo en COVID y 2022 (puntos sin IC), eventos únicos; el 0.95 de 2009 es timing de un evento (HT2 no concluyente; HT3 no apoyada, pues el signo no es estable en todos los indicadores: `vol_rel20` 2/5 regímenes; por mayoría sería apoyada).
 
 ![AUC por régimen](assets/nb04_auc_por_regimen.png){width=62%}
 
