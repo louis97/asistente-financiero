@@ -28,7 +28,7 @@ Escala de 1 a 5 (1 = nada de acuerdo, 5 = totalmente de acuerdo). Se pide una fr
 | 2.4 | Confiaría en la probabilidad del SVM para decidir el momento de una compra. | Confianza |
 | 2.5 | Confiaría más en la probabilidad si veo la línea base (probabilidad de una caminata aleatoria) y los errores históricos del modelo. | Confianza (Dietvorst et al., 2015; Parasuraman & Manzey, 2010) |
 | 2.6 | Si el modelo me muestra qué indicadores pesaron en su estimación, me siento en condiciones de contradecirlo. | Explicabilidad |
-| 2.7 | Prefiero ajustar yo mismo los niveles y los umbrales a recibir niveles calculados por el modelo. | Control (Dietvorst et al., 2016) |
+| 2.7 | Prefiero ajustar yo mismo los niveles y los umbrales a recibir niveles calculados por el modelo. | Control (Dietvorst et al., 2018) |
 | 2.8 | Una etiqueta de "compra" o "venta" me daría más confianza que una probabilidad con su incertidumbre. | Presentación del score |
 | 2.9 | El aviso de que no es asesoría de inversión me resulta claro y visible. | Transparencia |
 
@@ -40,7 +40,8 @@ Preguntas abiertas de cierre de la parte: "¿Qué te haría dejar de confiar en 
 2. "¿Hay algo en la pantalla que quitarías porque estorba?"
 3. "¿Qué falta? (por ejemplo ratios que usas hoy y no aparecen)"
 4. "¿Para qué usarías esta herramienta: antes de comprar, tras un reporte, o ambos?"
-5. Cierre: "Si esta pantalla existiera, ¿en qué momento de tu semana la abrirías?"
+5. Pregunta de sí/no (KPI 5): "¿Usarías esta herramienta en tu proceso actual? Sí / No, y por qué."
+6. Cierre: "Si esta pantalla existiera, ¿en qué momento de tu semana la abrirías?"
 
 ## Qué se hace después de la sesión
 

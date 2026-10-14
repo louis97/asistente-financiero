@@ -99,7 +99,7 @@ Cada métrica tiene una línea base y una regla escrita antes de ver los resulta
 | Financieras (netas de 10 pb por operación) | Mejora del precio de entrada frente a comprar de inmediato, retorno, volatilidad, max drawdown y Deflated Sharpe Ratio (Bailey y López de Prado, 2014) | Comprar de inmediato | La mejora de entrada es positiva si el IC bootstrap de la diferencia media neta de costos excluye 0. Hay evidencia de valor si el DSR es al menos 0,95, que corrige por el número de configuraciones probadas |
 | Por régimen de mercado | Todas las métricas anteriores en 2008-09, expansión, 2020, 2022 y el período reciente (Ang y Timmermann, 2012) | Mismas líneas base | HT1 se declara robusta solo si el signo de ΔAUC se mantiene en la mayoría de los regímenes; si depende de uno solo, se reporta como específica de ese régimen |
 
-La métrica ΔAUC corresponde al KPI 6 del punto 1. Las métricas financieras no pueden evaluarse del todo en esta entrega, porque el SVM final es de la entrega siguiente; aquí se deja definido el procedimiento y, si sobra tiempo, se hace un chequeo exploratorio con un SVM lineal walk-forward, reportado como tal. Las explicaciones del modelo se obtienen con los coeficientes del SVM lineal y con SHAP (Lundberg y Lee, 2017).
+La métrica ΔAUC es una métrica del modelo y no un KPI de negocio del punto 1. Las métricas financieras no pueden evaluarse del todo en esta entrega, porque el SVM final es de la entrega siguiente; aquí se deja definido el procedimiento y, si sobra tiempo, se hace un chequeo exploratorio con un SVM lineal walk-forward, reportado como tal. Las explicaciones del modelo se obtienen con los coeficientes del SVM lineal y con SHAP (Lundberg y Lee, 2017).
 
 ## Referencias
 
