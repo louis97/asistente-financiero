@@ -66,6 +66,7 @@ def test_ou_recupera_parametros():
     assert out["m"] == pytest.approx(20.0, abs=0.3)
     assert out["eta"] == pytest.approx(-np.log(0.9) * 52, rel=0.15)
     assert out["vida_media_anios"] == pytest.approx(np.log(2) / out["eta"])
+    assert out["sigma"] == pytest.approx(0.5 * np.sqrt(52), rel=0.05)
 
 
 def test_ou_sin_reversion_da_nan():
@@ -81,3 +82,14 @@ def test_merton_ejemplo_hull_y_consistencia():
     d1 = out["d2"] + out["sigma_V"]
     E_rec = out["V"] * norm.cdf(d1) - 10.0 * np.exp(-0.05) * norm.cdf(out["d2"])
     assert E_rec == pytest.approx(3.0, rel=1e-4)
+
+
+@pytest.mark.parametrize("kwargs", [
+    dict(E=0.0, sigma_E=0.80, D=10.0, r=0.05, T=1.0),
+    dict(E=3.0, sigma_E=-0.1, D=10.0, r=0.05, T=1.0),
+    dict(E=3.0, sigma_E=0.80, D=0.0, r=0.05, T=1.0),
+    dict(E=3.0, sigma_E=0.80, D=10.0, r=0.05, T=0.0),
+])
+def test_merton_entradas_invalidas_dan_nan(kwargs):
+    out = rg.merton(**kwargs)
+    assert all(np.isnan(out[k]) for k in ("V", "sigma_V", "d2", "pd"))

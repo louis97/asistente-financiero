@@ -55,10 +55,16 @@ def sharpe(r: pd.Series, rf: float = 0.0, periodos: int = 52) -> float:
 
 
 def ajuste_ou(x: pd.Series, dt: float = 1 / 52) -> dict:
+    """Ajusta Δx_t = a + b·x_{t−1} + ε por MCO (Ornstein-Uhlenbeck discreto).
+
+    Unidades: `m` está en las unidades de la serie; `eta`, `sigma` y `vida_media_anios`
+    son anuales (dt en años). `m` y `vida_media_anios` son NaN si no hay reversión
+    (b ∉ (−2, 0)); `eta` también es NaN en ese caso.
+    """
     s = pd.Series(x).dropna()
     dx, rezago = s.diff().iloc[1:], s.shift(1).iloc[1:]
     b, a = np.polyfit(rezago, dx, 1)
-    sigma = float((dx - (a + b * rezago)).std(ddof=1))
+    sigma = float((dx - (a + b * rezago)).std(ddof=1) / np.sqrt(dt))
     if not -2 < b < 0:
         return {"m": np.nan, "eta": np.nan, "vida_media_anios": np.nan, "sigma": sigma}
     eta = -np.log(1 + b) / dt
@@ -67,12 +73,22 @@ def ajuste_ou(x: pd.Series, dt: float = 1 / 52) -> dict:
 
 
 def merton(E: float, sigma_E: float, D: float, r: float, T: float = 1.0) -> dict:
+    """Modelo de Merton: resuelve V y σ_V de E y σ_E. Devuelve NaN si las entradas
+    son inválidas o si fsolve no converge a una solución con V > 0 y σ_V > 0."""
+    nan = {"V": np.nan, "sigma_V": np.nan, "d2": np.nan, "pd": np.nan}
+    if not (E > 0 and sigma_E > 0 and D > 0 and T > 0):
+        return nan
+
     def ecuaciones(z):
         V, sV = z
         d1 = (np.log(V / D) + (r + sV ** 2 / 2) * T) / (sV * np.sqrt(T))
         d2 = d1 - sV * np.sqrt(T)
         return [V * norm.cdf(d1) - D * np.exp(-r * T) * norm.cdf(d2) - E,
                 norm.cdf(d1) * sV * V - sigma_E * E]
-    V, sV = fsolve(ecuaciones, x0=[E + D, sigma_E * E / (E + D)])
+    with np.errstate(all="ignore"):
+        (V, sV), _, ier, _ = fsolve(ecuaciones, x0=[E + D, sigma_E * E / (E + D)],
+                                    full_output=True)
+    if ier != 1 or not (np.isfinite(V) and np.isfinite(sV)) or V <= 0 or sV <= 0:
+        return nan
     d2 = (np.log(V / D) + (r - sV ** 2 / 2) * T) / (sV * np.sqrt(T))
     return {"V": float(V), "sigma_V": float(sV), "d2": float(d2), "pd": float(norm.cdf(-d2))}
