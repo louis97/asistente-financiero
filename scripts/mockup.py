@@ -1,6 +1,7 @@
-"""Mockup (wireframe) del dashboard del asistente bursatil.
+"""Mockup (wireframe) del dashboard del asistente bursátil.
 
-Todos los valores son ILUSTRATIVOS (no provienen de datos reales).
+Todas las cifras son de EJEMPLO (ilustrativas, no provienen de datos reales).
+Ticker de ejemplo: KO, de la industria piloto (consumo defensivo).
 Salida: entregables/entrega_1/assets/mockup.png
 Uso: uv run python scripts/mockup.py
 """
@@ -14,120 +15,148 @@ import numpy as np
 
 SALIDA = Path(__file__).resolve().parents[1] / "entregables/entrega_1/assets/mockup.png"
 
-TICKER, PRECIO, FILED = "XXXX", 100.0, "2026-08-01"
+# Cifras de ejemplo: precio = P/E x EPS y precio = P/B x valor en libros por acción
+TICKER, PRECIO, EPS, VLA, FILED = "KO", 70.00, 2.80, 7.00, "2026-02-20"
+AZUL, NARANJA, ROJO, GRIS = "#1b6ca8", "#c2571a", "#b00020", "#555555"
+COLORES = {"Entrada": AZUL, "Salida": NARANJA}
 
-# nivel, tipo, precio, multiplo implicito (P/E), pct historico, pct industria,
-# P(SVM) [IC] / base tasa por decil de σ (solo entradas), P(MC) con sector / sin sector, divergencia precio vs multiplo
+# nivel, tipo, precio, percentil en su historia, percentil en la industria,
+# lectura técnica (solo entradas), lectura probabilística (solo salidas)
 NIVELES = [
-    ("Deep value", "Entrada", 82.0, 11.0, 8, 15, "0.31 [0.24-0.38] · base σ 0.22", "con sector 0.28 · sin sector 0.11", False),
-    ("Value", "Entrada", 90.0, 12.1, 18, 28, "0.47 [0.40-0.54] · base σ 0.38", "con sector 0.44 · sin sector 0.19", True),
-    ("Valoración histórica", "Entrada", 97.0, 13.0, 45, 52, "0.62 [0.55-0.69] · base σ 0.55", "con sector 0.60 · sin sector 0.31", False),
-    ("Negativo (conservador)", "Salida", 108.0, 14.5, 62, 60, "n/a", "con sector 0.55 · sin sector 0.40", False),
-    ("Base", "Salida", 120.0, 16.1, 78, 71, "n/a", "con sector 0.36 · sin sector 0.21", False),
-    ("Positivo", "Salida", 140.0, 18.8, 92, 88, "n/a", "con sector 0.15 · sin sector 0.09", False),
+    ("Deep value", "Entrada", 56.0, 6, 35,
+     "P(tocar en 20 días) = 12 %\nlínea base por volatilidad: 9 %\nrango de incertidumbre: 8–16 %", "—"),
+    ("Value", "Entrada", 61.6, 22, 52,
+     "P(tocar en 20 días) = 35 %\nlínea base por volatilidad: 28 %\nrango de incertidumbre: 29–41 %", "—"),
+    ("Valoración histórica", "Entrada", 67.2, 48, 68,
+     "P(tocar en 20 días) = 63 %\nlínea base por volatilidad: 57 %\nrango de incertidumbre: 56–70 %", "—"),
+    ("Salida negativo", "Salida", 75.6, 71, 80, "—",
+     "P(alcanzar en 12 meses) = 58 %\nsimulación con retornos históricos\nrango de incertidumbre: 52–64 %"),
+    ("Salida base", "Salida", 81.2, 85, 88, "—",
+     "P(alcanzar en 12 meses) = 34 %\nsimulación con retornos históricos\nrango de incertidumbre: 28–40 %"),
+    ("Salida positivo", "Salida", 89.6, 96, 94, "—",
+     "P(alcanzar en 12 meses) = 13 %\nsimulación con retornos históricos\nrango de incertidumbre: 9–17 %"),
 ]
-COLORES = {"Entrada": "#1b6ca8", "Salida": "#c2571a"}
+
+RIESGO = [
+    ("Volatilidad del último año", "16 %", "cuánto se mueve el precio en un año típico"),
+    ("Peor semana típica (percentil 5)", "−3,4 %", "1 de cada 20 semanas cae al menos esto"),
+    ("Frecuencia de caídas fuertes", "2,1 vs 1,0", "caídas semanales grandes por año: real vs lo esperado"),
+    ("Caída máxima (desde un pico)", "−37 %", "2020; tardó 14 meses en recuperarse"),
+    ("Cuánto se mueve con el sector (XLP)", "R² 0,55", "el XLP explica 0,25 más que el SPY solo"),
+]
 
 
-def precio_ilustrativo(n=156, semilla=7):
+def precio_ejemplo(n=156, semilla=11):
+    """Serie semanal inventada que termina en el precio actual."""
     rng = np.random.default_rng(semilla)
-    r = rng.normal(0.0008, 0.03, n)
-    p = PRECIO * np.exp(np.cumsum(r) - r.sum())
-    return p
+    r = rng.normal(0.0012, 0.022, n)
+    return PRECIO * np.exp(np.cumsum(r) - r.sum())
 
 
-def main():
-    fig = plt.figure(figsize=(15, 11), facecolor="white")
-    gs = fig.add_gridspec(3, 2, height_ratios=[0.45, 2.6, 3.4], width_ratios=[1.45, 1],
-                          hspace=0.28, wspace=0.1, left=0.05, right=0.97, top=0.97, bottom=0.215)
+def encabezado(ax):
+    ax.axis("off")
+    ax.text(0.0, 0.80, f"{TICKER}  |  Precio: ${PRECIO:.2f}  |  P/E: {PRECIO / EPS:.1f}x  |  "
+            f"P/B: {PRECIO / VLA:.1f}x  |  Último reporte (10-K): {FILED}", fontsize=14.5, weight="bold", va="center")
+    ax.text(0.0, 0.38, "Herramienta de apoyo, no es asesoría de inversión. "
+            "Muestra probabilidades con su incertidumbre; nunca dice \"compra\" ni \"vende\".",
+            fontsize=10.5, color=ROJO, weight="bold", va="center")
+    ax.text(0.0, 0.02, "MOCKUP: todas las cifras son de EJEMPLO (inventadas para la validación del diseño).",
+            fontsize=9.5, color=GRIS, va="center", style="italic")
+    ax.text(1.0, 0.02, "Industria: consumo defensivo (piloto validado)", fontsize=10, ha="right", va="center",
+            color="white", weight="bold", bbox=dict(boxstyle="round,pad=0.4", fc="#2e7d32", ec="none"))
 
-    # Encabezado
-    ax = fig.add_subplot(gs[0, :]); ax.axis("off")
-    ax.text(0.0, 0.7, f"{TICKER}  |  Precio: ${PRECIO:.2f}  |  Último reporte (filed): {FILED}",
-            fontsize=15, weight="bold", va="center")
-    ax.text(0.0, 0.15, "MOCKUP - ILUSTRATIVO: TODOS LOS VALORES SON INVENTADOS, NO PROVIENEN DE DATOS REALES",
-            fontsize=10, color="#b00020", va="center")
-    ax.text(1.0, 0.7, "Niveles por múltiplo recalculados tras el reporte (precio = múltiplo x EPS)",
-            fontsize=9, ha="right", va="center", color="#444")
 
-    # Tabla de 6 niveles
-    ax = fig.add_subplot(gs[1, :]); ax.axis("off")
-    cols = ["Nivel", "Tipo", "Precio", "Múltiplo\nimplícito (P/E)", "Percentil\nhistórico", "Percentil\nindustria",
-            "P(SVM) [intervalo] · base decil σ\n(solo entradas)", "P(Monte Carlo)\ncon vs sin componente sector"]
+def tabla_niveles(ax):
+    ax.axis("off")
+    cols = ["Nivel del usuario\n(editable)", "Precio", "Múltiplo\nP/E · P/B",
+            "Fundamental: percentil del P/E\nen su historia · en la industria\n(p6 = más barato que el 94 %)",
+            "Técnica (SVM, solo entradas)\n¿compro ya o espero?",
+            "Probabilística (solo salidas)\n¿qué tan probable es llegar?"]
     filas = []
-    for n, t, p_, m, h, i_, svm, mc, div in NIVELES:
-        filas.append([n + ("  ▲ diverge" if div else ""), t, f"${p_:.0f}", f"{m:.1f}x", f"p{h}", f"p{i_}", svm, mc])
+    for n, t, p, h, i, tec, prob in NIVELES:
+        filas.append([f"{n}\n({t.lower()})", f"${p:.2f}", f"{p / EPS:.1f}x · {p / VLA:.1f}x",
+                      f"p{h} · p{i}", tec, prob])
     tab = ax.table(cellText=filas, colLabels=cols, loc="center", cellLoc="center",
-                   colWidths=[0.165, 0.06, 0.06, 0.10, 0.075, 0.075, 0.24, 0.225])
-    tab.auto_set_font_size(False); tab.set_fontsize(9); tab.scale(1, 2.0)
+                   colWidths=[0.15, 0.07, 0.11, 0.16, 0.27, 0.24])
+    tab.auto_set_font_size(False)
+    tab.set_fontsize(9)
     for (r, c), cell in tab.get_celld().items():
-        cell.set_edgecolor("#999")
+        cell.set_edgecolor("#9e9e9e")
+        cell.set_height(0.19 if r == 0 else 0.135)
         if r == 0:
-            cell.set_facecolor("#eceff1"); cell.set_text_props(weight="bold")
+            cell.set_facecolor("#eceff1")
+            cell.set_text_props(weight="bold")
         else:
             cell.set_facecolor("#e8f1f8" if NIVELES[r - 1][1] == "Entrada" else "#fbeee4")
-            if c == 0 and NIVELES[r - 1][8]:
-                cell.set_text_props(color="#b00020", weight="bold")
-    ax.set_title("Seis niveles x tres lecturas (fundamental comparativa, técnica SVM, probabilística) - "
-                 "▲ diverge: el nivel en precio y el nivel en múltiplo no coinciden (el usuario decide cuál conservar)",
-                 fontsize=9.5, loc="left", pad=2)
+            if c == 0:
+                cell.set_text_props(weight="bold", color=COLORES[NIVELES[r - 1][1]])
+    ax.set_title("Seis niveles del usuario (3 de entrada, 3 de salida) en precio y en múltiplo, con tres lecturas "
+                 "por nivel. Los niveles por múltiplo se recalculan solos con cada reporte (precio = múltiplo × EPS).",
+                 fontsize=10, loc="left", pad=4)
 
-    # Grafico de precio
-    ax = fig.add_subplot(gs[2, 0])
-    p = precio_ilustrativo(); x = np.arange(len(p))
+
+def grafico_precio(ax):
+    p = precio_ejemplo()
+    x = np.arange(len(p))
     ax.plot(x, p, color="#222", lw=1.3)
     for n, t, pr, *_ in NIVELES:
         ax.axhline(pr, color=COLORES[t], ls="--", lw=1)
         ax.text(len(p) + 1, pr, f"{n} ${pr:.0f}", fontsize=8, va="center", color=COLORES[t],
                 bbox=dict(facecolor="white", edgecolor="none", pad=1))
-    ax.set_xlim(0, len(p) + 38); ax.set_xlabel("Semanas (ilustrativo)"); ax.set_ylabel("Precio ($)")
+    ax.set_xlim(0, len(p) + 40)
+    ax.set_xlabel("Semanas (últimos 3 años, ejemplo)")
+    ax.set_ylabel("Precio ($)")
     ax.set_title("Precio semanal y los 6 niveles (azul: entrada, naranja: salida)", fontsize=10, loc="left")
     ax.spines[["top", "right"]].set_visible(False)
 
-    # Columna derecha: desempeno historico + panel de riesgo
-    sub = gs[2, 1].subgridspec(2, 1, height_ratios=[1.0, 1.9], hspace=0.2)
 
-    ax = fig.add_subplot(sub[0]); ax.axis("off")
-    ax.add_patch(plt.Rectangle((0, 0), 1, 1, transform=ax.transAxes, fill=False, ec="#1b6ca8", lw=1.2))
-    ax.text(0.02, 0.88, "Desempeño histórico (ilustrativo)", fontsize=10, weight="bold", va="center")
-    hist = [("AUC walk-forward: SVM / base decil σ", "0.61 / 0.54"),
-            ("Brier: SVM / base decil σ", "0.21 / 0.24"),
-            ("% de errores (falsas entradas, umbral 0.5)", "37%")]
-    for k, (a, b) in enumerate(hist):
-        y = 0.62 - k * 0.22
-        ax.text(0.02, y, a, fontsize=8.5, va="center"); ax.text(0.98, y, b, fontsize=8.5, va="center", ha="right", weight="bold")
+def panel_riesgo(ax):
+    ax.axis("off")
+    ax.set_title("Panel de riesgo (descriptivo, datos pasados; ejemplo)", fontsize=10, loc="left", pad=6)
+    for k, (nombre, valor, ayuda) in enumerate(RIESGO):
+        y = 0.92 - k * 0.19
+        ax.text(0.0, y, nombre, fontsize=9.5, va="center", weight="bold")
+        ax.text(1.0, y, valor, fontsize=10, va="center", ha="right", weight="bold", color=AZUL)
+        ax.text(0.0, y - 0.075, ayuda, fontsize=8.5, va="center", color=GRIS)
+        ax.plot([0, 1], [y - 0.13, y - 0.13], color="#ddd", lw=0.6, transform=ax.transAxes)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
 
-    ax = fig.add_subplot(sub[1]); ax.axis("off")
-    ax.set_title("Panel de riesgo (ilustrativo)", fontsize=10, loc="left", pad=10)
-    riesgo = [("Volatilidad anualizada (hist / EWMA / GARCH)", "28% / 31% / 30%"),
-              ("VaR 95% / 99% semanal (hist)", "-6.1% / -9.4%"),
-              ("VaR paramétrico 95% / 99% semanal", "-5.8% / -8.3%"),
-              ("Expected Shortfall 95%", "-8.0%"),
-              ("Beta / alfa vs SPY (anual)", "1.12 / +1.8%"),
-              ("Beta vs ETF sectorial · R2 (parte sistemática)", "0.95 · 0.58"),
-              ("Sharpe (anualizado)", "0.42"),
-              ("Max drawdown (ventana)", "-34%"),
-              ("Merton d2 (orden relativo de apalancamiento)", "11.3")]
-    for k, (a, b) in enumerate(riesgo):
-        y = 0.94 - k * 0.108
-        ax.text(0.0, y, a, fontsize=8.5, va="center"); ax.text(1.0, y, b, fontsize=8.5, va="center", ha="right", weight="bold")
-        ax.plot([0, 1], [y - 0.05, y - 0.05], color="#ddd", lw=0.6)
 
-    # Franja inferior: indicadores, botones, disclaimer
-    fig.text(0.05, 0.14, "Rasgos que más pesaron en P(SVM) del nivel Deep value (ilustrativo): "
-             "σ condicional alta (-), drawdown del SPY (+), RSI(14) alto (+).\n"
-             "Un score es una probabilidad con su intervalo, su línea base y sus errores históricos; no es una señal.",
-             fontsize=9, color="#222", va="center")
-    for k, txt in enumerate(["Editar nivel", "Registrar decisión"]):
-        fig.text(0.05 + k * 0.13, 0.085, txt, fontsize=10, ha="left", va="center",
-                 bbox=dict(boxstyle="round,pad=0.5", fc="#eceff1", ec="#607d8b"))
-    fig.text(0.31, 0.085, "(botones ilustrativos: no hacen nada en el wireframe)", fontsize=8.5, color="#666", va="center")
-    fig.text(0.05, 0.033, "No es asesoría de inversión. El contenido no constituye una recomendación profesional "
-             "en los términos del art. 2.40.1.1.2 del Decreto 2555 de 2010.\n"
-             "Las probabilidades son estimaciones con incertidumbre, no señales de compra/venta. TODO ILUSTRATIVO.",
-             fontsize=9.5, color="#b00020", weight="bold", va="center")
+def registro_decision(ax):
+    ax.axis("off")
+    ax.add_patch(plt.Rectangle((0, 0), 1, 1, transform=ax.transAxes, fill=False, ec=GRIS, lw=1))
+    ax.text(0.015, 0.86, "Registro de decisión (lo escribe el usuario)", fontsize=10, weight="bold", va="center")
+    campos = [("Fecha", "2026-10-16"), ("Nivel", "Value ($61.60 · 22.0x P/E)"),
+              ("Lectura que más pesó", "Fundamental: p22 en su historia"),
+              ("Decisión", "Esperar; orden límite en $61.60"),
+              ("Nota", "\"El P/E está por debajo de su historia, pero quiero ver el próximo 10-Q.\"")]
+    for k, (a, b) in enumerate(campos):
+        y = 0.68 - k * 0.15
+        ax.text(0.015, y, a + ":", fontsize=9, va="center", color=GRIS)
+        ax.text(0.20, y, b, fontsize=9, va="center")
+    for k, txt in enumerate(["Editar niveles", "Guardar decisión"]):
+        ax.text(0.70 + k * 0.155, 0.86, txt, fontsize=9, va="center", transform=ax.transAxes,
+                bbox=dict(boxstyle="round,pad=0.4", fc="#eceff1", ec="#607d8b"))
+
+
+def main():
+    fig = plt.figure(figsize=(16, 13.5), facecolor="white")
+    gs = fig.add_gridspec(4, 2, height_ratios=[0.55, 3.0, 2.6, 1.25], width_ratios=[1.35, 1],
+                          hspace=0.32, wspace=0.12, left=0.05, right=0.97, top=0.97, bottom=0.07)
+    encabezado(fig.add_subplot(gs[0, :]))
+    tabla_niveles(fig.add_subplot(gs[1, :]))
+    grafico_precio(fig.add_subplot(gs[2, 0]))
+    panel_riesgo(fig.add_subplot(gs[2, 1]))
+    registro_decision(fig.add_subplot(gs[3, :]))
+    fig.text(0.05, 0.035, "Validado en consumo defensivo (21 empresas, benchmarks SPY y XLP). "
+             "En otras industrias el modelo no está validado y la pantalla lo avisa.",
+             fontsize=10, color="#2e7d32", weight="bold", va="center")
+    fig.text(0.05, 0.012, "Línea base por volatilidad: frecuencia histórica con la que el precio tocó niveles a la misma "
+             "distancia en semanas de volatilidad parecida. Si el modelo no la supera, no aporta.",
+             fontsize=8.5, color=GRIS, va="center")
     SALIDA.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(SALIDA, dpi=130)
+    fig.savefig(SALIDA, dpi=120)
     print(f"Guardado: {SALIDA}")
 
 

@@ -1,48 +1,73 @@
 # Guion de validación del mockup con el stakeholder
 
-**Duración:** 15–20 minutos. **Formato:** el entrevistador comparte el mockup (`entregables/entrega_1/assets/mockup.png`) y anota las respuestas en `validacion_stakeholder.md`. **Quién lo realiza:** el autor del proyecto con su inversor (stakeholder del punto 1). Los valores del mockup son ilustrativos y así se le dice al participante antes de empezar.
+**Fecha prevista:** 16 de octubre de 2026. **Duración:** 15–20 minutos. **Participante:** inversor value, inversor del autor (stakeholder del punto 1); no se registra su nombre. **Material:** el mockup `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, industria piloto consumo defensivo). **Registro:** el autor anota las respuestas en `validacion_stakeholder.md` el mismo día.
 
-**Introducción (1 minuto).** Se explica que el objetivo es evaluar el diseño y no al participante, que no hay respuestas correctas y que los datos del mockup son inventados. Se pide autorización para registrar sus respuestas de forma anonimizada, con la finalidad académica del curso y el derecho a retirarlas (Ley 1581 de 2012, arts. 4 y 12; ver `03_etica_legal.md`).
+## Objetivo de la sesión
 
-## Parte 1. Tareas sobre el mockup (7–8 minutos)
+1. Comprobar si el participante entiende, sin ayuda, los seis niveles (en precio y en múltiplo), las tres lecturas por nivel y el panel de riesgo.
+2. Medir su confianza en las probabilidades cuando se muestran con su rango de incertidumbre y su línea base, y no como "compra" o "vende".
+3. Recoger la línea base de los KPI 1 a 5 (`01_negocio.md`, sección 1.6) con preguntas sobre cómo analiza hoy.
+4. Anotar qué cambiaría del diseño, para decidir qué se acepta, qué se aplaza y qué se rechaza.
 
-Cada tarea se plantea en voz alta mientras el participante mira el mockup. El entrevistador anota qué elemento mira, qué dice y dónde duda; no explica nada hasta que el participante termine.
+## Antes de empezar (1–2 minutos): consentimiento y uso de datos
 
-1. "Tienes esta pantalla delante hoy. ¿Qué nivel de entrada mirarías primero y por qué?"
-2. "¿Qué te dice la columna de probabilidad del SVM? ¿Qué harías con ese número?"
-3. "¿Qué entiendes por la columna de percentil histórico y la de percentil en la industria? ¿Un percentil bajo te dice que la acción está barata?"
-4. "Sale un reporte trimestral y los niveles por múltiplo se recalculan solos. ¿Qué esperarías ver en la pantalla para enterarte de que cambiaron?"
-5. "¿Te sirve ver cómo cambia la probabilidad de alcanzar el nivel si el sector se mueve o si se queda quieto?"
-6. "Mira el panel de riesgo. ¿Qué número usarías en 5 segundos y cuál no entiendes o no usarías?"
-7. "¿Encuentras todo lo que necesitas para decidir en esta sola pantalla? ¿Qué haces hoy que aquí no puedes hacer?"
+Leer en voz alta:
 
-## Parte 2. Claridad, confianza y explicabilidad (5–6 minutos)
+> "Gracias por ayudarme. Esta sesión es para evaluar el diseño de una herramienta de un proyecto del curso, no para evaluarte a ti; no hay respuestas correctas. Todas las cifras de la pantalla son de ejemplo, inventadas, y no son una recomendación sobre KO. Voy a tomar notas de lo que digas, sin tu nombre ni datos de contacto y sin preguntarte cuánto dinero inviertes. Las notas solo se usan para el informe del curso. Puedes no responder cualquier pregunta, parar cuando quieras y pedirme después que borre tus respuestas. ¿Estás de acuerdo?"
 
-Escala de 1 a 5 (1 = nada de acuerdo, 5 = totalmente de acuerdo). Se pide una frase de justificación por cada puntuación.
+Esto aplica la Ley 1581 de 2012 de protección de datos personales (Habeas Data): autorización previa e informada (arts. 9 y 12), finalidad limitada (art. 4) y derecho a conocer, corregir y suprimir los datos (art. 8). Detalle en `03_etica_legal.md`. Si la respuesta es no, la sesión no se hace. No se graba audio ni video.
+
+## Parte 1. Tareas sobre el mockup (6–7 minutos)
+
+Se lee cada tarea y se deja que el participante explore. El autor no explica nada hasta que el participante termine o se rinda; anota dónde mira, qué dice, dónde duda y si completó la tarea (sí, con ayuda, no).
+
+1. **Valoración frente a la historia.** "Encuentra si KO está cara o barata frente a su propia historia. ¿Dónde lo viste?"
+2. **Lectura técnica de una entrada.** "¿Qué te dice la lectura técnica del nivel value? ¿Qué significa la línea base por volatilidad y el rango de incertidumbre?"
+3. **Decidir con una probabilidad.** "Si la probabilidad de tocar el nivel value en 20 días fuera 35 %, ¿qué harías? ¿Cambia algo saber que la línea base es 28 %?"
+4. **Salidas.** "¿Qué tan probable es que KO llegue a tu salida base en 12 meses? ¿Te sirve ese número para fijar la salida o la moverías?"
+5. **Riesgo.** "Mira el panel de riesgo. ¿Qué número usarías en 5 segundos? ¿Hay alguno que no entiendas?"
+6. **Ajustar y registrar.** "Supón que quieres bajar tu nivel deep value a 19 veces utilidades y anotar por qué esperas. ¿Dónde lo harías?"
+
+Después de las seis tareas: "¿Viste el aviso de que la herramienta solo está validada en consumo defensivo? ¿Qué esperarías si buscas una acción de otra industria?"
+
+## Parte 2. Claridad, confianza y explicabilidad (4–5 minutos)
+
+Escala de 1 a 5 (1 = nada de acuerdo, 5 = totalmente de acuerdo). Se pide una frase que explique cada puntaje. La numeración se mantiene porque el KPI 5 de `01_negocio.md` la usa: cuentan 2.1 a 2.6 y 2.9; el 2.7 mide preferencia por el control y el 2.8 está formulado al revés.
 
 | # | Afirmación | Dimensión |
 |---|---|---|
-| 2.1 | Entiendo qué significa cada uno de los seis niveles. | Claridad |
+| 2.1 | Entiendo qué significa cada uno de los seis niveles, en precio y en múltiplo. | Claridad |
 | 2.2 | Entiendo la diferencia entre la lectura fundamental, la técnica y la probabilística. | Claridad |
 | 2.3 | La pantalla me deja ver rápido qué nivel merece atención. | Claridad |
-| 2.4 | Confiaría en la probabilidad del SVM para decidir el momento de una compra. | Confianza |
-| 2.5 | Confiaría más en la probabilidad si veo la línea base (probabilidad GBM con deriva pasada y tasa histórica por nivel de volatilidad) y los errores históricos del modelo. | Confianza (Dietvorst et al., 2015; Parasuraman & Manzey, 2010) |
-| 2.6 | Si el modelo me muestra qué indicadores pesaron en su estimación, me siento en condiciones de contradecirlo. | Explicabilidad |
-| 2.7 | Prefiero ajustar yo mismo los niveles y los umbrales a recibir niveles calculados por el modelo. | Control (Dietvorst et al., 2018) |
-| 2.8 | Una etiqueta de "compra" o "venta" me daría más confianza que una probabilidad con su incertidumbre. | Presentación del score |
-| 2.9 | El aviso de que no es asesoría de inversión me resulta claro y visible. | Transparencia |
+| 2.4 | Confiaría en la probabilidad de la lectura técnica para decidir el momento de una compra. | Confianza |
+| 2.5 | Confío más en la probabilidad porque veo su rango de incertidumbre y su línea base. | Confianza (Dietvorst et al., 2015; Parasuraman & Manzey, 2010) |
+| 2.6 | Con lo que muestra la pantalla me siento en condiciones de contradecir al modelo. | Explicabilidad |
+| 2.7 | Prefiero ajustar yo mismo los niveles a recibir niveles calculados por la herramienta. | Control (Dietvorst et al., 2018) |
+| 2.8 | Una etiqueta de "compra" o "venta" me daría más confianza que una probabilidad con su rango. | Presentación (ítem inverso) |
+| 2.9 | El aviso de que no es asesoría de inversión es claro y visible. | Transparencia |
 
-Preguntas abiertas de cierre de la parte: "¿Qué te haría dejar de confiar en esta herramienta?" y "¿Qué evidencia de desempeño necesitarías ver antes de usarla con dinero real?".
+Preguntas abiertas: "¿Qué te haría dejar de confiar en esta herramienta?" y "¿Qué evidencia necesitarías ver antes de usarla con tu dinero?".
 
-## Parte 3. Cambios que pediría (3–4 minutos)
+## Parte 3. Cambios e intención de uso (2–3 minutos)
 
 1. "Si pudieras cambiar tres cosas de esta pantalla, ¿cuáles serían?"
-2. "¿Hay algo en la pantalla que quitarías porque estorba?"
-3. "¿Qué falta? (por ejemplo ratios que usas hoy y no aparecen)"
-4. "¿Para qué usarías esta herramienta: antes de comprar, tras un reporte, o ambos?"
-5. Pregunta de sí/no (KPI 5): "¿Usarías esta herramienta en tu proceso actual? Sí / No, y por qué."
-6. Cierre: "Si esta pantalla existiera, ¿en qué momento de tu semana la abrirías?"
+2. "¿Qué quitarías porque estorba?"
+3. "¿Qué falta? Por ejemplo, un ratio que usas hoy y no aparece."
+4. "¿Cuándo la usarías: antes de comprar, después de un reporte trimestral o en ambos casos?"
+5. **Intención de uso (KPI 5).** "¿La usarías en tu proceso actual? Sí o no, y por qué." Luego: "De 1 a 5, ¿qué tan probable es que la uses cada vez que analizas una acción?"
 
-## Qué se hace después de la sesión
+## Parte 4. Cómo analizas hoy: línea base de los KPI (2–3 minutos)
 
-El autor completa `validacion_stakeholder.md` el mismo día, con la fecha de la sesión y el participante anonimizado. Cada cambio que el participante pida se clasifica como aceptado, aplazado o rechazado con su razón, y los aceptados se reflejan en el mockup, en `scripts/mockup.py` y en la sección "Validación con el stakeholder" de `02_ideacion.md`. Los comentarios que no cambian el diseño también se registran, porque la rúbrica pide que el feedback documentado tenga una consecuencia visible.
+Preguntas sobre su proceso real, no sobre el mockup. Se anota el número que diga y, si da un rango, el rango.
+
+| # | Pregunta | KPI |
+|---|---|---|
+| 4.1 | "Hoy, desde que eliges una acción hasta que tienes claros tus precios de compra y de venta, ¿cuánto tiempo te toma? ¿Eso es para una acción o para varias?" | 1. Tiempo por activo |
+| 4.2 | "¿Cuántas páginas, aplicaciones o ventanas abres para analizar una sola acción? ¿Cuáles?" | 2. Cambios de pantalla |
+| 4.3 | "Cuando una empresa publica su reporte trimestral, ¿cuántos días pasan hasta que actualizas tus niveles? ¿Alguna vez no los actualizas?" | 3. Latencia |
+| 4.4 | "¿Anotas en algún lugar por qué compraste o vendiste? ¿Dónde y qué anotas? De 10 decisiones, ¿cuántas quedan anotadas?" | 4. Decisiones registradas |
+| 4.5 | "¿Cómo mides hoy el riesgo de una acción antes de comprarla?" | Dolor de riesgo no cuantificado |
+
+## Después de la sesión
+
+El autor completa `validacion_stakeholder.md` el mismo día. Cada cambio pedido se clasifica como aceptado, aplazado o rechazado, con su razón; los aceptados se reflejan en `scripts/mockup.py` (y se regenera el mockup) y en la sección "Validación con el stakeholder" de `02_ideacion.md`. Si las respuestas de la parte 4 contradicen la línea base de `01_negocio.md` (por ejemplo, si el tiempo declarado cubre varias acciones), se corrige allí la línea base y se deja constancia. Una sola sesión es una observación cualitativa, no una estimación poblacional.
