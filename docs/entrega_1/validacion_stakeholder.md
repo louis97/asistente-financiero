@@ -22,10 +22,11 @@ Resultado: sí (sin ayuda), con ayuda o no. En observaciones, dónde miró, dón
 |---|---|---|---|
 | 1 | Encontrar si KO está cara o barata frente a su historia | (completar tras la sesión) | (completar tras la sesión) |
 | 2 | Interpretar la lectura técnica del nivel value (línea base y rango) | (completar tras la sesión) | (completar tras la sesión) |
-| 3 | Qué haría con 35 % de probabilidad frente a una línea base de 28 % | (completar tras la sesión) | (completar tras la sesión) |
-| 4 | Leer la probabilidad de la salida base en 12 meses | (completar tras la sesión) | (completar tras la sesión) |
+| 3 | Qué haría con 42 % de probabilidad (40 días hábiles) frente a una línea base de 35 % | (completar tras la sesión) | (completar tras la sesión) |
+| 4 | Leer la probabilidad de la salida base en el horizonte (3 años, editable) | (completar tras la sesión) | (completar tras la sesión) |
 | 5 | Panel de riesgo: qué usaría y qué no entiende | (completar tras la sesión) | (completar tras la sesión) |
 | 6 | Ajustar el nivel deep value y registrar la decisión | (completar tras la sesión) | (completar tras la sesión) |
+| 7 | P2: si le sirve saber si el "barata" suele ser temporal y si el rebote vino del precio o de las utilidades (oportunidad frente a trampa de valor), y cómo lo usaría | (completar tras la sesión) | (completar tras la sesión) |
 | — | Vio el aviso "validado en consumo defensivo" y qué esperaría en otra industria | (completar tras la sesión) | (completar tras la sesión) |
 
 ## 3. Escalas 1–5 (parte 2 del guion)
@@ -58,6 +59,7 @@ Resultado: sí (sin ayuda), con ayuda o no. En observaciones, dónde miró, dón
 | 3.4 | Cuándo la usaría (antes de comprar, tras un reporte, ambos) | (completar tras la sesión) |
 | 3.5 | ¿La usaría? Sí/no y por qué (KPI 5) | (completar tras la sesión) |
 | 3.5 | Intención de uso, 1–5 | (completar tras la sesión) |
+| 3.6 | Horizonte de las salidas: ¿3 años coincide con su tenencia típica? ¿Qué horizonte pondría y si lo cambiaría por empresa? | (completar tras la sesión) |
 
 ## 5. Línea base de los KPI (parte 4 del guion)
 
@@ -70,6 +72,7 @@ Se compara con la línea base de `01_negocio.md`, sección 1.6. Si la respuesta 
 | 4.3 | 3. Días entre un reporte trimestral y la actualización de sus niveles | Días | (completar tras la sesión) | (completar tras la sesión) |
 | 4.4 | 4. Decisiones que deja registradas (de cada 10) | 0 % | (completar tras la sesión) | (completar tras la sesión) |
 | 4.5 | Cómo mide hoy el riesgo | "A ojo" | (completar tras la sesión) | (completar tras la sesión) |
+| 4.6 | Qué P/E usa: últimos 12 meses (TTM) o último año fiscal, y dónde lo consulta | P/E sobre EPS TTM (spec §4.3b) | (completar tras la sesión) | (completar tras la sesión) |
 | — | 5. Confianza y adopción | Sin línea base | Ver secciones 3 y 4 | — |
 
 ## 6. Cambios que generó en el diseño

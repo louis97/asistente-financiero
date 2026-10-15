@@ -17,18 +17,19 @@ Leer en voz alta:
 
 Esto aplica la Ley 1581 de 2012 de protección de datos personales (Habeas Data): autorización previa e informada (arts. 9 y 12), finalidad limitada (art. 4) y derecho a conocer, corregir y suprimir los datos (art. 8). Detalle en `03_etica_legal.md`. Si la respuesta es no, la sesión no se hace. No se graba audio ni video.
 
-## Parte 1. Tareas sobre el mockup (6–7 minutos)
+## Parte 1. Tareas sobre el mockup (7–8 minutos)
 
 Se lee cada tarea y se deja que el participante explore. El autor no explica nada hasta que el participante termine o se rinda; anota dónde mira, qué dice, dónde duda y si completó la tarea (sí, con ayuda, no).
 
 1. **Valoración frente a la historia.** "Encuentra si KO está cara o barata frente a su propia historia. ¿Dónde lo viste?"
 2. **Lectura técnica de una entrada.** "¿Qué te dice la lectura técnica del nivel value? ¿Qué significa la línea base por volatilidad y el rango de incertidumbre?"
-3. **Decidir con una probabilidad.** "Si la probabilidad de tocar el nivel value en 20 días fuera 35 %, ¿qué harías? ¿Cambia algo saber que la línea base es 28 %?"
-4. **Salidas.** "¿Qué tan probable es que KO llegue a tu salida base en 12 meses? ¿Te sirve ese número para fijar la salida o la moverías?"
+3. **Decidir con una probabilidad.** "Si la probabilidad de tocar el nivel value en 40 días hábiles fuera 42 %, ¿qué harías? ¿Cambia algo saber que la línea base por volatilidad diaria es 35 %?"
+4. **Salidas.** "¿Qué tan probable es que KO llegue a tu salida base en el horizonte que muestra la pantalla? ¿Te sirve ese número para fijar la salida o la moverías?"
 5. **Riesgo.** "Mira el panel de riesgo. ¿Qué número usarías en 5 segundos? ¿Hay alguno que no entiendas?"
 6. **Ajustar y registrar.** "Supón que quieres bajar tu nivel deep value a 19 veces utilidades y anotar por qué esperas. ¿Dónde lo harías?"
+7. **¿El "barata" es temporal? (P2).** "Si KO está barata frente a su historia, ¿te ayuda saber si ese 'barata' suele ser temporal y si el rebote vino del precio o de las utilidades? Compara el nivel deep value con el nivel value. ¿Cómo lo usarías?" Se anota si distingue sin ayuda "por precio (posible oportunidad)" de "por caída de utilidades (posible trampa de valor)".
 
-Después de las seis tareas: "¿Viste el aviso de que la herramienta solo está validada en consumo defensivo? ¿Qué esperarías si buscas una acción de otra industria?"
+Después de las siete tareas: "¿Viste el aviso de que la herramienta solo está validada en consumo defensivo? ¿Qué esperarías si buscas una acción de otra industria?"
 
 ## Parte 2. Claridad, confianza y explicabilidad (4–5 minutos)
 
@@ -55,6 +56,7 @@ Preguntas abiertas: "¿Qué te haría dejar de confiar en esta herramienta?" y "
 3. "¿Qué falta? Por ejemplo, un ratio que usas hoy y no aparece."
 4. "¿Cuándo la usarías: antes de comprar, después de un reporte trimestral o en ambos casos?"
 5. **Intención de uso (KPI 5).** "¿La usarías en tu proceso actual? Sí o no, y por qué." Luego: "De 1 a 5, ¿qué tan probable es que la uses cada vez que analizas una acción?"
+6. **Horizonte de las salidas.** "La probabilidad de las salidas usa un horizonte de 3 años que puedes editar. ¿Ese horizonte coincide con cuánto tiempo sueles mantener una acción value? ¿Qué horizonte pondrías y lo cambiarías según la empresa?"
 
 ## Parte 4. Cómo analizas hoy: línea base de los KPI (2–3 minutos)
 
@@ -67,6 +69,7 @@ Preguntas sobre su proceso real, no sobre el mockup. Se anota el número que dig
 | 4.3 | "Cuando una empresa publica su reporte trimestral, ¿cuántos días pasan hasta que actualizas tus niveles? ¿Alguna vez no los actualizas?" | 3. Latencia |
 | 4.4 | "¿Anotas en algún lugar por qué compraste o vendiste? ¿Dónde y qué anotas? De 10 decisiones, ¿cuántas quedan anotadas?" | 4. Decisiones registradas |
 | 4.5 | "¿Cómo mides hoy el riesgo de una acción antes de comprarla?" | Dolor de riesgo no cuantificado |
+| 4.6 | "¿Usas el P/E de los últimos 12 meses (TTM, que cambia con cada reporte trimestral) o el del último año fiscal? ¿Dónde lo consultas?" | Definición del P/E (EPS TTM, spec §4.3b) |
 
 ## Después de la sesión
 
