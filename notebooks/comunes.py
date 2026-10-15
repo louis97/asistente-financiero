@@ -18,7 +18,7 @@ ETF_SECTOR = {"consumo_defensivo": "XLP"}  # benchmark del sector
 BENCHMARK = "SPY"          # mercado
 INICIO = "2009-01-01"      # inicio de la historia descargada
 
-# Conceptos de EDGAR (10-K): nombre → (nombres XBRL alternativos en orden de preferencia, unidad).
+# Conceptos de EDGAR (10-K y 10-Q): nombre → (nombres XBRL alternativos en orden de preferencia, unidad).
 # Una empresa puede reportar el mismo concepto con otro nombre; un concepto ausente es NaN, nunca 0 (T2).
 # Los usan nb01 (tabla anual) y nb02 (completitud concepto × ticker y A1).
 CONCEPTOS = {
@@ -30,6 +30,8 @@ CONCEPTOS = {
     "deuda_lp": (["LongTermDebt", "LongTermDebtNoncurrent"], "USD"),
     "acciones": (["WeightedAverageNumberOfDilutedSharesOutstanding",
                   "WeightedAverageNumberOfSharesOutstandingBasic"], "shares"),
+    # D1: EPS reportado, solo para las acciones implícitas (utilidad neta ÷ EPS) cuando faltan las acciones (STZ, HSY)
+    "eps_reportado": (["EarningsPerShareDiluted", "EarningsPerShareBasic"], "USD/shares"),
 }
 
 # Los 5 ratios: nombre → (numerador, denominador). A1: cada ratio se fecha con la publicación
