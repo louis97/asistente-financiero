@@ -4,7 +4,7 @@ Cubre precios, indicadores técnicos, conceptos de EDGAR, ratios, etiquetas y m�
 
 **Cómo leer la columna "Significado del 0 o del vacío" (lección T2).** Un cero y un vacío (`NaN`) casi nunca significan lo mismo. En este proyecto el vacío quiere decir "no hay dato, no se pudo calcular o aún no se conoce" y nunca se rellena con 0. Un cero solo se interpreta como cantidad cuando la fila lo dice.
 
-Unidades: USD son dólares corrientes; "adimensional" es una razón sin unidad; "fracción" es 0.05 = 5 %. Hipótesis: IDs de `docs/hipotesis.md`.
+Unidades: USD son dólares corrientes; "adimensional" es una razón sin unidad; "fracción" es 0.05 = 5 %. Hipótesis: IDs de `docs/entrega_1/04_enfoque_analitico.md`.
 
 ## 1. Precios (yfinance), instantáneas `precios_semanales` y `precios_mensuales`
 

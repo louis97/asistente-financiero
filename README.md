@@ -51,9 +51,8 @@ proyecto_final/
 ├── notebooks/         01_recoleccion -> 02_calidad -> 03_eda_series -> 04_eda_relaciones (orden de ejecución)
 ├── data/snapshots/    instantáneas parquet con fecha y metadatos (.meta.json)
 ├── docs/
-│   ├── entrega_1/     01_negocio ... 07_conclusiones, guion_validacion, validacion_stakeholder
-│   ├── guia_entrega_1.md, hipotesis.md, bitacora_ideas.md
-│   ├── research/, plans/, superpowers/   (literatura, planes y especificación)
+│   └── entrega_1/     01_negocio ... 07_conclusiones, glosario, evidencia_diagnostico, validacion_stakeholder
+├── .docs/             documentación de proceso (bitácora, spec, planes, revisiones, investigación, enunciado)
 ├── scripts/           mockup.py (genera el mockup)
 └── entregables/entrega_1/   [reporte.pdf](entregables/entrega_1/reporte.pdf), presentacion.pptx, assets/ (mockup y figuras de los notebooks)
 ```
@@ -90,9 +89,9 @@ Para generar el reporte en PDF (opcional): `pandoc` y `tectonic` (`brew install 
 | Punto del enunciado | Implementación | Interpretación |
 |---|---|---|
 | 1. Problema y entendimiento del negocio | n/a | [`docs/entrega_1/01_negocio.md`](docs/entrega_1/01_negocio.md) |
-| 2. Ideación del producto de datos | [`mockup.png`](entregables/entrega_1/assets/mockup.png), [`scripts/mockup.py`](scripts/mockup.py) | [`docs/entrega_1/02_ideacion.md`](docs/entrega_1/02_ideacion.md); validación: [`guion_validacion.md`](docs/entrega_1/guion_validacion.md), [`validacion_stakeholder.md`](docs/entrega_1/validacion_stakeholder.md) |
+| 2. Ideación del producto de datos | [`mockup.png`](entregables/entrega_1/assets/mockup.png), [`scripts/mockup.py`](scripts/mockup.py) | [`docs/entrega_1/02_ideacion.md`](docs/entrega_1/02_ideacion.md); validación: [`guion_validacion.md`](.docs/guion_validacion.md), [`validacion_stakeholder.md`](docs/entrega_1/validacion_stakeholder.md) |
 | 3. Aspectos éticos y legales | n/a | [`docs/entrega_1/03_etica_legal.md`](docs/entrega_1/03_etica_legal.md) |
-| 4. Enfoque analítico | n/a | [`docs/entrega_1/04_enfoque_analitico.md`](docs/entrega_1/04_enfoque_analitico.md), a partir de [`docs/hipotesis.md`](docs/hipotesis.md) |
+| 4. Enfoque analítico | n/a | [`docs/entrega_1/04_enfoque_analitico.md`](docs/entrega_1/04_enfoque_analitico.md), con las hipótesis y sus umbrales |
 | 5. Recolección de datos | [`notebooks/01_recoleccion.ipynb`](notebooks/01_recoleccion.ipynb), [`src/asistente/`](src/asistente/), [`data/snapshots/`](data/snapshots/) | En el notebook 01 y [`docs/entrega_1/05_diccionario_datos.md`](docs/entrega_1/05_diccionario_datos.md) |
 | 6. Entendimiento de los datos: calidad | [`notebooks/02_calidad.ipynb`](notebooks/02_calidad.ipynb) | Lecturas y síntesis dentro del notebook (matriz de decisiones, sección 7) |
 | 6. EDA nivel 1 (series de tiempo) | [`notebooks/03_eda_series.ipynb`](notebooks/03_eda_series.ipynb) | Lecturas y síntesis dentro del notebook (síntesis general, sección 10) |
@@ -100,7 +99,7 @@ Para generar el reporte en PDF (opcional): `pandoc` y `tectonic` (`brew install 
 | 7. Conclusiones | n/a (cifras tomadas de los notebooks 02 a 04) | [`docs/entrega_1/07_conclusiones.md`](docs/entrega_1/07_conclusiones.md) |
 | Pruebas del código | [`tests/`](tests/) | `uv run pytest -q` |
 | Uso de IA | n/a | [`USO_IA.md`](USO_IA.md) |
-| Guía de criterios y lecciones | n/a | [`docs/guia_entrega_1.md`](docs/guia_entrega_1.md) |
+| Guía de criterios y lecciones | n/a | [`.docs/guia_entrega_1.md`](.docs/guia_entrega_1.md) |
 
 ## 8. Entregables
 

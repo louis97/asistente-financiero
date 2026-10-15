@@ -2,7 +2,7 @@
 
 *Asistente bursátil para el inversor value colombiano. Entrega 1, MINE-4101 Ciencia de Datos Aplicada (Universidad de los Andes). Autor: Louis Gualtero.*
 
-Este documento diseña el producto de datos que responde al problema del punto 1 ([01_negocio.md](01_negocio.md)). La evidencia del proceso actual proviene de la entrevista y el formulario de auditoría con el inversor y de la experiencia del propio autor, registradas en `docs/research/Diseño de Asistente Bursátil.txt`. Son dos observaciones (un participante y el autor), por lo que lo que sigue describe un caso de diseño y no una muestra representativa. Los valores del mockup son ilustrativos. El producto solo se diseña en esta entrega: no se construye el SVM final, la API ni el dashboard.
+Este documento diseña el producto de datos que responde al problema del punto 1 ([01_negocio.md](01_negocio.md)). La evidencia del proceso actual proviene de la entrevista y el formulario de auditoría con el inversor y de la experiencia del propio autor, resumidas sin nombres de terceros en [evidencia_diagnostico.md](evidencia_diagnostico.md). Son dos observaciones (un participante y el autor), por lo que lo que sigue describe un caso de diseño y no una muestra representativa. Los valores del mockup son ilustrativos. El producto solo se diseña en esta entrega: no se construye el SVM final, la API ni el dashboard.
 
 ## 2.1 Usuarios
 
@@ -158,7 +158,7 @@ La tabla relaciona cada elemento del mockup con los requerimientos de la secció
 
 ## 2.7 Validación con el stakeholder
 
-Esta sección se llena después de la sesión con el stakeholder, que realiza el autor con el guion de [guion_validacion.md](guion_validacion.md) (15 a 20 minutos: tareas sobre el mockup, preguntas de claridad, confianza y explicabilidad en escala de 1 a 5, y cambios que pediría). Al momento de escribir este documento la sesión no se ha realizado, por lo que no se reportan respuestas, puntajes ni cambios.
+Esta sección se llena después de la sesión con el stakeholder, que realiza el autor con el guion de [guion_validacion.md](../../.docs/guion_validacion.md) (15 a 20 minutos: tareas sobre el mockup, preguntas de claridad, confianza y explicabilidad en escala de 1 a 5, y cambios que pediría). Al momento de escribir este documento la sesión no se ha realizado, por lo que no se reportan respuestas, puntajes ni cambios.
 
 El registro con la fecha, el participante anonimizado, las respuestas y los cambios derivados se documenta en [validacion_stakeholder.md](validacion_stakeholder.md). Tras la sesión se agregarán aquí un resumen con fecha, qué entendió el participante, qué cambiaría, su nivel de confianza y los cambios concretos hechos al diseño (con los requerimientos de la sección 2.4 que se modifiquen), de modo que el feedback tenga una consecuencia verificable. El puntaje de claridad, confianza y explicabilidad alimenta además el KPI 5 del punto 1.
 

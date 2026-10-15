@@ -2,7 +2,7 @@
 
 *Asistente bursátil para el inversor value colombiano. Entrega 1, MINE-4101 Ciencia de Datos Aplicada (Universidad de los Andes). Autor: Louis Gualtero.*
 
-Este documento traduce las tres preguntas de negocio del producto ([02_ideacion.md](02_ideacion.md)) en hipótesis que se pueden refutar con los datos, asigna a cada una la técnica que la responde y la sección del EDA donde se aborda, define el diseño experimental que evita el look-ahead y fija, para cada métrica de calidad, la regla con la que se decide si la hipótesis se apoya. El mapa completo de hipótesis está en `docs/hipotesis.md`. Todo se formula como asociación y no como causa. Lo que aquí se describe es un plan: los resultados del EDA se reportan en los notebooks `02_calidad`, `03_eda_series` y `04_eda_relaciones`, y en este documento solo se citan los que motivaron una decisión de diseño (secciones 4.3.2 y 4.3.4), con la referencia al notebook de donde salen.
+Este documento traduce las tres preguntas de negocio del producto ([02_ideacion.md](02_ideacion.md)) en hipótesis que se pueden refutar con los datos, asigna a cada una la técnica que la responde y la sección del EDA donde se aborda, define el diseño experimental que evita el look-ahead y fija, para cada métrica de calidad, la regla con la que se decide si la hipótesis se apoya. El mapa completo de hipótesis está en `docs/entrega_1/04_enfoque_analitico.md`. Todo se formula como asociación y no como causa. Lo que aquí se describe es un plan: los resultados del EDA se reportan en los notebooks `02_calidad`, `03_eda_series` y `04_eda_relaciones`, y en este documento solo se citan los que motivaron una decisión de diseño (secciones 4.3.2 y 4.3.4), con la referencia al notebook de donde salen.
 
 ## 4.1 De las preguntas de negocio a las hipótesis
 
@@ -112,7 +112,7 @@ La métrica ΔAUC es una métrica del modelo y no un KPI de negocio del punto 1.
 
 ## Referencias
 
-Los DOI de los artículos se consultaron en Crossref el 13 de octubre de 2026 (título, revista y año coinciden). Los libros y el documento de arXiv no tienen DOI de artículo. Las referencias provienen de `docs/hipotesis.md` y de la spec.
+Los DOI de los artículos se consultaron en Crossref el 13 de octubre de 2026 (título, revista y año coinciden). Los libros y el documento de arXiv no tienen DOI de artículo. Las referencias provienen de la spec.
 
 - Ang, A., y Timmermann, A. (2012). Regime changes and financial markets. *Annual Review of Financial Economics*, 4, 313-337. https://doi.org/10.1146/annurev-financial-110311-101808
 - Asness, C. S., Moskowitz, T. J., y Pedersen, L. H. (2013). Value and momentum everywhere. *The Journal of Finance*, 68(3), 929-985. https://doi.org/10.1111/jofi.12021
