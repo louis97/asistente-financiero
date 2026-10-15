@@ -22,16 +22,20 @@ INICIO = "2009-01-01"      # inicio de la historia descargada
 # Una empresa puede reportar el mismo concepto con otro nombre; un concepto ausente es NaN, nunca 0 (T2).
 # Los usan nb01 (tabla anual) y nb02 (completitud concepto × ticker y A1).
 CONCEPTOS = {
-    "ingresos": (["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax", "SalesRevenueNet"], "USD"),
+    "ingresos": (["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax", "SalesRevenueNet",
+                  "SalesRevenueGoodsNet"], "USD"),   # SalesRevenueGoodsNet: CAG, CHD, GIS, KO, KR, STZ y SYY hasta 2018
     "utilidad_operativa": (["OperatingIncomeLoss"], "USD"),
     "utilidad_neta": (["NetIncomeLoss", "ProfitLoss", "NetIncomeLossAvailableToCommonStockholdersBasic"], "USD"),
     "patrimonio": (["StockholdersEquity",
                     "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest"], "USD"),
-    "deuda_lp": (["LongTermDebt", "LongTermDebtNoncurrent"], "USD"),
+    "deuda_lp": (["LongTermDebt", "LongTermDebtNoncurrent",
+                  "LongTermDebtAndCapitalLeaseObligations"], "USD"),   # deuda de LP no corriente con arrendamientos: TSN, SYY, PM, KMB, MDLZ, PEP
     "acciones": (["WeightedAverageNumberOfDilutedSharesOutstanding",
-                  "WeightedAverageNumberOfSharesOutstandingBasic"], "shares"),
+                  "WeightedAverageNumberOfSharesOutstandingBasic",
+                  "WeightedAverageNumberOfShareOutstandingBasicAndDiluted"], "shares"),   # MO 2011–2020 y PM 2012–2016
     # D1: EPS reportado, solo para las acciones implícitas (utilidad neta ÷ EPS) cuando faltan las acciones (STZ, HSY)
-    "eps_reportado": (["EarningsPerShareDiluted", "EarningsPerShareBasic"], "USD/shares"),
+    "eps_reportado": (["EarningsPerShareDiluted", "EarningsPerShareBasic",
+                       "EarningsPerShareBasicAndDiluted"], "USD/shares"),   # MO 2011–2020
 }
 
 # Los 5 ratios: nombre → (numerador, denominador). A1: cada ratio se fecha con la publicación
