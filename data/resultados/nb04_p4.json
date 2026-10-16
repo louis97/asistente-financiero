@@ -1,0 +1,125 @@
+{
+ "N_elegido": 60,
+ "k_sigma": 1,
+ "auc_base_decil_prueba": 0.5910076422712864,
+ "auc_modelo_A_prueba": 0.5773458289945621,
+ "nivel_bonferroni": 0.9928571428571429,
+ "umbral_p4": 0.01,
+ "bloque_fechas": 1,
+ "reps": 5000,
+ "tabla_p4": [
+  {
+   "indicador": "rsi14",
+   "delta_auc": -0.007665162559296612,
+   "ic_lo": -0.03995866597814862,
+   "ic_hi": 0.02807596178826104,
+   "umbral": 0.01,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma20",
+   "delta_auc": -0.00974777276408656,
+   "ic_lo": -0.07697743185472061,
+   "ic_hi": 0.07106652196304926,
+   "umbral": 0.01,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma50",
+   "delta_auc": -0.02353060279995367,
+   "ic_lo": -0.06554780367102037,
+   "ic_hi": 0.026124303317030813,
+   "umbral": 0.01,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma200",
+   "delta_auc": 0.004411084114312125,
+   "ic_lo": -0.014336820215012895,
+   "ic_hi": 0.02527662178909745,
+   "umbral": 0.01,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "vol_rel20",
+   "delta_auc": -0.0008677542519959225,
+   "ic_lo": -0.011491371599305442,
+   "ic_hi": 0.010020070672275705,
+   "umbral": 0.01,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "donchian20",
+   "delta_auc": -0.0033842415827838312,
+   "ic_lo": -0.02891613289599823,
+   "ic_hi": 0.02268512063210382,
+   "umbral": 0.01,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "mom_12_1",
+   "delta_auc": -0.01838192757144519,
+   "ic_lo": -0.05465258353045191,
+   "ic_hi": 0.019221305837143383,
+   "umbral": 0.01,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  }
+ ],
+ "variables_svm": [
+  "abs_r",
+  "sigma20_sigma252",
+  "sigma252"
+ ],
+ "descartados_por_redundancia": [],
+ "subperiodos_delta_auc": [
+  {
+   "indicador": "dist_sma20",
+   "2019-2021": -0.04253393665158367,
+   "2022-2024": 0.0016702095353779978,
+   "2025+": 0.04900284900284896
+  },
+  {
+   "indicador": "dist_sma200",
+   "2019-2021": 0.0034690799396681626,
+   "2022-2024": 0.004251442453689691,
+   "2025+": -1.1102230246251565e-16
+  },
+  {
+   "indicador": "dist_sma50",
+   "2019-2021": -0.05158371040723986,
+   "2022-2024": -0.021940479805648283,
+   "2025+": 0.004843304843304697
+  },
+  {
+   "indicador": "donchian20",
+   "2019-2021": 0.0015082956259427904,
+   "2022-2024": 0.010476768903735278,
+   "2025+": -0.040740740740740855
+  },
+  {
+   "indicador": "mom_12_1",
+   "2019-2021": -0.004524886877828038,
+   "2022-2024": -0.004251442453689691,
+   "2025+": -0.027065527065527117
+  },
+  {
+   "indicador": "rsi14",
+   "2019-2021": -0.01613876319758667,
+   "2022-2024": 0.010704524749468591,
+   "2025+": -0.028490028490028574
+  },
+  {
+   "indicador": "vol_rel20",
+   "2019-2021": 0.004374057315233881,
+   "2022-2024": -0.006225326450045587,
+   "2025+": -0.0031339031339031598
+  }
+ ]
+}
