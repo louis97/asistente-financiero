@@ -1,0 +1,77 @@
+{
+ "P1": {
+  "estimado": 0.030802721088435375,
+  "ic": [
+   0.024597278911564626,
+   0.03918639455782313
+  ],
+  "umbral": 0.038264571428571426,
+  "estimado_estadistico": 0.030802721088435375,
+  "ic_estadistico": [
+   0.024597278911564626,
+   0.03918639455782313
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "efecto real, pero de magnitud incierta"
+ },
+ "P6_diaria": {
+  "estimado": 0.30508855777340455,
+  "ic": [
+   0.274599682676557,
+   0.34027575187354836
+  ],
+  "umbral": 0.3,
+  "estimado_estadistico": 0.1164185243602254,
+  "ic_estadistico": [
+   0.09351237861137383,
+   0.14733673449398868
+  ],
+  "decision_estadistica": "se rechaza H0",
+  "decision_negocio": "efecto real, pero de magnitud incierta"
+ },
+ "P6_semanal": {
+  "estimado": 0.28231837606837606,
+  "ic": [
+   0.23895344270203825,
+   0.3233387239789756
+  ],
+  "umbral": 0.3,
+  "estimado_estadistico": 0.08273263853323773,
+  "ic_estadistico": [
+   0.04672302473173782,
+   0.11699501696515144
+  ],
+  "decision_estadistica": "se rechaza H0",
+  "decision_negocio": "efecto real, pero de magnitud incierta"
+ },
+ "P6_dir_diaria": {
+  "estimado": 0.5140847933010854,
+  "ic": [
+   0.5063996594602572,
+   0.5231597844073801
+  ],
+  "umbral": null,
+  "estimado_estadistico": -0.020806729848098282,
+  "ic_estadistico": [
+   -0.03281493189368791,
+   -0.010198674804975641
+  ],
+  "decision_estadistica": "se rechaza H0",
+  "decision_negocio": null
+ },
+ "P6_dir_semanal": {
+  "estimado": 0.5327216552757232,
+  "ic": [
+   0.5158065949121566,
+   0.5507559481072529
+  ],
+  "umbral": null,
+  "estimado_estadistico": -0.03772900074253116,
+  "ic_estadistico": [
+   -0.05838868557435952,
+   -0.01887195635438265
+  ],
+  "decision_estadistica": "se rechaza H0",
+  "decision_negocio": null
+ }
+}
