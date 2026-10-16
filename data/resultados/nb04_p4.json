@@ -121,5 +121,268 @@
    "2022-2024": -0.006225326450045587,
    "2025+": -0.0031339031339031598
   }
+ ],
+ "sensibilidad_bloque": [
+  {
+   "indicador": "rsi14",
+   "bloque_fechas": 1,
+   "sesiones": 60,
+   "delta_auc": -0.007665162559296612,
+   "ic_lo": -0.03995866597814862,
+   "ic_hi": 0.02807596178826104,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma20",
+   "bloque_fechas": 1,
+   "sesiones": 60,
+   "delta_auc": -0.00974777276408656,
+   "ic_lo": -0.07697743185472061,
+   "ic_hi": 0.07106652196304926,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma50",
+   "bloque_fechas": 1,
+   "sesiones": 60,
+   "delta_auc": -0.02353060279995367,
+   "ic_lo": -0.06554780367102037,
+   "ic_hi": 0.026124303317030813,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma200",
+   "bloque_fechas": 1,
+   "sesiones": 60,
+   "delta_auc": 0.004411084114312125,
+   "ic_lo": -0.014336820215012895,
+   "ic_hi": 0.02527662178909745,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "vol_rel20",
+   "bloque_fechas": 1,
+   "sesiones": 60,
+   "delta_auc": -0.0008677542519959225,
+   "ic_lo": -0.011491371599305442,
+   "ic_hi": 0.010020070672275705,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "donchian20",
+   "bloque_fechas": 1,
+   "sesiones": 60,
+   "delta_auc": -0.0033842415827838312,
+   "ic_lo": -0.02891613289599823,
+   "ic_hi": 0.02268512063210382,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "mom_12_1",
+   "bloque_fechas": 1,
+   "sesiones": 60,
+   "delta_auc": -0.01838192757144519,
+   "ic_lo": -0.05465258353045191,
+   "ic_hi": 0.019221305837143383,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "rsi14",
+   "bloque_fechas": 2,
+   "sesiones": 120,
+   "delta_auc": -0.007665162559296612,
+   "ic_lo": -0.035010607246163776,
+   "ic_hi": 0.0209586870058796,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma20",
+   "bloque_fechas": 2,
+   "sesiones": 120,
+   "delta_auc": -0.00974777276408656,
+   "ic_lo": -0.06805538165915713,
+   "ic_hi": 0.05862534042892989,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma50",
+   "bloque_fechas": 2,
+   "sesiones": 120,
+   "delta_auc": -0.02353060279995367,
+   "ic_lo": -0.06265303799646066,
+   "ic_hi": 0.019001293756325508,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma200",
+   "bloque_fechas": 2,
+   "sesiones": 120,
+   "delta_auc": 0.004411084114312125,
+   "ic_lo": -0.014229596315029262,
+   "ic_hi": 0.025774919534852784,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "vol_rel20",
+   "bloque_fechas": 2,
+   "sesiones": 120,
+   "delta_auc": -0.0008677542519959225,
+   "ic_lo": -0.011304944137740011,
+   "ic_hi": 0.010405192163483604,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "donchian20",
+   "bloque_fechas": 2,
+   "sesiones": 120,
+   "delta_auc": -0.0033842415827838312,
+   "ic_lo": -0.02472230572864537,
+   "ic_hi": 0.018524731105507473,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "mom_12_1",
+   "bloque_fechas": 2,
+   "sesiones": 120,
+   "delta_auc": -0.01838192757144519,
+   "ic_lo": -0.05042932824566136,
+   "ic_hi": 0.016504474250148556,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "rsi14",
+   "bloque_fechas": 4,
+   "sesiones": 240,
+   "delta_auc": -0.007665162559296612,
+   "ic_lo": -0.032243131758737914,
+   "ic_hi": 0.01895901647080439,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma20",
+   "bloque_fechas": 4,
+   "sesiones": 240,
+   "delta_auc": -0.00974777276408656,
+   "ic_lo": -0.05913599148972045,
+   "ic_hi": 0.037461955105208625,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma50",
+   "bloque_fechas": 4,
+   "sesiones": 240,
+   "delta_auc": -0.02353060279995367,
+   "ic_lo": -0.06709340116812737,
+   "ic_hi": 0.008202445538627735,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "dist_sma200",
+   "bloque_fechas": 4,
+   "sesiones": 240,
+   "delta_auc": 0.004411084114312125,
+   "ic_lo": -0.008682270782222301,
+   "ic_hi": 0.026770721570400956,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "vol_rel20",
+   "bloque_fechas": 4,
+   "sesiones": 240,
+   "delta_auc": -0.0008677542519959225,
+   "ic_lo": -0.011106955713949781,
+   "ic_hi": 0.009213461406657821,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "donchian20",
+   "bloque_fechas": 4,
+   "sesiones": 240,
+   "delta_auc": -0.0033842415827838312,
+   "ic_lo": -0.025514297695594955,
+   "ic_hi": 0.01706126016219347,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  },
+  {
+   "indicador": "mom_12_1",
+   "bloque_fechas": 4,
+   "sesiones": 240,
+   "delta_auc": -0.01838192757144519,
+   "ic_lo": -0.04028860462496715,
+   "ic_hi": 0.012456837529644514,
+   "decision_estadistica": "no se rechaza H0",
+   "decision_negocio": "no accionable"
+  }
+ ],
+ "sensibilidad_todas_filas": [
+  {
+   "indicador": "rsi14",
+   "delta_auc_tot": 0.0047299466602342966,
+   "ic_lo": -0.013582857611101192,
+   "ic_hi": 0.024162524160375454,
+   "decision_negocio_sens": "no accionable"
+  },
+  {
+   "indicador": "dist_sma20",
+   "delta_auc_tot": 0.0031205148050570397,
+   "ic_lo": -0.008019585014406767,
+   "ic_hi": 0.015234940520819999,
+   "decision_negocio_sens": "no accionable"
+  },
+  {
+   "indicador": "dist_sma50",
+   "delta_auc_tot": 0.01124180623850135,
+   "ic_lo": -0.00835456449821131,
+   "ic_hi": 0.0326916786346276,
+   "decision_negocio_sens": "no accionable"
+  },
+  {
+   "indicador": "dist_sma200",
+   "delta_auc_tot": 0.0052467784579115495,
+   "ic_lo": -0.023464271702349125,
+   "ic_hi": 0.03919418677006126,
+   "decision_negocio_sens": "no accionable"
+  },
+  {
+   "indicador": "vol_rel20",
+   "delta_auc_tot": 0.00028955229578120356,
+   "ic_lo": -0.001999176427423129,
+   "ic_hi": 0.0033329849208705055,
+   "decision_negocio_sens": "no accionable"
+  },
+  {
+   "indicador": "donchian20",
+   "delta_auc_tot": 0.002099811886765224,
+   "ic_lo": -0.010187546179233259,
+   "ic_hi": 0.014522073008634612,
+   "decision_negocio_sens": "no accionable"
+  },
+  {
+   "indicador": "mom_12_1",
+   "delta_auc_tot": -0.00951046061063987,
+   "ic_lo": -0.03910698319595545,
+   "ic_hi": 0.026563698744409215,
+   "decision_negocio_sens": "no accionable"
+  }
  ]
 }
