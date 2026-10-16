@@ -12,7 +12,7 @@
    0.03918639455782313
   ],
   "decision_estadistica": "no se rechaza H0",
-  "decision_negocio": "efecto real, pero de magnitud incierta"
+  "decision_negocio": "no accionable"
  },
  "P6_diaria": {
   "estimado": 0.30508855777340455,
