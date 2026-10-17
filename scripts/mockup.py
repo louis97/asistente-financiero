@@ -91,7 +91,7 @@ def encabezado(ax):
     ax.text(0.0, 0.02, "MOCKUP: los niveles y las probabilidades son de EJEMPLO (ilustrativos). "
             "El panel de riesgo del sector trae cifras reales de KO (nb04 §6.1).",
             fontsize=9.5, color=GRIS, va="center", style="italic")
-    ax.text(1.0, 0.02, "Industria: consumo defensivo (piloto validado)", fontsize=10, ha="right", va="center",
+    ax.text(1.0, 0.02, "Industria: consumo defensivo (industria piloto del EDA)", fontsize=10, ha="right", va="center",
             color="white", weight="bold", bbox=dict(boxstyle="round,pad=0.4", fc="#2e7d32", ec="none"))
 
 
