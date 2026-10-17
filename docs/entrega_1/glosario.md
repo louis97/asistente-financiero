@@ -22,19 +22,19 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **Bonferroni** · Corrección por multiplicidad: cuando se hacen k pruebas se usa un nivel de confianza de 1 − α/k en cada una, para que la tasa global de falsos positivos siga siendo α. nb04 §5.3 usa 1 − 0,05/7 ≈ 99,3 % para los 7 indicadores de P4.
 
-**Brier (puntaje de Brier)** · Error cuadrático medio entre una probabilidad predicha y lo que pasó (1 si ocurrió, 0 si no). Va de 0 (perfecto) a 1; más bajo es mejor. Ejemplo: si el modelo dice 0,6 y el precio sí tocó el nivel, el error de esa observación es (1 − 0,6)² = 0,16. Se usará en la entrega 2 para el SVM y la simulación (punto 4 §4.4).
-
 **bootstrap por bloques (de fechas)** · Técnica de remuestreo que respeta la dependencia temporal: se muestrean trozos consecutivos de fechas con reemplazo y se recalcula el estimado. El IC sale de los percentiles 2,5 y 97,5 de los estimados remuestreados. Ejemplo: P1 (nb03 §4.4) construye el IC de la tasa de caídas fuertes con bloques semanales.
 
 **bootstrap por empresa (por grupos / por ticker)** · Remuestreo con reemplazo del listado de empresas (en vez de filas o bloques de tiempo). Se usa cuando una empresa aporta varias filas y lo que varía entre empresas es lo que domina el IC. Ejemplo: P2 (nb04 §2.6) remuestra las 21 empresas (menos las excluidas por falta de EPS); "bootstrap por empresa" y "bootstrap por ticker" son el mismo concepto.
 
+**Brier (puntaje de Brier)** · Error cuadrático medio entre una probabilidad predicha y lo que pasó (1 si ocurrió, 0 si no). Va de 0 (perfecto) a 1; más bajo es mejor. Ejemplo: si el modelo dice 0,6 y el precio sí tocó el nivel, el error de esa observación es (1 − 0,6)² = 0,16. Se usará en la entrega 2 para el SVM y la simulación (punto 4 §4.4).
+
 **BVPS (*book value per share*, valor en libros por acción)** · `patrimonio ÷ acciones`. Es el patrimonio contable que corresponde a cada acción. Ejemplo: KO 2026-04-03 tiene `bvps = 7,80` USD por acción (`ratios_ttm`).
+
+**caída máxima (drawdown)** · La peor pérdida acumulada desde un máximo histórico de la serie hasta el siguiente mínimo. Se expresa como fracción. Ejemplo: en nb03 §1 cada ticker tiene su `drawdown` máximo observado. Un drawdown de −0,30 significa que el precio llegó a estar un 30 % por debajo de su máximo anterior.
 
 **calibración (diagrama de calibración)** · Compara la probabilidad que promete un modelo con la frecuencia con la que el evento ocurrió, por tramos de probabilidad. Un modelo calibrado que dice 60 % acierta cerca de 6 de cada 10 veces: los puntos quedan sobre la diagonal. Se usará en la entrega 2 (punto 4 §4.4).
 
 **canal Donchian** · Franja entre el máximo y el mínimo de los últimos N períodos. Se usa como indicador `donchian20`, que mide la posición del cierre dentro de ese canal (0 toca el mínimo, 1 toca el máximo). nb04 §5.
-
-**caída máxima (drawdown)** · La peor pérdida acumulada desde un máximo histórico de la serie hasta el siguiente mínimo. Se expresa como fracción. Ejemplo: en nb03 §1 cada ticker tiene su `drawdown` máximo observado. Un drawdown de −0,30 significa que el precio llegó a estar un 30 % por debajo de su máximo anterior.
 
 **censura** · Observación que no se puede resolver porque falta parte del futuro: la etiqueta "¿toca el nivel en 60 días?" queda vacía para los últimos 60 días hábiles de la muestra. Regla del proyecto: una métrica se calcula solo sobre la población donde está definida; las filas censuradas no se mezclan con las completas.
 
@@ -54,6 +54,12 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **decisión estadística ("se rechaza H0" / "no se rechaza H0")** · Convención del curso: solo se usan estas dos frases. Nunca "se acepta H0" ni "la hipótesis queda apoyada". La decisión sale del IC frente al valor del nulo (el α del curso es 0,05).
 
+**ΔAUC** · Diferencia entre el AUC de un modelo que agrega un indicador y el AUC de la línea base (sin ese indicador). Mide cuánto aporta el indicador. P4 fija el umbral en 0,01. Ejemplo: `rsi14` tiene ΔAUC = −0,008 (no accionable; nb04_p4.json).
+
+**Δlog(P/E normalizado)** · Cambio del logaritmo del P/E normalizado en un horizonte (3 años). Se descompone en `Δlog(precio) − Δlog(EPS promedio)`: separa cuánto del cambio vino del precio y cuánto de las utilidades. La suma es exacta porque el log convierte el cociente en una resta.
+
+**ΔR²** · Diferencia entre el R² de una regresión con una variable extra y el R² de la regresión sin ella. Mide la mejora de ajuste. ΔR² nunca es negativo si se agregan regresores (`sumas de cuadrados anidadas`), por eso se usa como medida de aporte en P5.
+
 **deuda/patrimonio** · Cuánta deuda financiera tiene la empresa frente a su patrimonio. Si el patrimonio vale 100 y la deuda de largo plazo 60, la razón vale 0,60. Ejemplo: KO 2026-04-03, `deuda_patrimonio = 1,16` (`ratios_ttm`).
 
 **día hábil** · Día en que la bolsa opera (lunes a viernes, sin feriados de EE.UU.). nb04 §4 usa días hábiles para contar horizontes diarios; N = 60 días es un trimestre bursátil.
@@ -61,12 +67,6 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **distancia a la media (`dist_sma20`, `dist_sma50`, `dist_sma200`)** · `precio ÷ media móvil − 1`. Mide qué tan por encima o por debajo de su promedio reciente está el precio. 0 significa "sobre la media"; 0,10 significa "10 % por encima de su media de 20 días". nb04 §5.
 
 **drawdown** · Ver "caída máxima".
-
-**ΔAUC** · Diferencia entre el AUC de un modelo que agrega un indicador y el AUC de la línea base (sin ese indicador). Mide cuánto aporta el indicador. P4 fija el umbral en 0,01. Ejemplo: `rsi14` tiene ΔAUC = −0,008 (no accionable; nb04_p4.json).
-
-**ΔR²** · Diferencia entre el R² de una regresión con una variable extra y el R² de la regresión sin ella. Mide la mejora de ajuste. ΔR² nunca es negativo si se agregan regresores (`sumas de cuadrados anidadas`), por eso se usa como medida de aporte en P5.
-
-**Δlog(P/E normalizado)** · Cambio del logaritmo del P/E normalizado en un horizonte (3 años). Se descompone en `Δlog(precio) − Δlog(EPS promedio)`: separa cuánto del cambio vino del precio y cuánto de las utilidades. La suma es exacta porque el log convierte el cociente en una resta.
 
 **enfoque value** · Estrategia de compra que busca empresas cuyo precio en bolsa queda por debajo de una valoración razonable (por su historia o por su industria), con horizonte largo. Es el enfoque del usuario del producto; se contrapone al enfoque de crecimiento, que paga múltiplos altos a cambio de utilidades que se esperan mayores en el futuro.
 
@@ -98,13 +98,13 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **horizonte de valor (3 años)** · Ventana de evaluación de P2 y P3: se compara el P/E normalizado o el exceso sobre el XLP entre `t` y `t + 3 años`. 3 años es el horizonte típico que declara el inversor value en la ideación.
 
+**IC** · Alias de "intervalo de confianza". Ver abajo.
+
 **indicador técnico** · Variable derivada solo de precios y volumen históricos (sin información fundamental). nb04 §5 estudia siete: `rsi14`, `dist_sma20`, `dist_sma50`, `dist_sma200`, `vol_rel20`, `donchian20`, `mom_12_1`. Todos miran solo hacia atrás.
 
 **industria piloto (consumo defensivo)** · Las 21 empresas de consumo defensivo con historia desde 2009 y en el XLP (KO, PEP, PG, WMT, COST, CL, MDLZ, KMB, GIS, MO, PM, HSY, KR, SYY, ADM, CLX, CHD, MKC, STZ, CAG, TSN). KHC queda fuera porque sus precios comienzan en 2015. Se analiza esta industria para la entrega 1; el producto se diseñó para cualquier industria.
 
 **instantánea (snapshot)** · Archivo con fecha congelada que fija la versión exacta de los datos usada en el análisis. Garantiza que correr el proyecto con la misma instantánea reproduce las mismas cifras aunque la fuente cambie. Las del proyecto viven en `data/snapshots/` (fecha de corte: 2026-10-15).
-
-**IC** · Alias de "intervalo de confianza". Ver abajo.
 
 **intervalo de confianza (IC)** · Rango de valores plausibles para un parámetro, con un nivel de confianza fijado (95 % en el proyecto). Ejemplo P1: IC = [0,0246; 0,0392] para la tasa de caídas fuertes (nb03.json). "El 95 %" se refiere al procedimiento, no a la probabilidad del parámetro.
 
@@ -140,13 +140,13 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **P/B (*price-to-book*)** · `precio ÷ BVPS`. Múltiplo que compara el precio con el patrimonio contable por acción. P/B = 1 significa "pago el patrimonio exactamente". nb04 §1.
 
-**P/E (*price-to-earnings*)** · `precio ÷ EPS`. Múltiplo que indica cuántas unidades de precio se pagan por cada unidad de utilidad. Ejemplo: KO 2026-10-12 con `close = 92,00` USD y `eps_ttm = 3,18` tiene P/E ≈ 29.
+**PCA (análisis de componentes principales)** · Técnica no supervisada que proyecta variables correlacionadas en pocos ejes ortogonales ordenados por varianza explicada. En nb04 §6.6 el PC1 de los 21 retornos semanales se interpreta como "el movimiento común de la industria".
 
 **P/E "actual"** · P/E calculado con el EPS de los últimos 12 meses ya publicados (**EPS TTM**). Es el P/E que se actualiza con cada reporte trimestral. Ejemplo: KO 2026-10-12 con `close = 92,00` y `eps_ttm = 3,18` tiene P/E actual ≈ 29. Se contrapone al **P/E normalizado**.
 
 **P/E normalizado** · `precio ÷ EPS promedio de los últimos 3 años` (12 trimestres ya publicados; variable `eps_prom_3a` del `ratios_ttm`). Un paso intermedio evita el redondeo: `eps_prom_3a ≈ 2,725` da P/E normalizado ≈ 33,8 (`92,00 / 2,725`). Un solo año excepcional puede hacer que una acción parezca barata sin serlo; promediar varios años evita esa ilusión. Ejemplo: KO 2026-10-12 con `eps_prom_3a ≈ 2,725` tiene P/E normalizado ≈ 33,8, por encima del P/E actual. Referencias: Graham y Dodd (1934), *Security Analysis*, McGraw-Hill; Campbell y Shiller (1998), *Journal of Portfolio Management*, 24(2), 11–26, DOI 10.3905/jpm.24.2.11.
 
-**PCA (análisis de componentes principales)** · Técnica no supervisada que proyecta variables correlacionadas en pocos ejes ortogonales ordenados por varianza explicada. En nb04 §6.6 el PC1 de los 21 retornos semanales se interpreta como "el movimiento común de la industria".
+**P/E (*price-to-earnings*)** · `precio ÷ EPS`. Múltiplo que indica cuántas unidades de precio se pagan por cada unidad de utilidad. Ejemplo: KO 2026-10-12 con `close = 92,00` USD y `eps_ttm = 3,18` tiene P/E ≈ 29.
 
 **percentil** · Valor por debajo del cual queda cierta fracción de la muestra. El percentil 5 es el valor que deja el 5 % más bajo por debajo. nb03 §2.
 
@@ -168,13 +168,13 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **ratio** · Razón entre dos magnitudes contables (p. ej. `ROE = utilidad ÷ patrimonio`). A diferencia del **múltiplo**, no mezcla precio con contabilidad: compara partes del negocio entre sí. Ejemplo: KO con `roe_ttm = 0,41` (41 %).
 
+**reexpresión** · Un reporte posterior modifica cifras ya publicadas. En este proyecto se usa la **primera publicación** (fecha `filed` original) para no incorporar información que no estaba disponible en `t`. nb02 §3.
+
 **regresión a la media** · Fenómeno estadístico: una medición extrema con parte de azar tiende a quedar menos extrema en la siguiente medición. No es una "fuerza"; es el efecto de que el azar se promedia. En el proyecto se usa lenguaje de asociación, nunca de causa.
 
 **retorno** · Cambio relativo del precio. En este proyecto se usa el **retorno simple** `P_t / P_{t−1} − 1` para la comunicación y el **log-retorno** `log(P_t / P_{t−1})` para los cálculos (porque se suma a través del tiempo).
 
 **retorno simple** · `P_t / P_{t−1} − 1`. 0,05 significa "subió 5 %"; −0,05 significa "cayó 5 %".
-
-**reexpresión** · Un reporte posterior modifica cifras ya publicadas. En este proyecto se usa la **primera publicación** (fecha `filed` original) para no incorporar información que no estaba disponible en `t`. nb02 §3.
 
 **reversión a la normal** · Cuando un múltiplo (por ejemplo, el P/E normalizado) se aleja mucho de su nivel habitual, tiende a volver a él con el tiempo. Es la lectura que motiva a P2: si está barato frente a su historia, el mercado puede corregir hacia arriba. Se explica sin modelos econométricos.
 
@@ -188,15 +188,15 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **sesgo de supervivencia** · Analizar solo las empresas que sobrevivieron hasta hoy puede sobreestimar los retornos: las que quebraron o fueron deslistadas quedan fuera de la muestra. Es más relevante en horizontes largos (3 años). nb02 §6.
 
-**sobreajuste (*overfitting*)** · Un modelo o un procedimiento aprende el ruido de los datos y no la señal; funciona bien en lo que ya vio y falla en lo nuevo. Se controla con corte cronológico, Bonferroni/Holm y validación en datos distintos a los del ajuste. Ver también **data snooping**.
-
 **sesión turbulenta** · Sesión bursátil (día) en que `|retorno diario|` supera el percentil 80 de la propia historia previa de la acción (ventana expansiva, `shift(1)`). P6 (diaria) estudia la probabilidad de que una sesión turbulenta venga seguida por otra (nb03 §5). Es la variante diaria de la "semana turbulenta".
 
 **σ20 diaria** · Desviación estándar de los retornos diarios de las últimas 20 sesiones (un mes bursátil). nb04 §4.
 
+**σ20/σ252** · Razón `σ20 diaria ÷ σ252 diaria`. Capta la aceleración o calma relativa de la volatilidad. Es una de las tres variables del "modelo A" (la línea base de magnitud) de nb04 §5.
+
 **σ252 diaria (volatilidad anualizada)** · Desviación estándar de los retornos diarios de las últimas 252 sesiones (un año bursátil). nb03 §0.3 y nb04 §4.
 
-**σ20/σ252** · Razón `σ20 diaria ÷ σ252 diaria`. Capta la aceleración o calma relativa de la volatilidad. Es una de las tres variables del "modelo A" (la línea base de magnitud) de nb04 §5.
+**sobreajuste (*overfitting*)** · Un modelo o un procedimiento aprende el ruido de los datos y no la señal; funciona bien en lo que ya vio y falla en lo nuevo. Se controla con corte cronológico, Bonferroni/Holm y validación en datos distintos a los del ajuste. Ver también **data snooping**.
 
 **solapamiento de ventanas** · Dos observaciones de la misma empresa en fechas cercanas comparten parte del horizonte futuro. Hace que las observaciones no sean independientes. Se mitiga con submuestras sin solapamiento (una fila cada N días) y con IC por bloques o por empresa.
 
@@ -216,11 +216,11 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **trampa de valor** · Una acción se ve barata (P/E bajo) porque el mercado anticipa que sus utilidades van a caer. Si uno compra pensando "está barata" sin mirar las utilidades, el P/E se puede corregir hacia la media bajando el precio, no subiendo el EPS. nb04 §3.8 testea este patrón.
 
-**turbulencia** · En este proyecto, la propiedad de que una sesión bursátil (o una semana) tenga `|retorno|` por encima del percentil 80 de la propia historia previa de la acción (ver **sesión turbulenta** y **semana turbulenta**). P6 estudia si las sesiones turbulentas vienen juntas (agrupamiento de la volatilidad).
-
 **triangulación** · Contrastar un mismo hecho con dos o más fuentes independientes para detectar errores. Ejemplos del proyecto: `eps_ttm` calculado desde `tabla_trimestral` se compara con el `trailingEps` que publica yfinance, y el sector reportado por yfinance se compara con la pertenencia al XLP (nb02 §4 y §5).
 
 **TTM (últimos 12 meses, *trailing twelve months*)** · Suma de los cuatro trimestres más recientes ya publicados. Da una lectura "siempre al día" sin esperar al cierre del año fiscal. nb01 §4.3.
+
+**turbulencia** · En este proyecto, la propiedad de que una sesión bursátil (o una semana) tenga `|retorno|` por encima del percentil 80 de la propia historia previa de la acción (ver **sesión turbulenta** y **semana turbulenta**). P6 estudia si las sesiones turbulentas vienen juntas (agrupamiento de la volatilidad).
 
 **V de Cramér** · Medida del tamaño del efecto de una tabla de contingencia (va de 0 a 1). Acompaña a la prueba chi-cuadrado para expresar la magnitud de la asociación en una unidad interpretable. nb03 §5.4.
 
