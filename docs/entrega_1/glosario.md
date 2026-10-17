@@ -14,7 +14,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **acumulado del año (YTD, *year-to-date*)** · Suma de un flujo (ingresos, utilidad, caja operativa) desde el primer día del año fiscal hasta la fecha de corte del reporte. Ejemplo: en un 10-Q con `end = 30 de junio` el YTD cubre enero–junio.
 
-**año fiscal (y cierre fiscal distinto de diciembre)** · Período de doce meses que cada empresa escoge para contar sus resultados. La mayoría usa enero–diciembre, pero algunas no: WMT y COST cierran su año fiscal en enero. nb02 §2b.5 marca estos casos para que al sumar cuatro trimestres se respete el año fiscal, no el calendario.
+**año fiscal (y cierre fiscal distinto de diciembre)** · Período de doce meses que cada empresa escoge para contar sus resultados. La mayoría usa enero–diciembre, pero algunas no: WMT y COST cierran su año fiscal en enero. nb02 §2b (chequeo 5) marca estos casos para que al sumar cuatro trimestres se respete el año fiscal, no el calendario.
 
 **AUC (*area under the ROC curve*)** · Mide qué tan bien un puntaje separa las dos clases de una etiqueta binaria (0/1). Toma valores de 0 a 1: 0,5 es azar y 1 es separación perfecta. Ejemplo: la línea base por decil de σ252 diaria del nb04 §4.5 tiene AUC = 0,591 en la prueba 2019–2024.
 
@@ -58,7 +58,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **EPS (*earnings per share*, utilidad por acción)** · `utilidad neta ÷ acciones diluidas`. Es la utilidad que corresponde a cada acción. Ejemplo: KO 2026-04-03, `eps_ttm = 3,18` USD por acción (`ratios_ttm`).
 
-**EPS TTM (de los últimos 12 meses)** · Suma del EPS de los cuatro trimestres más recientes ya publicados. Resume la utilidad del último año, actualizándose cada trimestre. nb01 §4.3. Ejemplo: KO 2026-04-03 con `eps_ttm = 3,18` suma los cuatro trimestres 2025Q3 → 2026Q1.
+**EPS TTM (de los últimos 12 meses)** · `utilidad_neta_ttm ÷ acciones del último trimestre`. El numerador es la suma de la utilidad neta de los cuatro trimestres más recientes ya publicados; el denominador es el `acciones` del cierre del último trimestre (nb01 §4.3). Ejemplo: KO 2026-04-03 con `eps_ttm = 3,18` USD por acción.
 
 **ETF (*exchange-traded fund*)** · Fondo que agrupa muchas acciones y se compra como una sola. Replica una canasta (un índice). En el proyecto se usan dos: el SPY y el XLP.
 
@@ -74,13 +74,15 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **H0 / H1** · H0 es la hipótesis nula (el "no hay efecto" o el valor de referencia). H1 es la hipótesis alternativa. Se escribe la dirección de H1 antes de ver los datos y no se cambia. Ejemplo P1: H0 `p ≤ 2,55 %`, H1 `p > 2,55 %` (nb03 §4.2).
 
-**Holm** · Corrección por multiplicidad "paso a paso": ordena los p-values de k pruebas y las compara con α/k, α/(k−1), …, α. Es menos conservadora que Bonferroni. Se reporta como sensibilidad sobre las 13 pruebas con decisión de negocio (nb04 §8).
+**Holm** · Corrección por multiplicidad "paso a paso": ordena los p-values de k pruebas y las compara con α/k, α/(k−1), …, α. Es menos conservadora que Bonferroni. El proyecto la reporta como sensibilidad sobre las 13 pruebas con decisión de negocio, aplicada sobre el p bilateral equivalente `2·p` de cada prueba frente a α = 0,05 (nb04 §8).
 
 **horizonte de valor (3 años)** · Ventana de evaluación de P2 y P3: se compara el P/E normalizado o el exceso sobre el XLP entre `t` y `t + 3 años`. 3 años es el horizonte típico que declara el inversor value en la ideación.
 
 **indicador técnico** · Variable derivada solo de precios y volumen históricos (sin información fundamental). nb04 §5 estudia siete: `rsi14`, `dist_sma20`, `dist_sma50`, `dist_sma200`, `vol_rel20`, `donchian20`, `mom_12_1`. Todos miran solo hacia atrás.
 
 **industria piloto (consumo defensivo)** · Las 21 empresas de consumo defensivo con historia desde 2009 y en el XLP (KO, PEP, PG, WMT, COST, CL, MDLZ, KMB, GIS, MO, PM, HSY, KR, SYY, ADM, CLX, CHD, MKC, STZ, CAG, TSN). KHC queda fuera porque sus precios comienzan en 2015. Se analiza esta industria para la entrega 1; el producto se diseñó para cualquier industria.
+
+**IC** · Alias de "intervalo de confianza". Ver abajo.
 
 **intervalo de confianza (IC)** · Rango de valores plausibles para un parámetro, con un nivel de confianza fijado (95 % en el proyecto). Ejemplo P1: IC = [0,0246; 0,0392] para la tasa de caídas fuertes (nb03.json). "El 95 %" se refiere al procedimiento, no a la probabilidad del parámetro.
 
@@ -132,11 +134,11 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **quintil** · Grupo que resulta de partir una variable en cinco partes iguales por sus percentiles 20, 40, 60, 80. En el proyecto se usa "quintil barato" (percentil ≤ 20 %) y "quintil caro" (percentil > 80 %). nb04 §2.3.
 
-**quintil por fecha** · Clasificación en quintiles que se recalcula en cada fecha trimestral y usa solo las empresas con dato en esa fecha. Evita el look-ahead (no se usa la distribución futura).
+**quintil por fecha** · Clasificación en quintiles que se recalcula en cada fecha trimestral. Reglas de nb04 §2.3: (i) una fecha entra a los quintiles solo si tiene al menos 15 empresas con `pct_norm` publicado; (ii) con n empresas vigentes, `k = round(0,2·n)` empresas de menor `pct_norm` forman el quintil barato y las k de mayor `pct_norm` el caro (quintiles balanceados); los empates se rompen por orden de llegada. Evita el look-ahead porque usa solo la distribución disponible hasta esa fecha.
 
 **R²** · Fracción de la variación de la variable respuesta que explica una regresión. Va de 0 a 1. nb04 §6.3 (P5).
 
-**regresión a la media** · Fenómeno estadístico: una medición extrema con parte de azar tiende a quedar menos extrema en la siguiente medición. No es una "fuerza"; es el efecto de que el azar se promedia. Lección E4 del curso: lenguaje de asociación, no de causa.
+**regresión a la media** · Fenómeno estadístico: una medición extrema con parte de azar tiende a quedar menos extrema en la siguiente medición. No es una "fuerza"; es el efecto de que el azar se promedia. En el proyecto se usa lenguaje de asociación, nunca de causa.
 
 **retorno** · Cambio relativo del precio. En este proyecto se usa el **retorno simple** `P_t / P_{t−1} − 1` para la comunicación y el **log-retorno** `log(P_t / P_{t−1})` para los cálculos (porque se suma a través del tiempo).
 
@@ -158,21 +160,21 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **σ20 diaria** · Desviación estándar de los retornos diarios de las últimas 20 sesiones (un mes bursátil). nb04 §4.
 
-**σ252 diaria (volatilidad anualizada)** · Desviación estándar de los retornos diarios de las últimas 252 sesiones (un año bursátil). nb03 §0 y nb04 §4.
+**σ252 diaria (volatilidad anualizada)** · Desviación estándar de los retornos diarios de las últimas 252 sesiones (un año bursátil). nb03 §0.3 y nb04 §4.
 
 **σ20/σ252** · Razón `σ20 diaria ÷ σ252 diaria`. Capta la aceleración o calma relativa de la volatilidad. Es una de las tres variables del "modelo A" (la línea base de magnitud) de nb04 §5.
 
 **solapamiento de ventanas** · Dos observaciones de la misma empresa en fechas cercanas comparten parte del horizonte futuro. Hace que las observaciones no sean independientes. Se mitiga con submuestras sin solapamiento (una fila cada N días) y con IC por bloques o por empresa.
 
-**Spearman (correlación de rangos)** · Mide asociación monótona (no lineal necesariamente): se calcula sobre los rangos de las dos variables. Robusta a atípicos. nb04 §5.8 y §6.6.
+**Spearman (correlación de rangos)** · Mide asociación monótona (no lineal necesariamente): se calcula sobre los rangos de las dos variables. Robusta a atípicos. nb04 §5.9 (regla de redundancia de P4) y §6.6 (clustermap de los 21 retornos semanales).
 
-**split** · Partición de una acción en varias nuevas sin cambiar el valor total de la empresa. Un split 2:1 duplica el número de acciones y divide el precio en 2. El `close` de yfinance ya viene ajustado por splits y dividendos. Ejemplo: KO tuvo splits 2:1 el 1965-02-19, 1968-06-03, 1977-06-01, 1986-07-01, 1990-05-14, 1992-05-18, 1996-05-13, 2012-08-13 y 3:1 el 1977-06-01 (`splits.parquet`).
+**split** · Partición de una acción en varias nuevas sin cambiar el valor total de la empresa. Un split 2:1 duplica el número de acciones y divide el precio en 2. El `close` de yfinance ya viene ajustado por splits y dividendos. Ejemplo (`splits.parquet`): KO tuvo splits 2:1 el 1965-02-19, 1968-06-03, 1977-06-01, 1990-05-14, 1992-05-12, 1996-05-13 y 2012-08-13, y un split 3:1 el 1986-07-01.
 
 **splits (instantánea `splits.parquet`)** · Tabla con los eventos de split por ticker: `ticker`, `fecha` y `ratio`. Se descarga para auditar la trazabilidad del precio ajustado.
 
 **SPY** · ETF que replica al S&P 500. En el proyecto representa "el mercado" en el sentido del curso: el referente de los retornos del universo accionario estadounidense. nb04 §6 (P5).
 
-**submuestra sin solapamiento** · De la tabla diaria se toma una fila cada N días hábiles (misma fecha para todas las acciones). Reduce la dependencia entre observaciones. nb04 §5.2.
+**submuestra sin solapamiento** · De la tabla diaria se toma una fila cada N días hábiles (misma fecha para todas las acciones). Reduce la dependencia entre observaciones consecutivas de la etiqueta. nb04 §5 construye la submuestra con N = 60 y §5.3b explora su sensibilidad al tamaño del bloque.
 
 **tasa de toque** · Fracción de observaciones con etiqueta `y = 1`. Es la tasa a la que, en los datos, el precio tocó el nivel inferior antes del superior o del tiempo. nb04 §4.5.
 
