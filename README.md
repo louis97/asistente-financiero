@@ -96,7 +96,7 @@ Definidas en [`pyproject.toml`](pyproject.toml) y fijadas en [`uv.lock`](uv.lock
 
 ## 7. Técnicas no cubiertas en el material de MINE-4101
 
-El enunciado exige informar las técnicas o herramientas no cubiertas durante la clase. En este proyecto son 15 y se usan de forma puntual: bootstrap por bloques de fechas, bootstrap por grupos (empresa), nulo calibrado por simulación, ΔAUC con regresión logística, errores estándar agrupados por empresa, Brier y diagrama de calibración, análisis de potencia (MDE), EPS TTM reconstruido con los 10-Q, SVM, simulación por remuestreo de bloques, Bonferroni, Holm, VIF, prueba F de modelos anidados, Mann-Whitney y clustermap de seaborn. **La lista detallada, con la justificación de cada técnica, vive solo en [`docs/entrega_1/03_etica_legal.md`](docs/entrega_1/03_etica_legal.md) §3.3** (fuente única).
+El enunciado exige informar las técnicas o herramientas no cubiertas durante la clase. En este proyecto son 15 y se usan de forma puntual: bootstrap por bloques de fechas, nulo calibrado por simulación, ΔAUC con regresión logística, errores estándar agrupados por empresa, Brier y diagrama de calibración, análisis de potencia (MDE), EPS TTM reconstruido con los 10-Q, SVM, simulación por remuestreo de bloques, Bonferroni, Holm, VIF, prueba F de modelos anidados, Mann-Whitney y clustermap de seaborn. **La lista detallada, con la justificación de cada técnica, vive solo en [`docs/entrega_1/03_etica_legal.md`](docs/entrega_1/03_etica_legal.md) §3.3** (fuente única).
 
 ## 8. Entregables
 
