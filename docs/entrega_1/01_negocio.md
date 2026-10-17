@@ -20,7 +20,7 @@ La literatura sobre el inversor individual explica por qué ese crecimiento no b
 
 **Fuentes del contexto** (consultadas el 13 de octubre de 2026):
 
-- BVC (2026). *Resultados 2025: ¿Cómo se comportó el mercado de capitales colombiano? Logros, desafíos, perspectivas* (presentación con cifras al 31 de diciembre de 2025; fuente de los datos: bvc y Deceval). Copia alojada por el Instituto Nacional de Contadores Públicos: https://incp.org.co/wp-content/uploads/2026/01/Resultados-2025.-Como-se-comporto-el-mercado-de-capitales-colombiano-BVC.pdf.
+- BVC (2026). *Resultados 2025: ¿Cómo se comportó el mercado de capitales colombiano? Logros, desafíos, perspectivas* (presentación con cifras al 31 de diciembre de 2025; fuente de los datos: bvc y Deceval). Copia pública alojada por el Instituto Nacional de Contadores Públicos: https://incp.org.co/wp-content/uploads/2026/01/Resultados-2025.-Como-se-comporto-el-mercado-de-capitales-colombiano-BVC.pdf. El documento no se encontró en bvc.com.co al 2026-10-16 (consulta hecha en la sección de resultados de bvc y en las páginas del MGC); por eso la cita apunta a la copia pública del INCP.
 - SFC (29 de agosto de 2025). *Colombia acelera el crecimiento de su mercado de capitales*. https://www.superfinanciera.gov.co/publicaciones/10115799/colombia-acelera-el-crecimiento-de-su-mercado-de-capitales/
 - Barber, B. M., y Odean, T. (2000). Trading is hazardous to your wealth: the common stock investment performance of individual investors. *The Journal of Finance*, 55(2), 773-806. https://doi.org/10.1111/0022-1082.00226
 

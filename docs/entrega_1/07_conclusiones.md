@@ -1,171 +1,75 @@
-# 7. Conclusiones e insights
+# 7. Conclusiones iniciales
 
-Todas las cifras de este documento salen de celdas ejecutadas en los notebooks
-[02](../../notebooks/02_calidad.ipynb), [03](../../notebooks/03_eda_series.ipynb) y
-[04](../../notebooks/04_eda_relaciones.ipynb); cada conclusión indica el notebook y la sección
-donde está la celda que la respalda (T4, T7). Todo es asociativo, no causal.
+Las cifras de este documento salen de celdas ejecutadas de los notebooks [02](../../notebooks/02_calidad.ipynb), [03](../../notebooks/03_eda_univariado.ipynb) y [04](../../notebooks/04_eda_multivariado.ipynb), con el notebook y la sección de la celda que las genera; también se leen los archivos [`data/resultados/nb03.json`](../../data/resultados/nb03.json), [`nb04.json`](../../data/resultados/nb04.json) y [`nb04_p4.json`](../../data/resultados/nb04_p4.json). Todo se lee como [asociación](glosario.md), nunca como causa; las [decisiones estadísticas](glosario.md) se escriben "se rechaza H0" o "no se rechaza H0", y las [decisiones de negocio](glosario.md) comparan el límite inferior del [IC](glosario.md) con el umbral fijado antes de estimar.
 
 ## 7.1 Conclusiones
 
-**C1. La volatilidad se agrupa y las colas son pesadas; un GBM normal de volatilidad constante no
-describe el riesgo (HP0 apoyada, HT4 apoyada).** Curtosis en exceso mediana 4.63 y ν mediano 4.15
-(ν < 10 en 34 de 34 series); Ljung-Box en r² es significativo en 88.2 % de las series y ARCH-LM en
-85.3 %. GARCH(1,1)-t supera a la volatilidad constante fuera de muestra en 28 de 34 series (QLIKE
-3.713 frente a 3.883). Fuente: [nb03](../../notebooks/03_eda_series.ipynb), secciones 2–5 y
-síntesis HP0. Figura: `vol_ewma_garch.png`.
+**C1. Las caídas semanales de más de 2 volatilidades no son más frecuentes que las que daría una [normal medida de la misma forma](glosario.md).** P1 (en consumo defensivo) estima una tasa agregada de 3,08 % semanal, [IC95](glosario.md) por [bloques de fechas](glosario.md) [2,46 %; 3,92 %], frente a un nulo calibrado por simulación de 2,55 % y un umbral de 3,83 %; **no se rechaza H0 y la decisión de negocio es no accionable**. En los tramos por empresa, 2013–2019 y 2022+ quedan por encima del nulo; el COVID queda con [IC](glosario.md) ancho por tener pocas semanas. Fuente: [nb03 §4](../../notebooks/03_eda_univariado.ipynb) y [`nb03.json`](../../data/resultados/nb03.json) clave `P1`.
 
-![GARCH-t y EWMA](../../entregables/entrega_1/assets/vol_ewma_garch.png)
+![P1 por empresa](../../entregables/entrega_1/assets/nb03_p1_por_empresa.png)
 
-**C2. La caminata aleatoria con deriva no se sostiene como regla (HT0 no apoyada, en caminata aleatoria
-y en calibración de P_GBM), aunque el GBM con deriva estimada solo con datos pasados sigue siendo la
-referencia teórica para la etiqueta.** ADF no rechaza la raíz unitaria en 33 de 34 log-precios y la
-rechaza en los retornos de 34 de 34; |ρ₁| mediana 0.068, pero la regla exige ADF, KPSS y Ljung-Box
-sobre r a la vez y solo 15 de 30 tickers pasan (tecnología 8/10, consumo defensivo 5/10, financieros
-2/10). Desviación documentada: Ljung-Box sobre r es significativo en 50 % de las series y en 11.8 %
-sobre residuos estandarizados de GARCH-t, es decir, la dependencia viene de la volatilidad; con ese
-criterio pasarían 26 de 30, pero la regla de 4.4 no lo contempla y el estado sigue el criterio
-literal. Con la etiqueta k = 1, N = 12, un GBM con μ = 0 sobreestima la clase 1 en 9.5 pp (0.178
-observada frente a 0.2735) y con deriva pasada, en 0.8 pp (misma muestra, GBM menos observada). Aun así P_GBM no está calibrada:
-en la regresión logística de la etiqueta sobre logit P_GBM (deriva ≤ t) el intercepto es a = −1.983
-(IC −2.672 a −1.429) y la pendiente b = −0.294 (IC −0.641 a −0.011), que excluyen 0 y 1, es decir,
-el orden entre filas está invertido (b < 0 indica una AUC del GBM por debajo de 0.5); con μ = 0
-tampoco se calibra. Por eso el GBM no decide HT1: el rival que decide es la tasa empírica de toque
-por decil de σ (04 §4.3.4).
-Fuente: [nb03](../../notebooks/03_eda_series.ipynb), secciones 5b y 6; [nb04](../../notebooks/04_eda_relaciones.ipynb),
-sección 3 (dos celdas, μ = 0 y con deriva). Figura: `nb04_calibracion_gbm.png`.
+**C2. Las acciones "baratas frente a su historia" suben su [P/E normalizado](glosario.md) más que las caras en los 3 años siguientes; la lectura de [trampa de valor](glosario.md) es compatible, no afirmada.** P2 estima una diferencia (barato − caro) de +0,153 anualizada en log del Δlog(P/E normalizado) a 3 años, [IC95](glosario.md) por [empresa](glosario.md) [+0,091; +0,221], umbral 0,03; **se rechaza H0 y la decisión de negocio es accionable**. La descomposición en log por [quintil por fecha](glosario.md) estima dos contribuciones de magnitud similar: precio +0,15 (su IC95 excluye 0) y EPS promedio −0,15 (su IC95 cruza 0); el patrón es **compatible con una trampa de valor**, pero el IC95 del EPS no la afirma. La sensibilidad de composición sin TSN (empresa más frecuente del quintil barato) deja el estimado anualizado en +0,145 con IC95 [+0,083; +0,225]: la decisión principal no cambia. Fuente: [nb04 §2.7 y §2.8](../../notebooks/04_eda_multivariado.ipynb); [`nb04.json`](../../data/resultados/nb04.json) clave `P2`.
 
-![Calibración del GBM](../../entregables/entrega_1/assets/nb04_calibracion_gbm.png)
+![Descomposición de P2](../../entregables/entrega_1/assets/nb04_p2_descomposicion.png)
 
-**C3. Los indicadores técnicos, solos, no separan las clases (HT2 no concluyente) y su signo no es
-estable entre regímenes con la convención adoptada (HT3 no apoyada).**
+**C3. El quintil barato no gana al [XLP](glosario.md) a 3 años dentro del sector.** P3 estima un [exceso sobre el XLP](glosario.md) de +0,006 por año (log), [IC95](glosario.md) por [empresa](glosario.md) [−0,032; +0,049], umbral 0,05; **no se rechaza H0 y la decisión de negocio es no accionable**. La sensibilidad sin TSN deja la decisión en no accionable. Fuente: [nb04 §3.7](../../notebooks/04_eda_multivariado.ipynb); [`nb04.json`](../../data/resultados/nb04.json) clave `P3`.
 
-*HT2.* Con k = 1 y N = 12 las AUC por indicador van de 0.496 a 0.514 y ningún intervalo por
-bloques de fechas excluye 0.5 (`vol_rel20` 0.5137, IC 0.486–0.542); la información mutua es ≤
-0.0064. Los dos primeros componentes del PCA explican 79.4 % de la varianza y su AUC es 0.503 y
-0.507. La regla de HT2 se cumple en 0 de 7 indicadores (los 7 IC por fechas incluyen 0.5; solo RSI,
-`vol_rel20` y `mom_12_1` tienen p_BH < 0.05), de ahí "no concluyente".
+![P3 por quintil](../../entregables/entrega_1/assets/nb04_p3_quintiles.png)
 
-*HT3.* La regla pide signo estable en la mayoría de los regímenes con muestra suficiente:
-`vol_rel20` 2/5, `mom_12_1` 3/4 y `rsi14` 5/5. El estado sale de los signos, no de la magnitud, y
-depende de dos convenciones documentadas: la hipótesis exige estabilidad en todos los indicadores
-analizados, y "muestra suficiente" es 300 filas con el indicador. Lo que inclina el resultado son
-signos puntuales sin IC: `vol_rel20` queda bajo 0.5 en Crisis 2009, COVID y 2022 (0.464 a 0.478).
-Desviación documentada: con la lectura por mayoría (2 de 3 estables) sería apoyada, y con solo los
-regímenes de 120 semanas o más `mom_12_1` quedaría 1/2; además los tres indicadores se eligieron por
-su AUC en §4 (selección post hoc) y los 6 IC por régimen que se calculan (Expansión y Reciente)
-incluyen 0.5, así que "no concluyente" es una lectura alternativa defendible. COVID, 2022 y Crisis
-2009 (menos de 10·N = 120 semanas) son puntos sin IC: allí la AUC de momentum y RSI sube a
-0.64–0.79, y la de 0.95 del RSI en Crisis 2009 es el timing de un evento (76 positivos en pocas
-fechas), no discriminación. Fuente:
-[nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 4, 6 y 9. Figura:
-`nb04_auc_por_regimen.png`.
+**C4. Ninguno de los 7 [indicadores técnicos](glosario.md) mejora la [AUC](glosario.md) sobre la [línea base por decil de σ](glosario.md).** P4 estima ΔAUC con [IC95](glosario.md) [Bonferroni](glosario.md) al ≈ 99,3 % (α/7) y [bootstrap por bloques](glosario.md) de 1 fecha trimestral; los 7 IC cruzan 0, incluido el mayor en valor absoluto (`mom_12_1`, ΔAUC −0,018, IC95 [−0,055; +0,019]) y el más estrecho (`vol_rel20`, ΔAUC −0,001, IC95 [−0,011; +0,010]); umbral 0,01. **En los 7 indicadores no se rechaza H0 y la decisión de negocio es no accionable**. Las sensibilidades a bloques de 1, 2 y 4 fechas trimestrales mantienen las 7 decisiones. En consecuencia, `variables_svm = {|r_t|, σ20/σ252, σ252}` (**solo magnitud**, sin indicadores); la [línea base por decil de σ252 diaria](glosario.md) da AUC 0,591 en la prueba, con N = 60 días hábiles. Fuente: [nb04 §5.3](../../notebooks/04_eda_multivariado.ipynb) y [`nb04_p4.json`](../../data/resultados/nb04_p4.json).
 
-![AUC por régimen](../../entregables/entrega_1/assets/nb04_auc_por_regimen.png)
+![P4 por zona del indicador](../../entregables/entrega_1/assets/nb04_p4_zonas.png)
 
-**C4. El sector explica buena parte del retorno de cada acción (HP3 apoyada).** El IC de β excluye 0
-en 30 de 30 tickers y el R² mediano del modelo de índice único con el ETF sectorial es 0.525
-(financieras 0.700, consumo defensivo 0.495, tecnología 0.387; todas las industrias ≥ 0.30). Matiz
-por régimen que no cambia el estado: en tecnología, periodo Reciente, el R² mediano es 0.283 < 0.30. Además, las industrias se agrupan solas por correlación de retornos
-(ARI 0.898; correlación intra-industria 0.526 frente a 0.261 entre industrias). Fuente:
-[nb04](../../notebooks/04_eda_relaciones.ipynb), secciones 7 y 9. Figura: `nb04_hp3_indice_unico.png`.
+**C5. El [XLP](glosario.md) agrega poder explicativo semanal al [SPY](glosario.md).** P5 estima un [ΔR²](glosario.md) mediano por empresa de 0,225, [IC95](glosario.md) por [empresa](glosario.md) [+0,175; +0,291], umbral 0,05; **se rechaza H0 y la decisión de negocio es accionable**. P5 es **confirmatoria**: la industria piloto se eligió, entre otras razones, mirando este ΔR² exploratorio (§7.3), así que su rechazo no es evidencia independiente. Fuente: [nb04 §6](../../notebooks/04_eda_multivariado.ipynb); [`nb04.json`](../../data/resultados/nb04.json) clave `P5`.
 
-![Índice único](../../entregables/entrega_1/assets/nb04_hp3_indice_unico.png)
+![ΔR² de P5](../../entregables/entrega_1/assets/nb04_p5_delta_r2.png)
 
-**C5. Los múltiplos no revierten a su historia como regla general (HF1 no apoyada; HF2 no apoyada).**
-Solo 7 de 29 tickers evaluables muestran reversión del P/E o P/B (ADF con p < 0.05, η > 0 y vida
-media menor que la mitad de la historia; 6 sin META, que depende de un valor atípico) y 10 de 29 con el múltiplo relativo a su industria
-(misma regla; tecnología 3/9, consumo defensivo 5/10, financieras 2/10; ninguna industria supera la mitad). HF3
-(calidad y valoración, exploratoria) es no concluyente: Spearman 0.001, IC −0.093 a 0.064; HF4
-(d₂ de Merton) también: 0.171 global (p = 0.012, descriptivo) pero −0.056 y +0.071 dentro de industria. Los mayores descuentos actuales (GIS 0.31,
-KHC 0.40, ADBE 0.45) no pasan la prueba de reversión. Fuente: [nb03](../../notebooks/03_eda_series.ipynb),
-sección 8; [nb04](../../notebooks/04_eda_relaciones.ipynb), sección 8. Figura: `multiplos_percentil.png`.
+**C6. La turbulencia (en magnitud) se agrupa, pero la magnitud exacta es incierta.** En P6 diaria, P(T|T) = 0,305, [IC95](glosario.md) por [bloques de fechas](glosario.md) [0,275; 0,340], umbral 0,30; en P6 semanal, 0,282 con IC95 [0,239; 0,323]. En ambas se rechaza H0 (la diferencia P(T|T) − P(T|calma) tiene un IC95 que excluye 0), pero el IC95 de P(T|T) cruza el umbral: **la decisión de negocio es "efecto real, pero de magnitud incierta"** en las dos frecuencias. Los dos controles de dirección rechazan H0 con un efecto diminuto ([V de Cramér](glosario.md) ≈ 0,02–0,04); se reporta solo la [decisión estadística](glosario.md) (no llevan decisión de negocio). Fuente: [nb03 §5](../../notebooks/03_eda_univariado.ipynb); [`nb03.json`](../../data/resultados/nb03.json) claves `P6_diaria`, `P6_semanal`, `P6_dir_diaria`, `P6_dir_semanal`.
 
-![Percentil de múltiplos](../../entregables/entrega_1/assets/multiplos_percentil.png)
-
-**C6. El VaR histórico y el de GARCH-t no están bien calibrados (HP1 no apoyada).** Las colas
-son más pesadas que la normal (VaR 99 % histórico más extremo que el normal en 30 de 30; ν < 10 en
-34 de 34), pero la regla de HP1 decide con el backtest: fuera de muestra (2020+) el VaR 95 % de
-GARCH-t tiene 7.49 % de excepciones (mediana; Kupiec rechaza en 15 de 30) y el histórico móvil 6.78 %
-(8 de 30), frente al 5 % esperado. La independencia de las excepciones (Christoffersen) casi nunca
-falla (se rechaza en 2 de 30 con GARCH-t y 3 de 30 con el histórico), así que el problema es la
-cobertura, no el agrupamiento; GARCH-t resulta adecuado en 14 de 30 (tecnología 3/10, consumo
-defensivo 5/10, financieros 6/10) y el histórico en 19 de 30. Fuente:
-[nb03](../../notebooks/03_eda_series.ipynb), secciones 9 y 9b y síntesis HP1.
-
-**C7. Los datos son aptos para describir riesgo, pero heterogéneos para fundamentales (HF5 apoyada).** Los precios
-están limpios (0 nulos, 0 duplicados, 0 semanas faltantes; 73 saltos > 5σ que son movimientos reales).
-`utilidad_bruta` falta en 16 de 30 emisores y `capex` en 8; las 10 financieras no tienen utilidad
-operativa. Las cifras de EDGAR coinciden en 6 de 6 con el 10-K de AAPL, KO y JPM (HF5 apoyada). Fuente:
-[nb02](../../notebooks/02_calidad.ipynb), secciones 1, 3, 4 y 7 (síntesis). Figura: `completitud_edgar.png`.
-
-![Completitud EDGAR](../../entregables/entrega_1/assets/completitud_edgar.png)
+**C7. La multiplicidad declarada (15 pruebas, 13 con decisión de negocio) no cambia ninguna decisión.** [Holm](glosario.md) al 0,05 sobre las 13 con decisión de negocio deja 4 que siguen rechazando H0 (P2, P5, P6 diaria y P6 semanal), con [p bilateral equivalente](glosario.md) de 0,002 frente a límites de 0,0038 a 0,0050; P1 no rechazaba y tampoco rechaza con Holm. P4 ya se reporta con [Bonferroni](glosario.md) al ≈ 99,3 %. Fuente: [nb04 §8](../../notebooks/04_eda_multivariado.ipynb).
 
 ## 7.2 Insights para el producto (cada uno lleva a una decisión)
 
-| Insight | Decisión de diseño | Fuente |
-|---|---|---|
-| Con k = 1, N = 12 la clase 1 es 17.1 % en la muestra etiquetada completa (17.8 % en la muestra de la línea base con deriva, que exige 52 semanas de historia) (≈ 2 245 ventanas no solapadas); con k = 2 es rara (≈ 4 %) | Etiqueta de triple barrera **k = 1, N = 12** | [nb04](../../notebooks/04_eda_relaciones.ipynb) §2 |
-| GARCH-t gana a la volatilidad constante en 28 de 34 series | Simulación con **volatilidad GARCH-t / EWMA e innovaciones t**, no GBM normal; barreras escaladas con σ | [nb03](../../notebooks/03_eda_series.ipynb) §5 |
-| El GBM sobreestima la clase 1 en 9.5 pp con μ = 0 y en 0.8 pp con deriva pasada, pero P_GBM no está calibrada (HT0 calibración no apoyada: b = −0.294, IC −0.641 a −0.011) | Rival que decide HT1: **tasa empírica de toque por decil de σ** (etiquetas resueltas antes de t, t' + N ≤ t, y cortes expansivos); el GBM con deriva ≤ t queda como referencia teórica (b < 0 indica AUC_GBM < 0.5) y el μ = 0 solo como referencia | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
-| La sobreestimación del GBM crece con σ (decil 10: 19.4 pp con μ = 0 y 12.3 pp con deriva) | σ entra como rasgo; la tasa base por decil de σ es la línea base de HT1 y solo usa etiquetas resueltas antes de t (t' + N ≤ t) y cortes de deciles expansivos | [nb04](../../notebooks/04_eda_relaciones.ipynb) §3 |
-| VIF ≥ 10 en `dist_ema20` (55.6) y `dist_sma50` (11.6) | Indicadores retenidos: `rsi14`, `dist_sma20`, `vol_rel20`, `donchian20`, `mom_12_1` | [nb04](../../notebooks/04_eda_relaciones.ipynb) §5 |
-| Financieras sin margen bruto, margen operativo ni ROIC (0 % de completitud) | **Set de ratios propio** para financieras (ROE, P/B, margen neto); NaN sin imputar en las demás | [nb02](../../notebooks/02_calidad.ipynb) §3 |
-| Sector explica R² 0.525 (financieras 0.700, tecnología 0.387; HP3 apoyada, IC de β excluye 0 en 30 de 30) | La simulación incluye el factor del **ETF sectorial** y reporta la parte idiosincrática en tecnología | [nb04](../../notebooks/04_eda_relaciones.ipynb) §7 |
-| Múltiplos revierten en 7 de 29 (HF1 no apoyada) y 10 de 29 (HF2 no apoyada); calidad y valoración (HF3) y d₂ (HF4) no concluyentes | Percentil del múltiplo solo como **variable de contexto**, no como señal de reversión | [nb03](../../notebooks/03_eda_series.ipynb) §8; [nb04](../../notebooks/04_eda_relaciones.ipynb) §8 |
-| Cobertura VaR 95 % fuera de muestra 7.49 % (GARCH-t) y 6.78 % (histórico); HP1 no apoyada | Propuesta pendiente de la acción 4: reportar el **VaR 99 % histórico con advertencia** de subestimación, solo tras backtestear su tasa de excepciones (aún no hecho) | [nb03](../../notebooks/03_eda_series.ipynb) §9 |
+| Insight (fuente) | Decisión de diseño |
+|---|---|
+| En consumo defensivo, el quintil barato (por [P/E normalizado](glosario.md)) sube su múltiplo más que el caro en 3 años; la descomposición no permite afirmar si lo normaliza el precio, lo deterioran las utilidades o es [trampa de valor](glosario.md) ([nb04 §2.7 y §2.8](../../notebooks/04_eda_multivariado.ipynb); clave `P2` en [`nb04.json`](../../data/resultados/nb04.json)) | La lectura fundamental del nivel "barata frente a su historia" muestra el **[percentil](glosario.md) propio** del P/E normalizado como lectura principal y el **percentil en la industria** (dentro de las 21 empresas en la misma fecha) como contexto, y agrega la **advertencia descriptiva de posible deterioro de utilidades** ([ROE](glosario.md) y [margen operativo](glosario.md) como contexto). No promete un mejor retorno por comprar barato ([04_enfoque_analitico.md](04_enfoque_analitico.md) §4.3) |
+| El quintil barato no gana al [XLP](glosario.md) a 3 años dentro del sector ([nb04 §3.7](../../notebooks/04_eda_multivariado.ipynb)) | El exceso sobre el XLP **no entra como señal** en la lectura fundamental; se usa solo como contexto |
+| La [turbulencia](glosario.md) diaria se agrupa (P6: P(T\|T) = 0,305, [IC95](glosario.md) [0,275; 0,340]; efecto real, pero de magnitud incierta) ([nb03 §5](../../notebooks/03_eda_univariado.ipynb); clave `P6_diaria` en [`nb03.json`](../../data/resultados/nb03.json)) | Los niveles se miden en **k · σ252 diaria** y la [etiqueta de entrada](glosario.md) usa un horizonte de **[N = 60 días hábiles](glosario.md)** |
+| La turbulencia semanal también se agrupa (P6: P(T\|T) = 0,282, [IC95](glosario.md) [0,239; 0,323]) ([nb03 §5](../../notebooks/03_eda_univariado.ipynb); clave `P6_semanal` en [`nb03.json`](../../data/resultados/nb03.json)) | La [simulación](glosario.md) remuestrea **bloques de semanas** de la acción y del XLP al mismo tiempo, en lugar de semanas sueltas |
+| Ninguno de los 7 [indicadores técnicos](glosario.md) mejora la [AUC](glosario.md) sobre la magnitud de la volatilidad ([nb04 §5.3](../../notebooks/04_eda_multivariado.ipynb); [`nb04_p4.json`](../../data/resultados/nb04_p4.json)) | `variables_svm = {|r_t|, σ20/σ252, σ252}` (solo magnitud); el modelo técnico (SVM, [04_enfoque_analitico.md](04_enfoque_analitico.md) §4.3) se evaluará contra la [línea base por decil de σ252 diaria](glosario.md) (AUC 0,591 en la prueba) |
+| El XLP agrega un [ΔR²](glosario.md) mediano de 0,225 sobre el SPY, [IC95](glosario.md) [+0,175; +0,291] (P5 confirmatoria, [nb04 §6](../../notebooks/04_eda_multivariado.ipynb); clave `P5` en [`nb04.json`](../../data/resultados/nb04.json)) | La simulación de la lectura probabilística remuestrea semanas de la acción **y del XLP al mismo tiempo** (no solo del SPY) |
+| Las [ventanas](glosario.md) de 3 años de la misma empresa se solapan y las 21 empresas comparten choques en una misma fecha ([nb04 §2.4 y §3.4](../../notebooks/04_eda_multivariado.ipynb)) | Las decisiones de P2 y P3 usan **[IC por empresa](glosario.md)** (remuestrea empresas enteras y absorbe el solapamiento); el p-value de Welch se reporta solo con la advertencia de que supone independencia |
+| El producto solo se validó en la industria piloto ([01_negocio.md](01_negocio.md) §1.5) | Fuera de consumo defensivo, el panel marca el ticker como **"industria no validada"**: muestra la lectura fundamental y el panel de riesgo, y las probabilidades llevan la advertencia de modelo no validado ([02_ideacion.md](02_ideacion.md)) |
 
-**Qué implica para el SVM (HT1).** El EDA no muestra que los indicadores técnicos, por sí solos,
-separen las clases: AUC 0.496–0.514 y sin separación en el PCA. Lo que sí mostró es que la
-probabilidad de la etiqueta depende de σ (la tasa observada baja de 20.6 % en el decil 1 de σ a
-7.8 % en el decil 10, [nb04](../../notebooks/04_eda_relaciones.ipynb) §3) y del régimen
-([nb04](../../notebooks/04_eda_relaciones.ipynb) §6). Por eso el SVM no debe presentarse como
-"los indicadores predicen": el resultado honesto a esperar es una mejora pequeña o nula sobre la
-línea base que decide (la tasa empírica de toque por decil de σ, con etiquetas resueltas antes de t),
-y la ganancia, si existe, vendrá de rasgos de volatilidad o de régimen y de interacciones. El GBM
-con deriva ≤ t se reporta como referencia teórica, no como rival: no está calibrado (HT0 calibración
-no apoyada) y su pendiente negativa indica que ordena las filas al revés, así que superarlo sería
-casi trivial. Este cambio de rival se fijó antes de evaluar HT1 (ajuste de pre-registro, no post hoc). Por eso el SVM incorpora, además de los
-cinco indicadores retenidos, σ_t y rasgos de régimen calculados hacia atrás, sin fundamentales
-([04_enfoque_analitico.md](04_enfoque_analitico.md), 4.3.2). HT1 queda **preparada, no probada**: se
-decide con AUC y Brier en validación walk-forward, no con este EDA.
+## 7.3 Suficiencia y limitaciones
 
-## 7.3 Suficiencia y limitaciones de los datos
+**Suficiencia.** P2 y P3 reúnen 44 fechas trimestrales con al menos 15 empresas vigentes (2012-12-31 a 2023-09-30), 840 observaciones empresa-fecha, mediana de 3,8 empresas por quintil y ≈ 3,7 ventanas de 3 años sin solapamiento ([nb02 §6.1](../../notebooks/02_calidad.ipynb)). Con esos tamaños, el diseño solo detecta diferencias grandes: la [MDE](glosario.md) anualizada de P2 es ≈ 0,165 en log (≈ 17,9 % por año; [nb04 §2.5](../../notebooks/04_eda_multivariado.ipynb)) y la de P3, ≈ 0,132 en log (≈ 14,1 % por año; [nb04 §3.3](../../notebooks/04_eda_multivariado.ipynb)). Ambas quedan muy por encima de los umbrales (0,03 y 0,05), así que P2 solo pudo decidir porque la señal fue grande, y P3 queda con potencia baja frente a su umbral. Las decisiones salen del [IC95](glosario.md), no del p-value clásico.
 
-¿Alcanzan para las hipótesis? **Sí para las de volatilidad y de sector** (HP0, HT4, HP3, todas apoyadas: 34 series
-semanales, panel de 27 326 filas de 30 tickers, 2009–2026); la cobertura del VaR (HP1, de riesgo)
-no está apoyada. **Solo de forma limitada para las de
-dirección y valoración** (HT2, HT3, HF1–HF4), donde el resultado es no apoyado o no concluyente.
+**Limitaciones.**
 
-| Limitación | Cuantificación | Efecto | Fuente |
-|---|---|---|---|
-| Muestra desde enero de 2009 | La crisis 2008–09 solo entra en su tramo final; "Crisis 2009" tiene 1 428 filas y 76 positivas | Régimen de crisis profunda poco representado | [nb04](../../notebooks/04_eda_relaciones.ipynb) §1 y §6 |
-| Pocos eventos de régimen | COVID ≈ 13 semanas; 2022 es un solo ciclo común a todos los tickers | La AUC alta de 0.64–0.79 es indicativa de un evento, no un resultado estable | [nb04](../../notebooks/04_eda_relaciones.ipynb) §6 |
-| Sesgo de supervivencia | 30 emisores grandes y vigentes en 2026 | Sobreestima retornos y subestima el riesgo de caída | [nb02](../../notebooks/02_calidad.ipynb) §6 |
-| Fundamentales incompletos | Utilidad bruta presente en solo 14 de 30 (ausente en 16); capex en 22 de 30 emisores (completitud media 65.0 %); GOOGL sin P/E (cobertura de P/E de 10 %) | Los modelos no pueden depender de esos conceptos; se excluye GOOGL de HF1 y HF2 | [nb02](../../notebooks/02_calidad.ipynb) §3 |
-| Verificación externa parcial | 3 de 30 emisores contrastados con el 10-K | HF5 no se extrapola a los demás | [nb02](../../notebooks/02_calidad.ipynb) §4 |
-| Censura de la etiqueta | 360 observaciones censuradas por horizonte a 12 semanas (1.32 %), más 30 sin σ por calentamiento (390 filas sin etiqueta en nb04); la última semana es parcial | Se excluyen de las etiquetas | [nb02](../../notebooks/02_calidad.ipynb) §6 |
-| Dependencia entre observaciones | Ventanas de 12 semanas solapadas; IC por bloques de 12 semanas solo en regímenes de al menos 120 semanas | COVID, 2022 y Crisis 2009 se reportan sin IC | [nb04](../../notebooks/04_eda_relaciones.ipynb) §6 |
-| Un único periodo fuera de muestra para GARCH | 2020+, con el choque de 2020 | La ventaja de GARCH-t (28 de 34) es moderada | [nb03](../../notebooks/03_eda_series.ipynb) §10 |
-| Split y dividendos | Correcciones por splits ya aplicadas a EPS y valor en libros; el precio de los múltiplos es sin ajuste por dividendos | Sin riesgo de múltiplos distorsionados por splits | [nb03](../../notebooks/03_eda_series.ipynb) §8 |
-| Frecuencia anual de fundamentales | El pipeline ingiere solo 10-K: 8 a 16 reportes anuales por ticker (mediana 13) en la ventana de 432 a 885 semanas (mediana 850) del múltiplo | Su denominador cambia unas 13 veces; ADF y OU miden sobre todo la reversión del precio, y la conclusión de HF1 y HF2 se lee con esa n efectiva. Los 10-Q (EPS TTM) quedan para la entrega siguiente | [nb03](../../notebooks/03_eda_series.ipynb) §8 |
-| Merton | Deuda de largo plazo como único insumo; resultado débil (HF4) | Solo exploratorio | [nb04](../../notebooks/04_eda_relaciones.ipynb) §10 |
+- **Una sola industria piloto.** El pipeline se validó en consumo defensivo (21 empresas, [SPY](glosario.md) y [XLP](glosario.md)); las conclusiones de P1–P6 **no se generalizan a otra industria**. Hasta que no se replique el pipeline en una segunda industria, el panel marca los tickers fuera de consumo defensivo como "industria no validada" ([02_ideacion.md](02_ideacion.md)).
+- **[Sesgo de supervivencia](glosario.md).** Las 21 empresas vigentes en 2026 forman el universo; a 3 años el sesgo pesa más. En P3 el estimado puede estar inflado hacia arriba (quedan las empresas que sobrevivieron). KHC se excluyó porque sus precios empiezan en 2015, no por su resultado ([01_negocio.md](01_negocio.md) §1.5).
+- **Historia desde 2009.** No hay datos estructurados gratuitos antes. Con el horizonte de 3 años, las observaciones con resultado terminan en 2023-09-30 y el [P/E normalizado](glosario.md) empieza hacia 2012–2013 (necesita 12 trimestres de EPS publicado).
+- **[EPS TTM](glosario.md) con [Q4 derivado](glosario.md) y aproximaciones de calidad.** Con 1.308 TTM válidos sobre 1.434 trimestres (91,2 %) y STZ fuera por falta de `acciones` y HSY solo hasta 2015. Se usan **acciones implícitas** y **escala corregida** (los Q4 extremos de 10-K reexpresados se conservan como resultado real), según se declara en [nb02 §2b](../../notebooks/02_calidad.ipynb).
+- **[P/E normalizado](glosario.md) con 3 años, no 5–10.** Graham–Dodd y Campbell–Shiller recomiendan 5 a 10 años; aquí se usan 3 por la historia disponible, y se declara en la lectura ([04_enfoque_analitico.md](04_enfoque_analitico.md) §4.3).
+- **Ventanas de 3 años solapadas entre reportes.** Dos trimestres consecutivos de la misma empresa comparten 2 de los 3 años de futuro; por eso el IC95 principal de P2 y P3 es por [bootstrap por empresa](glosario.md), que absorbe el solapamiento intra-empresa, y el IC por [bloques de fechas trimestrales](glosario.md) queda solo como sensibilidad ([nb04 §2.4 y §3.4](../../notebooks/04_eda_multivariado.ipynb)).
+- **P5 confirmatoria.** La industria piloto se eligió, entre otras razones, viendo el ΔR² exploratorio del XLP; rechazar H0 en P5 confirma la propiedad usada para elegirla y no es evidencia independiente ([nb04 §6](../../notebooks/04_eda_multivariado.ipynb)).
+- **Fuga de selección en P4.** La lista `variables_svm` se construyó mirando el tramo 2019+, así que el modelo técnico (SVM) de la entrega 2 debe evaluarse en un tramo posterior o con [validación cronológica](glosario.md) sobre ≤ 2018 ([04_enfoque_analitico.md](04_enfoque_analitico.md) §4.3).
+- **Umbrales y horizonte fijados tras una exploración previa.** Los umbrales de P1, P2 y P4 y el horizonte de 3 años de P2 y P3 se fijaron después de una primera exploración, y no se cambiaron para acercarse al resultado (bitácora §2026-10-04). Además, la primera revisión del plan trabajó con una aproximación de 9–10 empresas; el panel final es de 21 empresas en el XLP con historia desde 2009 (KHC excluida).
+- **15 pruebas declaradas y multiplicidad.** La lista se fijó antes de ejecutar: P1 (1) + P2 (1) + P3 (1) + P4 (7, con [Bonferroni](glosario.md) al ≈ 99,3 %) + P5 (1) + P6 diaria (1) + P6 semanal (1) + 2 controles de dirección = **15 pruebas** (**13 con [decisión de negocio](glosario.md)**; los 2 controles de dirección solo tienen decisión estadística). La sensibilidad [Holm](glosario.md) al 0,05 sobre esas 13 deja rechazando a las 4 que ya rechazaban (P2, P5, P6 diaria y P6 semanal); **ninguna decisión cambia** ([nb04 §8](../../notebooks/04_eda_multivariado.ipynb)).
+- **Validación con el stakeholder.** La sesión de 15–20 minutos aún no tiene notas registradas; **los KPI 1 (tiempo de análisis), 2 (cambios de pantalla) y 5 (confianza y adopción) de [01_negocio.md](01_negocio.md) §1.7 están pendientes** y se registran en [validacion_stakeholder.md](validacion_stakeholder.md) cuando se complete la sesión.
+
+Las técnicas que no están cubiertas en el material de MINE-4101 y que sí se usan (bootstrap por bloques, bootstrap por empresa, [MDE](glosario.md), [Bonferroni](glosario.md), [Holm](glosario.md), [Mann-Whitney](glosario.md), [prueba F de modelos anidados](glosario.md), [VIF](glosario.md), [clustermap](glosario.md), nulo calibrado por simulación, EPS TTM con Q4 derivado, SVM y simulación por remuestreo de bloques, [AUC](glosario.md), Brier y calibración) se declaran, con la razón de uso, en [`03_etica_legal.md` §3.3](03_etica_legal.md).
 
 ## 7.4 Acciones próximas (priorizadas)
 
-Filtro T6: para cada acción se pregunta "¿el inversor tiene este dato hoy?". Todos los rasgos,
-percentiles, parámetros de GARCH y deriva se calculan con datos ≤ t (ventana expansiva y fecha
-`filed`); solo la etiqueta mira al futuro.
+Las acciones próximas se limitan a lo que ya está definido para la entrega 2 (modelo técnico, [simulación](glosario.md) y validación con el stakeholder; [04_enfoque_analitico.md](04_enfoque_analitico.md) §4.3) y a la réplica del pipeline en una segunda industria. No se adelantan resultados.
 
-| # | Acción | Responsable | Criterio de terminado | Filtro T6 |
-|---|---|---|---|---|
-| 1 | Entrenar el SVM (HT1) con validación walk-forward con purga y embargo (N = 12 semanas) y compararlo con la tasa empírica por decil de σ (rival que decide; etiquetas con t' + N ≤ t y cortes expansivos), con el GBM con deriva ≤ t como referencia, con AUC y Brier | Louis Gualtero | Tabla de AUC y Brier por pliegue y por régimen, con IC por bloques; se declara si el SVM no mejora la línea base | Rasgos y deriva con datos ≤ t; la etiqueta es lo único que usa el futuro |
-| 2 | Añadir rasgos de volatilidad y de régimen **calculados hacia atrás**: σ GARCH-t/EWMA condicional, drawdown acumulado del SPY y su volatilidad reciente | Louis Gualtero | Rasgos con prueba unitaria de no look-ahead (los valores en t no cambian si se trunca la serie después de t) | **Atención:** los regímenes del EDA (COVID, 2022) se definieron ex post con fechas; no se pueden usar como rasgo. Se sustituyen por medidas hacia atrás |
-| 3 | Construir el motor Monte Carlo con GARCH-t, innovaciones t y factor del ETF sectorial (HP2) | Louis Gualtero | Probabilidad de alcanzar cada nivel de salida (y de entrada) en el horizonte, con parámetros re-estimados con ventana expansiva; cobertura comparada con la tasa observada | Parámetros ajustados con datos ≤ t |
-| 4 | Calibrar el VaR reportado: añadir el VaR 99 % histórico y evaluar una ventana más corta o EWMA | Louis Gualtero | Tasa de excepciones fuera de muestra y prueba de Kupiec reportadas por acción | La ventana de VaR usa solo retornos pasados |
-| 5 | Incluir los ratios de calidad y valoración solo como contexto (percentil en la industria, ROE, P/B), con la fecha `filed` | Louis Gualtero | Percentiles expansivos; ninguna señal de reversión | Se usa el dato a partir de su fecha de presentación, no del cierre fiscal |
-| 6 | Ampliar la muestra para reducir las limitaciones: emisores retirados o deslistados si hay fuente, y GOOGL con el conteo de acciones | Louis Gualtero | Informe de cuántos emisores nuevos se obtienen y su efecto sobre HT3 y la línea base | Solo cambia el universo histórico; el inversor ve el universo vigente |
-| 7 | Redactar con los usuarios (stakeholder) la advertencia de incertidumbre que acompaña los niveles de salida | Louis Gualtero | Texto validado con el stakeholder; sin lenguaje de recomendación de compra | No depende de datos futuros |
+| # | Acción | Criterio de terminado |
+|---|---|---|
+| 1 | Entrenar el modelo técnico (SVM) con las `variables_svm = {|r_t|, σ20/σ252, σ252}` sobre la etiqueta de [N = 60 días](glosario.md) y compararlo con la [línea base por decil de σ252 diaria](glosario.md) ([04_enfoque_analitico.md](04_enfoque_analitico.md) §4.3) | Tabla de AUC y [Brier](glosario.md) con corte cronológico y [IC95](glosario.md) por [bloques de fechas](glosario.md); se declara explícitamente si el modelo no mejora la línea base |
+| 2 | Implementar la [simulación](glosario.md) por remuestreo de bloques de semanas de la acción y del XLP ([04_enfoque_analitico.md](04_enfoque_analitico.md) §4.3) | Probabilidad de alcanzar cada [nivel de salida](glosario.md) en el horizonte, con parámetros ajustados con datos ≤ t; cobertura comparada con la [tasa observada](glosario.md) |
+| 3 | Validar el producto con el stakeholder y registrar los KPI 1, 2 y 5 ([01_negocio.md](01_negocio.md) §1.7) | Sesión de 15–20 minutos ejecutada con el guion de validación ([validacion_stakeholder.md](validacion_stakeholder.md)) y KPI reportados con su línea base y su meta |
+| 4 | Replicar el pipeline en una segunda industria y retirar la marca "industria no validada" solo para esa industria | Las **15 pruebas** de la lista ejecutadas en la industria nueva (P1, P2, P3, los 7 indicadores de P4, P5 y P6 diaria y semanal) con su matriz de supuestos; la marca "industria no validada" se retira solo para esa industria |
 
-Ninguna acción depende de un dato que el inversor no tenga el día de la decisión. La acción 6 es
-la única que cambia el universo, y se identifica como mejora de la muestra de entrenamiento, no
-como entrada del producto en t.
+Ninguna acción depende de un dato que el inversor no tenga el día de la decisión: los rasgos del modelo técnico, los percentiles y las probabilidades se calculan con datos ≤ t ([ventana expansiva](glosario.md) y fecha [`filed`](glosario.md)) y la etiqueta es lo único que mira al futuro.
