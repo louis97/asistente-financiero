@@ -1,91 +1,251 @@
 # Diccionario de datos (punto 5.3)
 
-Cubre precios, indicadores técnicos, conceptos de EDGAR, ratios, etiquetas y métricas de riesgo. Todo se calcula en `src/asistente/` y se descarga en `notebooks/01_recoleccion.ipynb`.
+Describe las instantáneas de `data/snapshots/` que se descargan en [`notebooks/01_recoleccion.ipynb`](../../notebooks/01_recoleccion.ipynb) y los campos derivados que calculan [`notebooks/03_eda_univariado.ipynb`](../../notebooks/03_eda_univariado.ipynb) y [`notebooks/04_eda_multivariado.ipynb`](../../notebooks/04_eda_multivariado.ipynb). Todas las definiciones de términos se consultan en el [glosario](glosario.md).
 
-**Cómo leer la columna "Significado del 0 o del vacío" (lección T2).** Un cero y un vacío (`NaN`) casi nunca significan lo mismo. En este proyecto el vacío quiere decir "no hay dato, no se pudo calcular o aún no se conoce" y nunca se rellena con 0. Un cero solo se interpreta como cantidad cuando la fila lo dice.
+**Universo.** 21 empresas de consumo defensivo con historia desde 2009 y en el XLP (KO, PEP, PG, WMT, COST, CL, MDLZ, KMB, GIS, MO, PM, HSY, KR, SYY, ADM, CLX, CHD, MKC, STZ, CAG, TSN), más dos ETF usados como referencia: el SPY (mercado) y el XLP (sector). KHC queda excluida porque sus precios empiezan en 2015. Los dos ETF viven solo en las tablas de precios; los demás snapshots guardan únicamente las 21 empresas.
 
-Unidades: USD son dólares corrientes; "adimensional" es una razón sin unidad; "fracción" es 0.05 = 5 %. Hipótesis: IDs de `docs/entrega_1/04_enfoque_analitico.md`.
+**Cómo leer la columna "Significado del 0 o del vacío" (lección T2 del curso).** Un cero y un vacío (`NaN`) casi nunca significan lo mismo. En este proyecto el vacío quiere decir "no hay dato, no se pudo calcular o aún no se conoce" y nunca se rellena con 0. Un cero solo se interpreta como cantidad cuando la fila lo dice.
 
-## 1. Precios (yfinance), instantáneas `precios_semanales` y `precios_mensuales`
+**Unidades.** USD son dólares corrientes; "adimensional" es una razón sin unidad; "fracción" es 0,05 = 5 %. Las columnas `uso` nombran las hipótesis P1–P6 definidas en [`04_enfoque_analitico.md`](04_enfoque_analitico.md) §4.1–§4.5.
 
-| Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
-|---|---|---|---|---|---|---|
-| `fecha` | yfinance | fecha | día | desde 2009-01-05 (semanal) o 2009-01-01 (mensual) | Vacío: no existe (la fila se descarta). Semanal: lunes que abre la semana; mensual: día 1 del mes | Llave de tiempo del panel. Se une con `filed` de EDGAR mediante `alinear_por_filed` (todas las hipótesis) |
-| `ticker` | config | texto | símbolo | 30 acciones, SPY, XLK, XLP, XLF | Vacío: no ocurre | Llave de empresa. Define la industria con `config.industria_de` (HF2, HP3) |
-| `close` | yfinance | real | USD por acción, ajustado por dividendos y particiones | > 0 | 0: no debería ocurrir; un 0 sería un error de la fuente. Vacío: no hubo cotización en esa barra, y la fila se elimina al descargar | Precio de cierre de la barra. Base de retornos, indicadores y etiquetas (HT0–HT4, HP0–HP3) |
-| `volume` | yfinance | real | acciones | >= 0 | 0: dato no confiable o no reportado (ETF y barras parciales); no se lee como "nadie negoció". Vacío: igual que 0 para efectos de uso. Ambos se tratan como "sin dato" en `vol_rel20` | Volumen negociado en la barra. Alimenta `vol_rel20` (HT2) |
-| `r` (log) | derivado | real | fracción por semana | cola gruesa; típicamente entre -0.4 y 0.4 | 0: el precio no cambió en la semana (poco frecuente en acciones líquidas). Vacío: primera barra de cada ticker, que no tiene retorno previo | `r_t = ln(close_t / close_{t-1})` (`riesgo.log_retornos`). Base de volatilidad, VaR, GARCH, GBM y prueba de caminata aleatoria (HT0, HT4, HP0–HP3) |
+**Regla de temporalidad (fecha de publicación).** Toda columna `filed_<campo>` guarda la primera fecha en que ese dato fue público; una fila de ratios solo se puede usar en una decisión en `t` si `filed ≤ t`. Esta regla se audita en nb02 §3 y evita el look-ahead en todas las uniones de precios con fundamentales.
 
-## 2. Indicadores técnicos (`indicadores.tabla_indicadores`), semanales
+---
 
-El calentamiento de cada ventana queda en vacío: no se rellena ni se arrastra el último valor.
+## 1. Precios semanales (`data/snapshots/precios_semanales.parquet`)
+
+Serie de tiempo semanal construida por yfinance con el cierre del viernes. 21 344 filas (23 tickers × ≈ 920 semanas desde 2009-01-05). El `close` ya viene ajustado por dividendos y splits.
 
 | Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
 |---|---|---|---|---|---|---|
-| `rsi14` | derivado de `close` | real | puntos del índice | 0 a 100 | 0: todas las variaciones recientes fueron bajas (sobreventa extrema). 100: todas fueron altas. Vacío: menos de 14 semanas de historia, o precio sin variación en la ventana (denominador 0) | Índice de fuerza relativa con suavizado exponencial de 14 semanas. Mide sobreextensión (HT2) |
-| `dist_sma20` | derivado de `close` | real | fracción | > -1; típico -0.3 a 0.5 | 0: el precio está justo sobre su media simple de 20 semanas. Vacío: menos de 20 semanas | `close / SMA20 - 1`. Distancia a la media corta (HT2) |
-| `dist_sma50` | derivado de `close` | real | fracción | > -1 | 0: precio sobre la media de 50 semanas. Vacío: menos de 50 semanas | Igual que la anterior con ventana 50 (HT2) |
-| `dist_ema20` | derivado de `close` | real | fracción | > -1 | 0: precio sobre la media exponencial de 20 semanas. Vacío: menos de 20 semanas | Versión exponencial de `dist_sma20`, más sensible a lo reciente (HT2) |
-| `vol_rel20` | derivado de `volume` | real | adimensional | > 0 | 0: no ocurre, porque el volumen 0 se trata como "sin dato". Vacío: volumen 0 o vacío en la semana, o menos de 20 semanas de historia. 1 significa volumen igual al promedio de 20 semanas | Volumen de la semana dividido por su media móvil de 20 semanas (HT2) |
-| `donchian20` | derivado de `close` | real | fracción del canal | 0 a 1 | 0: el cierre está en el mínimo de 20 semanas. 1: está en el máximo (techo del canal). Vacío: menos de 20 semanas o canal sin amplitud (máximo igual a mínimo) | Posición del cierre dentro del canal Donchian de 20 semanas (HT2) |
-| `mom_12_1` | derivado de `close` | real | fracción | > -1 | 0: el precio de hace 4 semanas es igual al de hace 52. Vacío: menos de 52 semanas de historia | Momentum de 12 meses saltando el último mes: `close_{t-4} / close_{t-52} - 1` (Jegadeesh, 1990; HT2, HF3) |
+| `fecha` | yfinance | fecha | día | desde 2009-01-05 | Vacío: no ocurre | Lunes que abre la semana. Llave de tiempo. Se une con `filed` de EDGAR en el panel multivariado (P2–P5) |
+| `ticker` | config | texto | símbolo | 21 empresas + SPY + XLP | Vacío: no ocurre | Llave de empresa. SPY y XLP solo aparecen aquí y en `precios_diarios` |
+| `close` | yfinance | real | USD por acción, ajustado | > 0 | 0: no debería ocurrir; sería error de la fuente. Vacío: no hubo cotización y la fila se descarta | Precio ajustado de cierre. Base de retornos, múltiplos y de la etiqueta de entrada (todas las hipótesis) |
+| `volume` | yfinance | real | acciones | ≥ 0 | 0: dato no confiable; se trata como "sin dato". Vacío: igual que 0 | Volumen negociado en la semana. Alimenta `vol_rel20` (P4) |
 
-## 3. Conceptos de EDGAR (`edgar.CONCEPTOS`), instantánea `edgar_hechos` y tabla anual
+## 2. Precios semanales sin ajuste por dividendos (`precios_semanales_sd.parquet`)
 
-Fuente: SEC EDGAR `companyfacts` (us-gaap). Solo se usan periodos de 330 a 400 días (año completo). Se prueban las etiquetas alternativas en orden y se toma la primera con datos. El vacío nunca se rellena con 0.
+Igual estructura y filas que `precios_semanales`, con el `close` ajustado solo por splits (no por dividendos). Se usa en nb01 §4.3 para calcular los múltiplos semanales (`close × acciones / utilidad_neta_ttm`), porque el P/E se calcula con el precio que vieron los inversores el día del cierre, no con el precio reinvertido. Mismos campos que la tabla 1.
 
-| Campo | Fuente (etiqueta XBRL) | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
-|---|---|---|---|---|---|---|
-| `ingresos` | `Revenues`, `RevenueFromContractWithCustomerExcludingAssessedTax`, `SalesRevenueNet` | real | USD | >= 0 | 0: sin ventas (no ocurre en el universo). Vacío: la empresa no reportó ese año con esas etiquetas | Ventas del año. Denominador de márgenes y `capex_ventas` (HF1, HF2) |
-| `utilidad_bruta` | `GrossProfit` | real | USD | >= 0 | Vacío: concepto no aplicable (bancos no lo reportan); no es 0 | Ingresos menos costo de ventas. Margen bruto (HF2) |
-| `utilidad_operativa` | `OperatingIncomeLoss` | real | USD | cualquier signo | 0: punto de equilibrio operativo. Vacío: no reportado (bancos) | Utilidad antes de intereses e impuestos. Margen operativo y ROIC (HF1, HF2) |
-| `utilidad_neta` | `NetIncomeLoss` | real | USD | cualquier signo | 0: equilibrio. Negativo: pérdida. Vacío: no reportado | Resultado final del año. ROE, EPS y margen neto (HF1, HF3) |
-| `patrimonio` | `StockholdersEquity`, `...IncludingPortionAttributableToNoncontrollingInterest` | real | USD | cualquier signo (puede ser negativo por recompras) | Vacío: no reportado. Patrimonio <= 0 vuelve sin sentido a ROE y P/B | Patrimonio de los accionistas. ROE, BVPS, deuda/patrimonio (HF1, HF3) |
-| `deuda_lp` | `LongTermDebt`, `LongTermDebtNoncurrent` | real | USD | >= 0 | 0: sin deuda de largo plazo. Vacío: no reportada (puede ser 0 real o no reportada; no se distingue) | Deuda financiera de largo plazo. Apalancamiento, ROIC y Merton (HF3, HF4) |
-| `caja` | `CashAndCashEquivalentsAtCarryingValue` | real | USD | >= 0 | 0: sin efectivo (raro). Vacío: no reportado | Efectivo y equivalentes. Se resta del capital invertido (HF2) |
-| `cfo` | `NetCashProvidedByUsedInOperatingActivities` | real | USD | cualquier signo | Vacío: no reportado | Flujo de caja operativo. Base del FCF (HF3) |
-| `capex` | `PaymentsToAcquirePropertyPlantAndEquipment` | real | USD | >= 0 (pago positivo) | 0: sin inversión en activos fijos. Vacío: no reportado (no es 0) | Inversión en activos fijos. `capex_ventas` y FCF (HF2, HF3) |
-| `acciones` | `WeightedAverageNumberOfDilutedSharesOutstanding` | real | acciones | > 0 | Vacío: no reportado; deja EPS, BVPS y `fcf_yield` en vacío | Promedio ponderado de acciones diluidas. Convierte totales a por acción (HF3) |
-| `end` | EDGAR | fecha | día | 2006 a 2026 | Vacío: no ocurre | Cierre del año fiscal al que pertenece el dato |
-| `filed` | EDGAR | fecha | día | posterior a `end` | Vacío: no ocurre | Fecha en que el 10-K fue público. Llave de unión con precios para evitar look-ahead (todas las HF) |
+## 3. Precios diarios (`precios_diarios.parquet`)
 
-## 4. Ratios y múltiplos (`fundamentales`), instantánea `ratios_anuales`
+Serie de tiempo diaria con el mismo universo (23 tickers). 102 902 filas (desde 2009-01-02). Mismas 4 columnas que `precios_semanales`. Se usa en nb03 §5 (P6 sesiones turbulentas) y en nb04 §4 y §5 (etiqueta diaria, indicadores técnicos, P4).
 
-Toda razón divide con `_div`: si el denominador es 0 el resultado queda vacío, no infinito. Los múltiplos se calculan semanalmente con el dato anual vigente en la fecha `filed` (sin look-ahead).
+## 4. Splits (`splits.parquet`)
+
+Tabla auxiliar para auditar la trazabilidad del precio ajustado. 126 filas; 19 tickers tienen al menos un split histórico.
 
 | Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
 |---|---|---|---|---|---|---|
-| `roe` | EDGAR | real | fracción anual | típico -1 a 1 | 0: utilidad neta nula. Vacío: falta utilidad o patrimonio, o patrimonio 0 | `utilidad_neta / patrimonio`. Calidad (HF1, HF2) |
-| `roic` | EDGAR | real | fracción anual | típico -0.5 a 1 | 0: utilidad operativa nula. Vacío: falta algún insumo o capital invertido 0 | `utilidad_operativa*(1-0.21) / (patrimonio + deuda_lp - caja)` (HF1, HF2) |
-| `margen_bruto` | EDGAR | real | fracción | 0 a 1 | 0: sin utilidad bruta. Vacío: no aplica (bancos) | `utilidad_bruta / ingresos` (HF2) |
-| `margen_operativo` | EDGAR | real | fracción | < 1 | 0: equilibrio operativo. Vacío: no reportado | `utilidad_operativa / ingresos` (HF2) |
-| `margen_neto` | EDGAR | real | fracción | < 1 | 0: equilibrio. Vacío: no reportado | `utilidad_neta / ingresos` (HF2) |
-| `deuda_patrimonio` | EDGAR | real | adimensional | >= 0 (negativo si patrimonio < 0) | 0: sin deuda de largo plazo. Vacío: falta dato | `deuda_lp / patrimonio` (HF2) |
-| `capex_ventas` | EDGAR | real | fracción | >= 0 | 0: sin capex. Vacío: falta dato | `capex / ingresos`. Intensidad de capital (HF2) |
-| `eps` | EDGAR | real | USD por acción | cualquier signo | 0: utilidad nula. Vacío: falta utilidad o acciones | `utilidad_neta / acciones` (HF3) |
-| `bvps` | EDGAR | real | USD por acción | cualquier signo | Vacío: falta patrimonio o acciones | `patrimonio / acciones` (HF3) |
-| `fcf` | EDGAR | real | USD | cualquier signo | 0: flujo operativo igual al capex. Vacío: falta `cfo` o `capex` | `cfo - capex` (HF3) |
-| `pe` | precio + EDGAR | real | veces | > 0 | Vacío: EPS <= 0 o sin dato (P/E sin sentido, nunca 0) | `close / eps` (HF3, HF5) |
-| `pb` | precio + EDGAR | real | veces | > 0 | Vacío: BVPS <= 0 o sin dato | `close / bvps` (HF3, HF5) |
-| `fcf_yield` | precio + EDGAR | real | fracción | cualquier signo | 0: FCF nulo. Vacío: falta FCF, acciones o precio | `fcf / (close * acciones)` (HF3) |
+| `ticker` | yfinance | texto | símbolo | 19 empresas con splits | Vacío: no ocurre | Empresa del evento |
+| `fecha` | yfinance | fecha | día | 1960 a hoy | Vacío: no ocurre | Día del split |
+| `ratio` | yfinance | real | adimensional | > 0 | 0: no ocurre | Factor del split (p. ej., 2,0 para un 2:1 que duplica el número de acciones y divide el precio por 2) |
 
-## 5. Etiquetas (`etiquetas`)
+Uso: control del precio ajustado en nb01 §1.2 y lectura de contexto en nb02 §1. No alimenta directamente a las 15 pruebas.
+
+## 5. Foto de identidad de yfinance (`info_yf.parquet`)
+
+Foto del día del endpoint `info` de yfinance para las 21 empresas. 21 filas. Se usa como fuente de triangulación de identidad y de los ratios (nb02 §4–§5).
 
 | Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
 |---|---|---|---|---|---|---|
-| `etiqueta` | derivado | binario | 0 o 1 | {0, 1} | 1: el precio tocó la barrera inferior (entrada) antes que la superior o el tiempo. 0: escape por arriba o vencimiento. Vacío: censurada (menos de n semanas por delante), sin sigma, o hueco de precio. Nunca 0 por falta de dato | Triple barrera solo-largo, variable objetivo del SVM (HT1, HT2) |
-| `resultado` | derivado | texto | categoría | `entrada`, `escape`, `tiempo` | Vacío: igual que la etiqueta vacía | Qué barrera se tocó |
-| `semanas` | derivado | real | semanas | 1 a n | Vacío: no tocó ninguna barrera (`tiempo`) o fila censurada | Semanas hasta tocar la barrera. Insumo del eje probabilístico (HP1, HP2) |
-| `etiqueta_retorno` | derivado | binario | 0 o 1 | {0, 1} | 1: el retorno a n semanas supera el del umbral (0 o benchmark). 0: no lo supera. Vacío: sin futuro disponible | Etiqueta alternativa para comparar (HT3) |
+| `ticker` | yfinance | texto | símbolo | 21 empresas | Vacío: no ocurre | Llave |
+| `sector` | yfinance | texto | categoría | "Consumer Defensive" en todas | Vacío: triangulación falla, se marca | Sector reportado por yfinance (triangulación con XLP) |
+| `industry` | yfinance | texto | categoría | sub-industria dentro de consumo defensivo | Vacío: triangulación falla | Sub-industria (grocery, packaged foods, tobacco, etc.) |
+| `trailingPE` | yfinance | real | veces | > 0 | Vacío: EPS ≤ 0 o sin dato | P/E "actual" reportado por yfinance (contraste con el `eps_ttm` calculado) |
+| `trailingEps` | yfinance | real | USD por acción | cualquier signo | Vacío: no reportado | EPS TTM reportado por yfinance (triangulación con el calculado desde `tabla_trimestral`; nb01 §4.3 y nb02 §2b.3) |
+| `priceToBook` | yfinance | real | veces | > 0 | Vacío: BVPS ≤ 0 o sin dato | P/B reportado por yfinance |
+| `returnOnEquity` | yfinance | real | fracción | puede ser negativa | Vacío: no reportado | ROE reportado por yfinance (triangulación) |
+| `marketCap` | yfinance | real | USD | > 0 | Vacío: no reportado | Capitalización (precio × acciones) |
+| `sharesOutstanding` | yfinance | real | acciones | > 0 | Vacío: no reportado | Acciones en circulación |
 
-## 6. Métricas de riesgo (`riesgo`, `simulacion`)
+Uso: nb02 §4 (triangulación de ratios: `eps_ttm` ≈ `trailingEps`, `bvps` × `priceToBook` ≈ `close`), nb02 §5 (identidad e industria). No alimenta directamente las decisiones de P1–P6.
+
+## 6. Hechos EDGAR crudos (`edgar_hechos.parquet`)
+
+Capa cruda extraída del endpoint `companyfacts` de la SEC EDGAR para las 21 empresas. 72 682 filas (promedio ≈ 3 460 hechos por empresa, con conceptos repetidos en varios reportes y unidades).
 
 | Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
 |---|---|---|---|---|---|---|
-| `vol_ewma` | derivado de `r` | real | fracción anualizada | >= 0 | 0: retornos nulos. Primera barra tiene valor (lambda 0.94) | Volatilidad EWMA anualizada (x raiz 52). Ancho de las barreras (HT1, HP0) |
-| `var_95` | derivado de `r` | real | fracción por semana | negativo (pérdida) | Vacío: sin retornos. No tiene 0 esperado | Cuantil 5 % de `r`, histórico o paramétrico (HP0) |
-| `es_95` | derivado de `r` | real | fracción por semana | <= `var_95` | Vacío: sin retornos | Media de los retornos peores que el VaR (HP0) |
-| `beta` | derivado | real | adimensional | típico 0 a 2 | 0: sin relación con SPY. Vacío: sin datos solapados | Pendiente de `r` contra SPY (HP0, HP3) |
-| `alpha` | derivado | real | fracción por semana | cercano a 0 | 0: sin exceso sobre el mercado. Vacío: sin datos solapados | Intercepto de la regresión contra SPY (HP3) |
-| `d2` | derivado (Merton) | real | adimensional | cualquier signo | Vacío: entradas inválidas (E, sigma, D o T <= 0) o el solver no converge | Distancia al incumplimiento (HF4) |
-| `pd_merton` | derivado (Merton) | real | probabilidad | 0 a 1 | 0: riesgo despreciable. Vacío: igual que `d2` | `N(-d2)`, devuelto como `pd` por `riesgo.merton` (HF4) |
+| `concepto` | EDGAR XBRL | texto | etiqueta XBRL | nombres us-gaap (p. ej., `Revenues`, `NetIncomeLoss`) | Vacío: no ocurre | Nombre del concepto reportado. Los sinónimos (p. ej., `Revenues` ≡ `RevenueFromContractWithCustomerExcludingAssessedTax`) se mapean en nb01 §3.1 |
+| `unidad` | EDGAR | texto | USD, shares, pure | USD, shares, pure | Vacío: no ocurre | Unidad declarada |
+| `start` | EDGAR | fecha | día | 2006–hoy | Vacío: hecho puntual (saldo), no hecho de flujo | Inicio del período que cubre el hecho (flujo) |
+| `end` | EDGAR | fecha | día | 2006–hoy | Vacío: no ocurre | Cierre del período (flujo) o fecha del saldo (balance) |
+| `val` | EDGAR | real | USD, shares o adim. | según la unidad | 0: valor real cero (p. ej., deuda_lp = 0 en empresas sin deuda financiera); vacío: no se reportó | Valor del hecho |
+| `form` | EDGAR | texto | tipo de reporte | 10-K, 10-Q, 10-K/A, 10-Q/A | Vacío: no ocurre | Formulario que lo publicó. Las enmiendas (`/A`) se filtran en nb01 §3 porque se usa la primera publicación |
+| `fp` | EDGAR | texto | período fiscal | FY, Q1, Q2, Q3, Q4 | Vacío: no ocurre | Período del año fiscal al que corresponde el hecho |
+| `filed` | EDGAR | fecha | día | posterior a `end` | Vacío: no ocurre | Fecha en que el reporte se hizo público. Llave para evitar look-ahead (todas las hipótesis) |
+| `ticker` | config | texto | símbolo | 21 empresas | Vacío: no ocurre | Empresa |
+
+Uso: insumo crudo de la [tabla anual](#7-tabla-anual-tabla_anualparquet) y de la [tabla trimestral](#9-tabla-trimestral-tabla_trimestralparquet). No se consulta directamente en nb03/nb04.
+
+## 7. Tabla anual (`tabla_anual.parquet`)
+
+Hechos anuales (10-K) de las 21 empresas, ya procesados: un valor por empresa y año fiscal, con la fecha `filed` de cada concepto. 414 filas (≈ 20 años por empresa).
+
+| Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
+|---|---|---|---|---|---|---|
+| `ticker` | config | texto | símbolo | 21 empresas | Vacío: no ocurre | Empresa |
+| `end` | EDGAR | fecha | día | cierre del año fiscal | Vacío: no ocurre | Fecha de corte del año fiscal (puede ser distinta de 31-dic) |
+| `ingresos` | EDGAR | real | USD | ≥ 0 | 0: sin ventas (no ocurre). Vacío: concepto no reportado | Ventas del año. Denominador del margen operativo |
+| `filed_ingresos` | EDGAR | fecha | día | ≥ `end` | Vacío: no ocurre | Primera publicación del año (regla de temporalidad: solo se puede usar si `filed ≤ t`) |
+| `utilidad_operativa` | EDGAR | real | USD | cualquier signo | 0: equilibrio. Vacío: concepto no reportado (ADM y CLX no reportan `OperatingIncomeLoss`; nb02 §2) | Utilidad antes de intereses e impuestos. Base del margen operativo |
+| `filed_utilidad_operativa` | EDGAR | fecha | día | ≥ `end` | Vacío cuando la utilidad operativa está vacía | Fecha de publicación |
+| `utilidad_neta` | EDGAR | real | USD | cualquier signo | 0: equilibrio. Negativo: pérdida. Vacío: no reportado | Utilidad del año. Base de ROE y EPS |
+| `filed_utilidad_neta` | EDGAR | fecha | día | ≥ `end` | Vacío cuando la utilidad está vacía | Fecha de publicación |
+| `patrimonio` | EDGAR | real | USD | cualquier signo (ocasional < 0 por recompras) | Vacío: no reportado | Patrimonio contable al cierre. Base de ROE, BVPS y deuda/patrimonio |
+| `filed_patrimonio` | EDGAR | fecha | día | ≥ `end` | Vacío cuando el patrimonio está vacío | Fecha de publicación. Si `patrimonio` incluye intereses minoritarios (`StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest`), el ratio ROE queda como aproximación (nb02 §2 chequeo 3) |
+| `deuda_lp` | EDGAR | real | USD | ≥ 0 | 0: sin deuda financiera. Vacío: no reportado (puede ser 0 real o no reportado; no se distingue) | Deuda financiera de largo plazo. Base de `deuda_patrimonio` |
+| `filed_deuda_lp` | EDGAR | fecha | día | ≥ `end` | Vacío cuando la deuda está vacía | Fecha de publicación |
+| `acciones` | EDGAR | real | acciones | > 0 | Vacío: no reportado | Promedio ponderado de acciones diluidas |
+| `filed_acciones` | EDGAR | fecha | día | ≥ `end` | Vacío cuando las acciones están vacías | Fecha de publicación |
+| `eps_reportado` | EDGAR | real | USD por acción | cualquier signo | Vacío: no reportado | EPS que la empresa reportó directamente (si existe) |
+| `filed_eps_reportado` | EDGAR | fecha | día | ≥ `end` | Vacío cuando el EPS reportado está vacío | Fecha de publicación |
+| `acciones_implicitas` | derivado | real | acciones | > 0 | Vacío: no se pudo calcular | Acciones implícitas = `utilidad_neta ÷ eps_reportado`, usada en nb01 §4.3 cuando faltan las acciones reportadas |
+
+Uso: insumo de [ratios anuales](#8-ratios-anuales-ratios_anualesparquet) y de la tabla trimestral (nb01 §4.2 reconcilia los flujos trimestrales con los totales anuales). El EPS anual se calcula como `utilidad_neta ÷ acciones`.
+
+## 8. Ratios anuales (`ratios_anuales.parquet`)
+
+Los 5 ratios anuales con su `filed` por campo. 414 filas. Toda división usa `_div` del nb01: si el denominador vale 0, el resultado queda vacío (no infinito ni cero).
+
+| Campo | Fuente | Tipo | Unidad | Rango válido | Fórmula | Significado del 0 o del vacío | Uso |
+|---|---|---|---|---|---|---|---|
+| `ticker` | config | texto | símbolo | 21 empresas | — | Vacío: no ocurre | Llave |
+| `end` | EDGAR | fecha | día | cierre fiscal | — | Vacío: no ocurre | Fecha de corte del año fiscal |
+| `eps` | EDGAR | real | USD por acción | cualquier signo | `utilidad_neta ÷ acciones` | 0: utilidad nula. Vacío: falta utilidad o acciones | Base del P/E anual |
+| `filed_eps` | derivado | fecha | día | ≥ `end` | el más tardío entre `filed_utilidad_neta` y `filed_acciones` | Vacío: insumo faltante | Primera fecha utilizable del EPS anual (regla de temporalidad: `filed` ≤ fecha de decisión) |
+| `bvps` | EDGAR | real | USD por acción | cualquier signo | `patrimonio ÷ acciones` | 0: patrimonio nulo. Vacío: insumo faltante | Base del P/B anual |
+| `filed_bvps` | derivado | fecha | día | ≥ `end` | el más tardío de los insumos | Vacío: insumo faltante | fecha de la primera publicación (regla de temporalidad) |
+| `roe` | EDGAR | real | fracción | típico −1 a 1 | `utilidad_neta ÷ patrimonio` | 0: utilidad nula. Vacío: patrimonio 0 o insumo faltante. Negativo si hay pérdida | Rentabilidad del patrimonio (P2 §2.10) |
+| `filed_roe` | derivado | fecha | día | ≥ `end` | el más tardío de los insumos | Vacío: insumo faltante | fecha de la primera publicación (regla de temporalidad) |
+| `margen_operativo` | EDGAR | real | fracción | < 1 | `utilidad_operativa ÷ ingresos` | 0: equilibrio. Vacío: concepto no reportado (ADM y CLX) o ingresos vacíos | Rentabilidad del negocio (P2 §2.10) |
+| `filed_margen_operativo` | derivado | fecha | día | ≥ `end` | el más tardío de los insumos | Vacío: insumo faltante | fecha de la primera publicación (regla de temporalidad) |
+| `deuda_patrimonio` | EDGAR | real | adimensional | ≥ 0 (o < 0 si patrimonio < 0) | `deuda_lp ÷ patrimonio` | 0: sin deuda de largo plazo. Vacío: insumo faltante | Apalancamiento (P2 §2.10) |
+| `filed_deuda_patrimonio` | derivado | fecha | día | ≥ `end` | el más tardío de los insumos | Vacío: insumo faltante | fecha de la primera publicación (regla de temporalidad) |
+
+Uso: contexto de P2 y P3 (nb04 §2.10). Los múltiplos semanales (P/E actual y P/E normalizado) usan la versión TTM, no la anual.
+
+## 9. Tabla trimestral (`tabla_trimestral.parquet`)
+
+Serie trimestral de los 7 conceptos que alimentan el TTM. 9 968 filas (21 empresas × 7 conceptos × ≈ 68 trimestres). Es la fuente principal del P/E normalizado y del `roe_ttm`.
+
+| Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
+|---|---|---|---|---|---|---|
+| `ticker` | config | texto | símbolo | 21 empresas | Vacío: no ocurre | Empresa |
+| `concepto` | derivado | texto | categoría | `ingresos`, `utilidad_operativa`, `utilidad_neta`, `patrimonio`, `deuda_lp`, `acciones`, `eps_reportado` | Vacío: no ocurre | Nombre del concepto trimestral |
+| `start` | EDGAR | fecha | día | inicio del trimestre | Vacío: hecho de saldo (balance, no flujo) | Inicio del período para los flujos (ingresos, utilidades); vacío para los saldos (patrimonio, deuda) |
+| `end` | EDGAR | fecha | día | cierre del trimestre | Vacío: no ocurre | Fecha de corte del trimestre (o del saldo) |
+| `val` | EDGAR / derivado | real | USD o acciones | según el concepto | 0: valor real cero. Vacío: no ocurre (una fila sin valor se descarta antes de guardar) | Valor del concepto en ese trimestre |
+| `filed` | EDGAR | fecha | día | ≥ `end` | Vacío: no ocurre | Primera fecha en que ese trimestre fue público. Para `q4_derivado` toma el `filed` del 10-K; para `promedio_anual` toma el `filed` del 10-K del año |
+| `form` | EDGAR | texto | tipo de reporte | 10-K o 10-Q | Vacío: no ocurre | Formulario que lo publicó |
+| `origen` | derivado | texto | categoría | ver abajo | Vacío: no ocurre | Cómo se construyó el valor del trimestre |
+| `escala_corregida` | derivado | booleano | — | True/False | True si en nb01 §4.1 se detectó un salto de escala y se corrigió (p. ej., un reporte en miles frente a los vecinos en millones) | Trazabilidad del chequeo de escala XBRL |
+| `escala_sin_vecinos` | derivado | booleano | — | True/False | True si no había vecinos para contrastar (primer trimestre reportado o único de ese concepto) | Marca que el valor pasó sin chequeo (nb02 §2b.9) |
+
+**Reglas de la columna `origen`** (nb01 §4.1–§4.2):
+
+- `reportado`: valor publicado directamente en el 10-Q o en el 10-K del trimestre. Se exige una duración de 80 a 120 días para flujos trimestrales.
+- `resta_ytd`: para empresas que solo reportan acumulado del año, el trimestre se obtiene como `YTD_actual − YTD_anterior` (se usan 2 filas en este snapshot; es excepcional en el universo).
+- `q4_derivado`: el 10-Q no se publica para Q4; el valor del cuarto trimestre se obtiene como `anual − suma de los 3 primeros trimestres del mismo año fiscal`, con la fecha `filed` del 10-K.
+- `promedio_anual`: las acciones del cierre del año se toman del 10-K cuando faltan en el 10-Q del Q4.
+- `saldo`: patrimonio y deuda al cierre del trimestre (son saldos de balance, no flujos). No se agregan en el tiempo.
+
+Uso: calidad en nb02 §2b (los 11 problemas de los 10-Q se auditan sobre esta tabla) y construcción de `ratios_ttm` en nb01 §4.3.
+
+## 10. Ratios TTM (`ratios_ttm.parquet`)
+
+Serie trimestral con el TTM de cada flujo, los saldos vigentes y los 5 ratios TTM. 1 434 filas (21 empresas × ≈ 68 trimestres). Es la **fuente principal del múltiplo semanal** del nb04.
+
+| Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
+|---|---|---|---|---|---|---|
+| `ticker` | config | texto | símbolo | 21 empresas | Vacío: no ocurre | Empresa |
+| `end` | derivado | fecha | día | cierre del trimestre más reciente | Vacío: no ocurre | Trimestre al que corresponde el TTM |
+| `utilidad_neta_ttm` | derivado | real | USD | cualquier signo | 0: resultado nulo. Vacío: falta uno de los 4 trimestres consecutivos | Suma de la utilidad neta de los 4 trimestres más recientes |
+| `filed_utilidad_neta_ttm` | derivado | fecha | día | ≥ `end` | Vacío si el TTM está vacío | Fecha de publicación del último de sus 4 trimestres (nb02 §2b.1) |
+| `ingresos_ttm` | derivado | real | USD | ≥ 0 | 0: sin ventas (no ocurre). Vacío: falta un trimestre | Suma de ingresos de 4 trimestres |
+| `filed_ingresos_ttm` | derivado | fecha | día | ≥ `end` | Vacío si el TTM está vacío | fecha de la primera publicación (regla de temporalidad) |
+| `utilidad_operativa_ttm` | derivado | real | USD | cualquier signo | 0: equilibrio. Vacío: concepto no reportado (ADM y CLX) o falta un trimestre | Suma de la utilidad operativa de 4 trimestres |
+| `filed_utilidad_operativa_ttm` | derivado | fecha | día | ≥ `end` | Vacío si el TTM está vacío | fecha de la primera publicación (regla de temporalidad) |
+| `patrimonio` | derivado | real | USD | cualquier signo | Vacío: no reportado al cierre | Último saldo publicado del patrimonio |
+| `filed_patrimonio` | derivado | fecha | día | ≥ `end` | Vacío cuando el patrimonio está vacío | Primera publicación del saldo |
+| `deuda_lp` | derivado | real | USD | ≥ 0 | 0: sin deuda de largo plazo. Vacío: no reportado | Último saldo publicado de la deuda de largo plazo |
+| `filed_deuda_lp` | derivado | fecha | día | ≥ `end` | Vacío cuando la deuda está vacía | Primera publicación del saldo |
+| `acciones` | derivado | real | acciones | > 0 | Vacío: no reportado | Acciones del último trimestre (fuente única) |
+| `filed_acciones` | derivado | fecha | día | ≥ `end` | Vacío cuando las acciones están vacías | fecha de la primera publicación (regla de temporalidad) |
+| `acciones_implicitas` | derivado | real | acciones | > 0 | Vacío: no se pudo calcular | Alternativa calculada como `utilidad_neta ÷ eps_reportado` cuando faltan las acciones (mecanismo alternativo cuando `WeightedAverageNumberOfDilutedSharesOutstanding` falta; nb01 §4.3) |
+| `eps_ttm` | derivado | real | USD por acción | cualquier signo | 0: utilidad TTM nula. Vacío: falta uno de los insumos | `utilidad_neta_ttm ÷ acciones`. Base del **P/E actual** del múltiplo semanal (P2 §2.4, P3) |
+| `filed_eps_ttm` | derivado | fecha | día | ≥ `end` | Vacío cuando el EPS TTM está vacío | fecha de la primera publicación: el más tardío de `filed_utilidad_neta_ttm` y `filed_acciones`) |
+| `bvps` | derivado | real | USD por acción | cualquier signo | Vacío: patrimonio o acciones faltantes | `patrimonio ÷ acciones`. Base del P/B semanal |
+| `filed_bvps` | derivado | fecha | día | ≥ `end` | Vacío cuando el BVPS está vacío | fecha de la primera publicación (regla de temporalidad) |
+| `roe_ttm` | derivado | real | fracción | típico −1 a 1 | 0: utilidad nula. Vacío: patrimonio 0 o insumo faltante | `utilidad_neta_ttm ÷ patrimonio`. Rentabilidad del patrimonio (contexto P2) |
+| `filed_roe_ttm` | derivado | fecha | día | ≥ `end` | Vacío cuando `roe_ttm` está vacío | fecha de la primera publicación (regla de temporalidad) |
+| `margen_operativo_ttm` | derivado | real | fracción | < 1 | 0: equilibrio. Vacío: concepto no reportado (ADM, CLX) o ingresos faltantes | `utilidad_operativa_ttm ÷ ingresos_ttm`. Contexto de P2 |
+| `filed_margen_operativo_ttm` | derivado | fecha | día | ≥ `end` | Vacío cuando el margen está vacío | fecha de la primera publicación (regla de temporalidad) |
+| `deuda_patrimonio` | derivado | real | adimensional | ≥ 0 (negativo si patrimonio < 0) | 0: sin deuda. Vacío: insumo faltante | `deuda_lp ÷ patrimonio`. Contexto de P2 |
+| `filed_deuda_patrimonio` | derivado | fecha | día | ≥ `end` | Vacío cuando la razón está vacía | fecha de la primera publicación (regla de temporalidad) |
+| `eps_prom_3a` | derivado | real | USD por acción | cualquier signo | Vacío: faltan trimestres o acciones | **EPS promedio normalizado a 3 años** = suma de utilidad neta de los 12 trimestres más recientes ya publicados ÷ 3 ÷ acciones del último trimestre. Es anual (nb01 §4.3). Base del **P/E normalizado** (P2 y P3) |
+| `filed_eps_prom_3a` | derivado | fecha | día | ≥ `end` | Vacío cuando `eps_prom_3a` está vacío | fecha de la primera publicación: el más tardío entre los 12 `filed` de utilidad neta y el `filed` de acciones |
+
+**Antigüedad máxima del TTM.** Un valor TTM se considera "rancio" cuando han pasado más de 548 días (≈ 18 meses) desde `end` sin un trimestre nuevo publicado. En ese caso el múltiplo semanal usa el último TTM disponible pero se marca como potencialmente desactualizado (nb01 §4.3; nb02 §2b.1).
+
+**Aproximaciones XBRL.** `patrimonio` toma `StockholdersEquity`; si falta, cae a `StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest` (incluye intereses minoritarios): el ROE y el BVPS quedan como aproximación. `utilidad_neta` cae de `NetIncomeLoss` a `ProfitLoss` cuando falta; también se marca como aproximación (nb02 §2b.3).
+
+## 11. Múltiplo semanal (derivado en nb04 §1)
+
+Panel que une `precios_semanales_sd` con `ratios_ttm` por `ticker` y la última fila con `filed ≤ fecha`. No se guarda como instantánea; se construye en nb04 §1.
+
+| Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
+|---|---|---|---|---|---|---|
+| `fecha` | `precios_semanales_sd` | fecha | día | lunes de la semana | Vacío: no ocurre | Fecha del múltiplo |
+| `ticker` | `precios_semanales_sd` | texto | símbolo | 21 empresas (SPY y XLP no entran) | Vacío: no ocurre | Empresa |
+| `close` | `precios_semanales_sd` | real | USD por acción | > 0 | Vacío: no ocurre | Precio sin ajuste por dividendos (nb01 §4.3) |
+| `eps_ttm` | `ratios_ttm` | real | USD por acción | cualquier signo | 0 o negativo: P/E actual queda vacío (no "barato"). Vacío: sin dato publicado | Último EPS TTM con `filed ≤ fecha` |
+| `eps_prom_3a` | `ratios_ttm` | real | USD por acción | cualquier signo | 0 o negativo: P/E normalizado vacío. Vacío: sin dato publicado | Último `eps_prom_3a` con `filed ≤ fecha` |
+| `pe_actual` | derivado | real | veces | > 0 | Vacío: `eps_ttm ≤ 0` o sin dato | `close ÷ eps_ttm`. Múltiplo "actual". Ejemplo KO 2026-10-12: 92,00 / 3,18 ≈ 29. Uso: contexto de P2 |
+| `pe_norm` | derivado | real | veces | > 0 | Vacío: `eps_prom_3a ≤ 0` o sin dato | `close ÷ eps_prom_3a`. **Múltiplo principal de P2 y P3**. Ejemplo KO 2026-10-12: 92,00 / 2,73 ≈ 33,8 |
+| `pb` | derivado | real | veces | > 0 | Vacío: `bvps ≤ 0` o sin dato | `close ÷ bvps`. Contexto de P2 |
+| `pct_pe_norm` | derivado | real | fracción | 0 a 1 | Vacío: menos de 52 semanas de historia (regla fijada en nb04 §1) | **Percentil expansivo** del `pe_norm` de la empresa dentro de su propia historia hasta `fecha`. Base de los quintiles por fecha (P2, P3) |
+
+## 12. Indicadores diarios (derivados en nb04 §5)
+
+Siete indicadores técnicos calculados por ticker sobre `precios_diarios`. Todos miran solo hacia atrás (nb04 §5 incluye una celda demostrativa que recalcula `rsi14` con la serie truncada en `t` y confirma look-ahead = 0). El calentamiento de cada ventana queda vacío.
+
+| Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
+|---|---|---|---|---|---|---|
+| `rsi14` | `close` | real | puntos | 0 a 100 | 0: todas las variaciones recientes fueron negativas (sobreventa extrema). 100: todas positivas. Vacío: menos de 14 sesiones | **RSI** con suavizado exponencial de 14 sesiones (P4) |
+| `dist_sma20` | `close` | real | fracción | típico −0,3 a 0,5 | 0: precio sobre la SMA de 20 sesiones. Vacío: menos de 20 sesiones | `close ÷ SMA20 − 1` (P4) |
+| `dist_sma50` | `close` | real | fracción | típico −0,3 a 0,5 | 0: precio sobre la SMA de 50 sesiones. Vacío: menos de 50 sesiones | `close ÷ SMA50 − 1` (P4) |
+| `dist_sma200` | `close` | real | fracción | típico −0,3 a 0,5 | 0: precio sobre la SMA de 200 sesiones. Vacío: menos de 200 sesiones | `close ÷ SMA200 − 1` (P4) |
+| `vol_rel20` | `volume` | real | adimensional | > 0 | 0: no ocurre; volumen 0 se trata como vacío. Vacío: menos de 20 sesiones o volumen 0 | `volume ÷ promedio de volumen de 20 sesiones`. 1 ≈ volumen típico (P4) |
+| `donchian20` | `close` | real | adimensional | 0 a 1 | 0: cierre en el mínimo del canal. 1: en el máximo. Vacío: menos de 20 sesiones o canal sin amplitud | Posición del cierre dentro del canal Donchian de 20 sesiones (P4) |
+| `mom_12_1` | `close` | real | fracción | típico −0,5 a 1,5 | 0: precio de hace 21 sesiones igual al de hace 252. Vacío: menos de 252 sesiones | `close_{t−21} ÷ close_{t−252} − 1`. Momentum "12−1" (P4) |
+
+## 13. Variables de magnitud y etiqueta diaria (nb04 §4)
+
+Panel diario que une `precios_diarios` con la volatilidad hacia atrás y la etiqueta de triple barrera solo-largo. Base de P4.
+
+| Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción y uso |
+|---|---|---|---|---|---|---|
+| `r` | `close` | real | fracción | típico −0,2 a 0,2 | 0: precio sin cambio. Vacío: primera sesión del ticker | `log(close_t ÷ close_{t−1})`. Log-retorno diario |
+| `abs_r` | derivado | real | fracción | ≥ 0 | 0: sesión sin movimiento. Vacío: `r` vacío | `|r|`. Magnitud del retorno diario (línea base de magnitud del modelo A) |
+| `sigma20` | `r` | real | fracción | > 0 | Vacío: menos de 20 sesiones previas | Desviación estándar de los últimos 20 retornos diarios (`shift(1)` previo) |
+| `sigma252` | `r` | real | fracción | > 0 | Vacío: menos de 252 sesiones previas | **σ252 diaria**. Desviación estándar de los últimos 252 retornos (`shift(1)` previo). Umbral de la etiqueta de entrada |
+| `sigma20_sigma252` | derivado | real | adimensional | > 0 | Vacío: alguna σ faltante | `sigma20 ÷ sigma252`. Aceleración o calma relativa |
+| `y` | derivado | binario | 0 o 1 | {0, 1} | 1: en los siguientes N = 60 días hábiles el precio tocó `close × (1 − k·σ252)` antes que `close × (1 + k·σ252)` o antes del tiempo. 0: salida por arriba o por tiempo. Vacío: censura (menos de N sesiones futuras) o falta σ252. k = 1 (nb04 §4). **Nunca es 0 por falta de dato** | Etiqueta de entrada "toca el nivel". Variable objetivo del SVM (fuera del alcance de la entrega 1) y de los ΔAUC de P4 (nb04_p4.json) |
+
+## 14. Tabla por industria Damodaran (`damodaran_pe.parquet` y `damodaran_margenes.parquet`)
+
+Tablas de referencia por industria publicadas por Aswath Damodaran (NYU Stern). 96 filas cada una (una por industria). Se descargan en nb01 §2 y se consultan como comparación externa; no alimentan directamente las decisiones de P1–P6, pero sirven de "corte de realidad" en nb02 §4 para los ratios TTM (triangulación).
+
+**Columnas de `damodaran_pe` relevantes:** `industry_name`, `number_of_firms`, `current_pe`, `trailing_pe`, `forward_pe`, `expected_growth_next_5_years`, `peg_ratio`. **De `damodaran_margenes`:** `industry_name`, `gross_margin`, `net_margin`, `pre_tax_unadjusted_operating_margin`, `ebitda_sales`, `r_d_sales`, `sg_a_sales`. Todas las fracciones son adimensionales; los vacíos son no reportados. Uso: contraste del margen operativo y del P/E del grupo consumo defensivo frente a sus 20 empresas.
+
+---
+
+## Referencias cruzadas
+
+- Las decisiones de limpieza y los 11 problemas del TTM viven en nb02 §2b con su dimensión, nivel y justificación.
+- La construcción de la tabla trimestral y del TTM, con los chequeos de escala, está en nb01 §4.1–§4.3.
+- Los umbrales y constantes que leen los notebooks (horizontes, k·σ, nivel Bonferroni, …) viven en [`04_enfoque_analitico.md`](04_enfoque_analitico.md) §4.5.
+- Las técnicas estadísticas que consumen estos campos están descritas en [`04_enfoque_analitico.md`](04_enfoque_analitico.md) §4.2 (matriz pregunta × técnica).
+- Toda definición de término técnico se consulta en el [glosario](glosario.md).
