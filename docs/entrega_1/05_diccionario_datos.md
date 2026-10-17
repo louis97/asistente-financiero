@@ -180,9 +180,9 @@ Serie trimestral con el TTM de cada flujo, los saldos vigentes y los 5 ratios TT
 | `filed_bvps` | derivado | fecha | día | ≥ `end` | Vacío cuando el BVPS está vacío | fecha de la primera publicación (regla de temporalidad) | — |
 | `roe_ttm` | derivado | real | fracción | típico −1 a 1 | 0: utilidad nula. Vacío: patrimonio 0 o insumo faltante |  `utilidad_neta_ttm ÷ patrimonio`. Rentabilidad del patrimonio | contexto P2 |
 | `filed_roe_ttm` | derivado | fecha | día | ≥ `end` | Vacío cuando `roe_ttm` está vacío | fecha de la primera publicación (regla de temporalidad) | — |
-| `margen_operativo_ttm` | derivado | real | fracción | < 1 | 0: equilibrio. Vacío: concepto no reportado (ADM, CLX) o ingresos faltantes |  `utilidad_operativa_ttm ÷ ingresos_ttm`. Contexto de | P2 |
+| `margen_operativo_ttm` | derivado | real | fracción | < 1 | 0: equilibrio. Vacío: concepto no reportado (ADM, CLX) o ingresos faltantes |  `utilidad_operativa_ttm ÷ ingresos_ttm`. Contexto de la lectura de P2 | P2 |
 | `filed_margen_operativo_ttm` | derivado | fecha | día | ≥ `end` | Vacío cuando el margen está vacío | fecha de la primera publicación (regla de temporalidad) | — |
-| `deuda_patrimonio` | derivado | real | adimensional | ≥ 0 (negativo si patrimonio < 0) | 0: sin deuda. Vacío: insumo faltante |  `deuda_lp ÷ patrimonio`. Contexto de | P2 |
+| `deuda_patrimonio` | derivado | real | adimensional | ≥ 0 (negativo si patrimonio < 0) | 0: sin deuda. Vacío: insumo faltante |  `deuda_lp ÷ patrimonio`. Contexto de la lectura de P2 | P2 |
 | `filed_deuda_patrimonio` | derivado | fecha | día | ≥ `end` | Vacío cuando la razón está vacía | fecha de la primera publicación (regla de temporalidad) | — |
 | `eps_prom_3a` | derivado | real | USD por acción | cualquier signo | Vacío: faltan trimestres o acciones |  **EPS promedio normalizado a 3 años** = suma de utilidad neta de los 12 trimestres más recientes ya publicados ÷ 3 ÷ acciones del último trimestre. Es anual (nb01 §4.3). Base del **P/E normalizado** | P2 y P3 |
 | `filed_eps_prom_3a` | derivado | fecha | día | ≥ `end` | Vacío cuando `eps_prom_3a` está vacío | fecha de la primera publicación: el más tardío entre los 12 `filed` de utilidad neta y el `filed` de acciones | — |
@@ -200,11 +200,11 @@ Panel que une `precios_semanales_sd` con `ratios_ttm` por `ticker` y la última 
 | `fecha` | `precios_semanales_sd` | fecha | día | lunes de la semana | Vacío: no ocurre | Fecha del múltiplo | — |
 | `ticker` | `precios_semanales_sd` | texto | símbolo | 21 empresas (SPY y XLP no entran) | Vacío: no ocurre | Empresa | — |
 | `close` | `precios_semanales_sd` | real | USD por acción | > 0 | Vacío: no ocurre | Precio sin ajuste por dividendos (nb01 §4.3) | — |
-| `eps_ttm` | `ratios_ttm` | real | USD por acción | cualquier signo | 0 o negativo: P/E actual queda vacío (no "barato"). Vacío: sin dato publicado | Último EPS TTM con `filed ≤ fecha` | — |
+| `eps_ttm` | `ratios_ttm` | real | USD por acción | cualquier signo | 0 o negativo: P/E actual queda vacío (no "barato"). Vacío: sin dato publicado | Último EPS TTM con `filed ≤ fecha` | P/E actual del producto (no entra a P1–P6) |
 | `eps_prom_3a` | `ratios_ttm` | real | USD por acción | cualquier signo | 0 o negativo: P/E normalizado vacío. Vacío: sin dato publicado | Último `eps_prom_3a` con `filed ≤ fecha` | — |
 | `pe_actual` | derivado | real | veces | > 0 | Vacío: `eps_ttm ≤ 0` o sin dato |  `close ÷ eps_ttm`. Múltiplo "actual". Ejemplo KO 2026-10-12: 92,00 / 3,18 ≈ 29. Uso: contexto de | P2 |
 | `pe_norm` | derivado | real | veces | > 0 | Vacío: `eps_prom_3a ≤ 0` o sin dato | `close ÷ eps_prom_3a`. **Múltiplo principal de P2 y P3**. Ejemplo KO 2026-10-12: 92,00 / 2,73 ≈ 33,8 | — |
-| `pb` | derivado | real | veces | > 0 | Vacío: `bvps ≤ 0` o sin dato |  `close ÷ bvps`. Contexto de | P2 |
+| `pb` | derivado | real | veces | > 0 | Vacío: `bvps ≤ 0` o sin dato |  `close ÷ bvps`. Contexto de la lectura de P2 | P2 |
 | `pct_norm` | derivado | real | fracción | 0 a 1 | Vacío: menos de 52 semanas de historia (regla fijada en nb04 §1) | **Percentil expansivo** del `pe_norm` de la empresa dentro de su propia historia hasta `fecha`. Alimenta los quintiles por fecha de P2 §2.3 | P2, P3 |
 
 ## 12. Indicadores diarios (derivados en nb04 §5)
@@ -232,7 +232,7 @@ Panel diario que une `precios_diarios` con la volatilidad hacia atrás y la etiq
 | `sigma20` | `r` | real | fracción | > 0 | Vacío: menos de 20 sesiones previas | Desviación estándar de los últimos 20 retornos diarios (`shift(1)` previo) | — |
 | `sigma252` | `r` | real | fracción | > 0 | Vacío: menos de 252 sesiones previas | **σ252 diaria**. Desviación estándar de los últimos 252 retornos (`shift(1)` previo). Umbral de la etiqueta de entrada | — |
 | `sigma20_sigma252` | derivado | real | adimensional | > 0 | Vacío: alguna σ faltante | `sigma20 ÷ sigma252`. Aceleración o calma relativa | — |
-| `y` | derivado | binario | 0 o 1 | {0, 1} | 1: en los siguientes N = 60 días hábiles el precio tocó `close × (1 − k·σ252)` antes que `close × (1 + k·σ252)` o antes del tiempo. 0: salida por arriba o por tiempo. Vacío: censura (menos de N sesiones futuras) o falta σ252. k = 1 (nb04 §4). **Nunca es 0 por falta de dato** | Etiqueta de entrada "toca el nivel". Variable objetivo del SVM (fuera del alcance de la entrega 1) y de los ΔAUC de P4 (nb04_p4.json) | — |
+| `y` | derivado | binario | 0 o 1 | {0, 1} | 1: en los siguientes N = 60 días hábiles el precio tocó `close × (1 − k·σ252)` antes que `close × (1 + k·σ252)` o antes del tiempo. 0: salida por arriba o por tiempo. Vacío: censura (menos de N sesiones futuras) o falta σ252. k = 1 (nb04 §4). **Nunca es 0 por falta de dato** | Etiqueta de entrada "toca el nivel". Variable objetivo del SVM (fuera del alcance de la entrega 1) y de los ΔAUC de P4 (nb04_p4.json) | P4 |
 
 ## 14. Tabla por industria Damodaran (`damodaran_pe.parquet` y `damodaran_margenes.parquet`)
 
