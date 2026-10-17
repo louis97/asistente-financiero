@@ -20,17 +20,21 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **Bonferroni** · Corrección por multiplicidad: cuando se hacen k pruebas se usa un nivel de confianza de 1 − α/k en cada una, para que la tasa global de falsos positivos siga siendo α. nb04 §5.3 usa 1 − 0,05/7 ≈ 99,3 % para los 7 indicadores de P4.
 
+**Brier (puntaje de Brier)** · Error cuadrático medio entre una probabilidad predicha y lo que pasó (1 si ocurrió, 0 si no). Va de 0 (perfecto) a 1; más bajo es mejor. Ejemplo: si el modelo dice 0,6 y el precio sí tocó el nivel, el error de esa observación es (1 − 0,6)² = 0,16. Se usará en la entrega 2 para el SVM y la simulación (punto 4 §4.4).
+
 **bootstrap por bloques (de fechas)** · Técnica de remuestreo que respeta la dependencia temporal: se muestrean trozos consecutivos de fechas con reemplazo y se recalcula el estimado. El IC sale de los percentiles 2,5 y 97,5 de los estimados remuestreados. Ejemplo: P1 (nb03 §4.4) construye el IC de la tasa de caídas fuertes con bloques semanales.
 
 **bootstrap por empresa (por grupos / por ticker)** · Remuestreo con reemplazo del listado de empresas (en vez de filas o bloques de tiempo). Se usa cuando una empresa aporta varias filas y lo que varía entre empresas es lo que domina el IC. Ejemplo: P2 (nb04 §2.6) remuestra las 21 empresas (menos las excluidas por falta de EPS); "bootstrap por empresa" y "bootstrap por ticker" son el mismo concepto.
 
 **BVPS (*book value per share*, valor en libros por acción)** · `patrimonio ÷ acciones`. Es el patrimonio contable que corresponde a cada acción. Ejemplo: KO 2026-04-03 tiene `bvps = 7,80` USD por acción (`ratios_ttm`).
 
+**calibración (diagrama de calibración)** · Compara la probabilidad que promete un modelo con la frecuencia con la que el evento ocurrió, por tramos de probabilidad. Un modelo calibrado que dice 60 % acierta cerca de 6 de cada 10 veces: los puntos quedan sobre la diagonal. Se usará en la entrega 2 (punto 4 §4.4).
+
 **canal Donchian** · Franja entre el máximo y el mínimo de los últimos N períodos. Se usa como indicador `donchian20`, que mide la posición del cierre dentro de ese canal (0 toca el mínimo, 1 toca el máximo). nb04 §5.
 
 **caída máxima (drawdown)** · La peor pérdida acumulada desde un máximo histórico de la serie hasta el siguiente mínimo. Se expresa como fracción. Ejemplo: en nb03 §1 cada ticker tiene su `drawdown` máximo observado. Un drawdown de −0,30 significa que el precio llegó a estar un 30 % por debajo de su máximo anterior.
 
-**censura** · Observación que no se puede resolver porque falta parte del futuro: la etiqueta "¿toca el nivel en 60 días?" queda vacía para los últimos 60 días hábiles de la muestra. Lección T3 del curso: una métrica se calcula solo sobre la población donde está definida; las filas censuradas no se mezclan con las completas.
+**censura** · Observación que no se puede resolver porque falta parte del futuro: la etiqueta "¿toca el nivel en 60 días?" queda vacía para los últimos 60 días hábiles de la muestra. Regla del proyecto: una métrica se calcula solo sobre la población donde está definida; las filas censuradas no se mezclan con las completas.
 
 **chi-cuadrado (tabla de contingencia)** · Prueba del curso para una tabla de dos variables categóricas: compara los conteos observados con los esperados bajo independencia. Se acompaña de la **V de Cramér** para medir la fuerza de la relación. nb03 §5 usa chi-cuadrado para P6 (semanal y diaria).
 
@@ -68,7 +72,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **exceso sobre el XLP** · Para P3, retorno logarítmico de la empresa menos retorno logarítmico del XLP sobre el mismo horizonte: `log(P_T/P_0) − log(XLP_T/XLP_0)`. Un exceso positivo significa que la empresa superó al sector; uno negativo, que quedó por debajo.
 
-**filed (fecha de publicación)** · Fecha en que un reporte de EDGAR se hizo público. Es la primera fecha en que un inversor pudo usar esa información. Toda unión con precios se hace por `filed` para evitar look-ahead (lección T6). Ejemplo: `tabla_trimestral` fila 2023Q1 de KO tiene `filed = 2023-04-26` (26 días después del cierre del trimestre).
+**filed (fecha de publicación)** · Fecha en que un reporte de EDGAR se hizo público. Es la primera fecha en que un inversor pudo usar esa información. Toda unión con precios se hace por `filed` para evitar look-ahead. Ejemplo: `tabla_trimestral` fila 2023Q1 de KO tiene `filed = 2023-04-26` (26 días después del cierre del trimestre).
 
 **frecuencia diaria y semanal** · Dos resoluciones de precios: `precios_diarios` tiene una fila por día hábil; `precios_semanales` una fila por lunes de la semana. nb03 maneja P1 en semanal y P6 en diaria y semanal.
 
@@ -90,7 +94,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **log-retorno** · `log(P_t / P_{t−1})`. Es el retorno expresado en logaritmo natural. Se suma a través del tiempo: el log-retorno de dos períodos es la suma de los dos log-retornos. Base de P1, P5 y la volatilidad.
 
-**look-ahead** · Error de usar información del futuro al tomar una decisión en `t`. En este proyecto se evita con `shift(1)`, ventanas expansivas y la fecha `filed`. La etiqueta es lo único que mira al futuro. Lección T6.
+**look-ahead** · Error de usar información del futuro al tomar una decisión en `t`. En este proyecto se evita con `shift(1)`, ventanas expansivas y la fecha `filed`. La etiqueta es lo único que mira al futuro.
 
 **Mann-Whitney (prueba U)** · Prueba del curso que compara dos muestras independientes por su mediana (en realidad, por su rango). No supone normalidad. Se complementa con bootstrap porque las observaciones no son independientes.
 

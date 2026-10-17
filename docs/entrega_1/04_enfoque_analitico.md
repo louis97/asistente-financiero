@@ -136,8 +136,8 @@ Ninguna técnica queda suelta: toda técnica listada responde a una pregunta de 
 
 **SVM (entrega 2):**
 - **ROC-AUC:** probabilidad de que el modelo ordene correctamente un par (día que sí tocó, día que no tocó).
-- **Brier:** error cuadrático medio entre la probabilidad predicha y la realidad.
-- **Diagrama de calibración:** curva que compara la probabilidad predicha con la frecuencia observada por tramos. "De las veces que el modelo dijo 60 %, ¿cuántas sí tocaron?".
+- **[Brier](glosario.md):** error cuadrático medio entre la probabilidad predicha y la realidad.
+- **[Diagrama de calibración](glosario.md):** curva que compara la probabilidad predicha con la frecuencia observada por tramos. "De las veces que el modelo dijo 60 %, ¿cuántas sí tocaron?".
 - **Comparación con la tasa de toque por decil de σ252** (línea base por decil de σ): regla ΔAUC = AUC(SVM) − AUC(línea base). **Dos decisiones:** se rechaza H0 (ΔAUC = 0) si el IC95 bilateral por bootstrap por bloques no incluye 0; el SVM es **accionable** si el límite inferior del IC supera 0,03. Métricas por subperíodo (2009–2012, 2013–2019, 2020–2021, 2022+).
 
 **Lectura probabilística (simulación de salidas; entrega 2):**

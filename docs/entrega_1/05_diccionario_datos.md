@@ -4,7 +4,7 @@ Describe las instantáneas de `data/snapshots/` que se descargan en [`notebooks/
 
 **Universo.** 21 empresas de consumo defensivo con historia desde 2009 y en el XLP (KO, PEP, PG, WMT, COST, CL, MDLZ, KMB, GIS, MO, PM, HSY, KR, SYY, ADM, CLX, CHD, MKC, STZ, CAG, TSN), más dos ETF usados como referencia: el SPY (mercado) y el XLP (sector). KHC queda excluida porque sus precios empiezan en 2015. Los dos ETF viven solo en las tablas de precios; los demás snapshots guardan únicamente las 21 empresas.
 
-**Cómo leer la columna "Significado del 0 o del vacío" (lección T2 del curso).** Un cero y un vacío (`NaN`) casi nunca significan lo mismo. En este proyecto el vacío quiere decir "no hay dato, no se pudo calcular o aún no se conoce" y nunca se rellena con 0. Un cero solo se interpreta como cantidad cuando la fila lo dice.
+**Cómo leer la columna "Significado del 0 o del vacío".** Un cero y un vacío (`NaN`) casi nunca significan lo mismo. En este proyecto el vacío quiere decir "no hay dato, no se pudo calcular o aún no se conoce" y nunca se rellena con 0. Un cero solo se interpreta como cantidad cuando la fila lo dice.
 
 **Unidades.** USD son dólares corrientes; "adimensional" es una razón sin unidad; "fracción" es 0,05 = 5 %. Las columnas `uso` nombran las hipótesis P1–P6 definidas en [`04_enfoque_analitico.md`](04_enfoque_analitico.md) §4.1–§4.5.
 
