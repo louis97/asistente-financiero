@@ -1,61 +1,86 @@
 ---
-title: "Asistente Bursátil para el inversor value colombiano"
-author: "Louis Gualtero · MINE-4101 · Entrega 1"
+title: "Asistente bursátil para el inversor value colombiano"
+subtitle: "Entrega 1 · MINE-4101 Ciencia de Datos Aplicada · Universidad de los Andes"
+author: "Louis Gualtero · trabajo individual autorizado por el profesor"
+date: "Octubre 2026"
+aspectratio: 169
+theme: default
+colortheme: default
 ---
 
 ## 1. Problema
 
-- Inversor value colombiano que compra acciones de EE.UU.: screener, fundamentales y gráfico en pantallas separadas
-- De 2 a 15 cambios de pantalla por activo; 2 a 3 horas tras cada reporte trimestral
-- Riesgo medido "a ojo"; sin registro de decisiones
-- KPIs: < 5 min por activo, 1 pantalla, latencia ≤ 1 día, 100 % de decisiones registradas
+- **Inversor value colombiano** que compra acciones de EE.UU.: *screener*, fundamentales y gráfico en pantallas separadas; riesgo "a ojo"; sin registro de decisiones.
+- Evidencia cualitativa (un participante + autor; muestra no representativa): **2 a 15 cambios de pantalla por activo**, **2 a 3 horas** por reporte trimestral.
+- Contexto: Mercado Global Colombiano **+134 %** 2024→2025 (BVC); +87 % inversionistas desde 2023 (SFC).
+- KPI: tiempo < 5 min, 1 pantalla, latencia ≤ 1 día, 100 % decisiones registradas.
 
-## 2. Ideación: seis niveles, tres lecturas
+## 2. Producto: seis niveles, tres lecturas
 
-![](assets/mockup.png){width=75%}
+- **6 niveles** definidos por el usuario (3 de entrada, 3 de salida), en precio y en múltiplo.
+- **3 lecturas** por nivel: fundamental (percentiles del P/E normalizado), técnica (SVM, N = 60 días), probabilística (simulación por bloques de la acción y del XLP).
+- **Panel de riesgo** descriptivo: volatilidad, percentil 5, caída máxima, caídas fuertes, dependencia del sector.
+- **Alcance de la entrega 1**: industria piloto consumo defensivo (21 empresas + SPY + XLP; KHC excluida).
 
-- Validación con el stakeholder: pendiente
+## 3. Mockup
 
-## 3. Ética y regulación
+![](assets/mockup.png){width=78%}
 
-- Sin recomendación de compra o venta (Ley 964 de 2005); aviso en cada pantalla
-- Datos personales anonimizados (Ley 1581 de 2012)
-- SVM lineal explicable, frente a la tasa de toque por decil de σ (GBM como referencia) y con error histórico
-- Sin look-ahead: fecha `filed`, purga y embargo
+Validación con el stakeholder: **pendiente** (sesión 2026-10-16).
 
-## 4. Enfoque analítico
+## 4. Ética y regulación
 
-- Preguntas de negocio a hipótesis HT, HF y HP con H0 y H1
-- Etiqueta de triple barrera solo-largo (k = 1, N = 12)
-- Validación walk-forward con purga y embargo
-- Cuatro líneas base (decide HT1 la tasa de toque por decil de σ); IC bootstrap para declarar una hipótesis apoyada
+- **Ley 964 de 2005 y Decreto 2555 de 2010**: el producto no recomienda compra ni venta y no perfila al usuario; leyenda del art. 2.40.1.1.3 en cada pantalla.
+- **Habeas Data (Ley 1581 de 2012)**: anonimización del participante y autorización verificable.
+- **Transparencia**: SVM lineal con coeficientes legibles; probabilidad junto a su línea base y su desempeño histórico.
+- **Sin look-ahead ni data snooping**: fecha `filed`, ventana expansiva, 15 pruebas declaradas antes, Bonferroni en P4.
 
-## 5. Datos
+## 5. Enfoque analítico (6 preguntas, 1 hipótesis cada una)
 
-- yfinance, SEC EDGAR y Damodaran (gratuitos)
-- 30 acciones y 4 ETF; 27 326 filas semanales desde 2009
-- Utilidad bruta presente en solo 14 de 30 emisores
-- EDGAR coincide en 6 de 6 con el 10-K de AAPL, KO y JPM
+| Preg. | Qué pregunta | Umbral |
+|---|---|---|
+| P1 | ¿Caídas semanales > 2σ más frecuentes que una normal? | 3,8 % |
+| P2 | ¿Barato > caro a 3 años en Δlog(P/E normalizado)? | +0,03 anualizado |
+| P3 | ¿Barato gana al XLP a 3 años? | +0,05 anualizado |
+| P4 | ¿Algún indicador técnico mejora la AUC base? | +0,01 (×7) |
+| P5 | ¿XLP agrega ΔR² al SPY? | +0,05 |
+| P6 | ¿La turbulencia se agrupa? | 0,30 |
 
-## 6. EDA: riesgo y colas
+Plantilla: umbral → H0/H1 → prueba y supuestos → IC95 por bootstrap → decisión estadística y de negocio.
 
-![](assets/vol_ewma_garch.png){width=60%}
+## 6. Datos (tres fuentes gratuitas, instantánea fechada)
 
-- ν mediano 4.15; GARCH-t gana en 28 de 34 series (HP0, HT4 apoyadas)
-- Caminata aleatoria: pasan 15 de 30 (HT0 no apoyada); P_GBM no calibrada
-- VaR: GARCH-t adecuado en 14 de 30 (HP1 no apoyada)
+- **yfinance**: 21 344 filas semanales × 23 tickers desde 2009; precios ajustados y sin ajustar por dividendos.
+- **SEC EDGAR**: hechos XBRL de los 10-K y 10-Q con fecha `filed`; el P/E usa el EPS TTM reconstruido con los 10-Q.
+- **Damodaran**: múltiplos y márgenes por industria.
+- Calidad en nb02: 9 dimensiones y 5 niveles; 0 nulos en precios ajustados, 0 duplicados; TTM válido en 1.308 de 1.434 trimestres (91,2 %).
 
-## 6. EDA: señal débil, sector fuerte
+## 7. EDA: resultados por hipótesis
 
-![](assets/nb04_auc_por_regimen.png){width=55%}
+| Preg. | Estimado · IC95 · Decisión |
+|---|---|
+| P1 | 3,08 % · [2,46; 3,92] % · **no se rechaza H0**, no accionable |
+| P2 | +0,153 · [+0,091; +0,221] · **se rechaza H0**, accionable |
+| P3 | +0,006 · [−0,032; +0,049] · **no se rechaza H0**, no accionable |
+| P4 | 7 indicadores con IC que cruzan 0 · **no se rechaza H0** (×7) |
+| P5 | ΔR² 0,225 · [+0,175; +0,291] · **se rechaza H0**, accionable (confirmatoria) |
+| P6 d. | P(T\|T) 0,305 · [0,275; 0,340] · **se rechaza H0**, magnitud incierta |
 
-- AUC por indicador 0.496–0.514 (HT2 no concluyente, HT3 no apoyada)
-- Sector R² mediano 0.525 (HP3 apoyada)
-- Múltiplos revierten en 7 de 29 (HF1) y 10 de 29 (HF2), no apoyadas
+## 8. P2: barato sube más, descomposición compatible con trampa de valor
 
-## 7. Conclusiones y próximos pasos
+![](assets/nb04_p2_descomposicion.png){width=70%}
 
-- Indicadores técnicos solos: señal débil; la probabilidad depende de σ y del régimen
-- Diseño: GARCH-t con innovaciones t; rival del SVM: tasa de toque por decil de σ (GBM con deriva solo como referencia teórica, no calibrado); múltiplos como contexto
-- Siguiente: SVM walk-forward (HT1 preparada, no probada), Monte Carlo, validación con el stakeholder
-- Repositorio: github.com/louis97/asistente-financiero (rama entrega-1). Video: pendiente
+Barato − caro: **+0,153 anualizado en log** (IC95 por empresa [+0,091; +0,221]). Precio aporta +0,15 (IC excluye 0); EPS promedio −0,15 (IC cruza 0). nb04 §2.7–§2.8.
+
+## 9. P4: ningún indicador supera la línea base por decil de σ
+
+![](assets/nb04_p4_zonas.png){width=65%}
+
+7 IC95 (Bonferroni ≈ 99,3 %) cruzan 0; AUC base **0,591** con N = 60. Consecuencia: `variables_svm = {|r_t|, σ20/σ252, σ252}`. nb04 §5.3.
+
+## 10. Conclusiones y próximos pasos
+
+- **Insights**: niveles en k·σ252, N = 60; simulación por bloques de la acción + XLP; exceso sobre XLP **no entra como señal**; marca "industria no validada" fuera del piloto.
+- **Limitaciones**: una industria piloto; supervivencia; 3 años (no 5–10); P5 confirmatoria; fuga de selección en P4.
+- **Próximos pasos**: entrenar el SVM con corte cronológico, simulación por bloques, validación con el stakeholder, segunda industria.
+- Repositorio: <https://github.com/louis97/asistente-financiero>. Video: pendiente de subir.

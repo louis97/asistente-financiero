@@ -1,44 +1,41 @@
 # Declaración de uso de IA
 
-Versión final de la primera entrega. Se actualizó durante el proyecto a partir de la bitácora, los planes y los chats.
+Los commits no llevan atribución; el uso de IA se declara aquí.
 
 ## Herramientas
+
 | Herramienta | Uso |
 |---|---|
-| Google Gemini (chat) | Ideación inicial del producto con un prompt de "consultor en rediseño de procesos": diagnóstico del proceso actual, cuantificación, rediseño, priorización y hoja de ruta. Redacción del mensaje para el stakeholder y del formulario de 12 preguntas. La transcripción no se incluye en el repositorio (menciona a terceros); el resumen de las respuestas está en [`docs/entrega_1/evidencia_diagnostico.md`](docs/entrega_1/evidencia_diagnostico.md). |
-| Claude Code (Anthropic; modelos usados: Claude Opus para orquestación, diseño y revisiones finales; Claude Sonnet para la mayor parte de la implementación y de las revisiones por tarea; Claude Haiku para tareas mecánicas de código) con el plugin *superpowers* (flujo de brainstorming → spec → plan) | Brainstorming del diseño, revisión de literatura académica (búsqueda web), síntesis del material del curso de Ingeniería Financiera, definición de hipótesis, spec, rúbrica operativa y planes versionados. Implementación: módulos de `src/asistente/` con TDD, notebooks 01 a 04, pruebas y ejecución con `uv`. Flujo de desarrollo dirigido por subagentes (*subagent-driven development*): un subagente implementador por tarea y revisiones por tarea (cumplimiento de la especificación y calidad) antes de continuar. Apoyo en la interpretación y en la redacción de `README.md`, `docs/entrega_1/` y `USO_IA.md`. |
+| Asistente de IA conversacional (Google Gemini) | Ideación inicial del producto con un prompt de "consultor en rediseño de procesos": diagnóstico del proceso actual, cuantificación, rediseño y priorización. También se usó para redactar el mensaje al participante y el formulario de 12 preguntas. La transcripción no se incluye en el repositorio (menciona a terceros); el resumen de respuestas vive en [`docs/entrega_1/evidencia_diagnostico.md`](docs/entrega_1/evidencia_diagnostico.md). |
+| Claude Code (Anthropic) con el plugin `superpowers` | Orquestación del flujo brainstorming → spec → plan → implementación → revisión por tarea → revisión paralela por fase. El **orquestador principal** corrió en un modelo superior (Claude Sonnet 4.5 / 4.7); los **subagentes** (implementadores, revisores y exploradores) corrieron fijos en **Claude Opus 4.8** (en algunas ventanas la API lo atiende como 4.7, aceptado por el autor el 2026-10-16). Se usó en la implementación de los 4 notebooks, en la escritura inicial de los documentos de `docs/entrega_1/`, en la generación del mockup y los entregables y en las revisiones versionadas en `.docs/revisiones/`. |
 
-## Partes en las que se usó IA
+## En qué partes se usó
+
 | Parte | Tipo de apoyo | Control humano |
 |---|---|---|
-| Definición del problema y del producto (puntos 1–2) | Ideación y estructuración | Las decisiones las tomó el autor: usuario objetivo, alcance, SVM en vez de Transformers, los 6 niveles de entrada y salida, etc. (ver `.docs/bitacora_ideas.md`) |
-| Revisión de literatura | Búsqueda y resumen de artículos | Cada cita se verifica con su DOI antes de usarla; se marcan las pendientes |
-| Material del curso IIND-4414 | Resumen de diapositivas y scripts R con agentes | Resúmenes en `.docs/research/ingenieria_financiera/` |
-| Hipótesis y enfoque analítico | Propuesta y discusión | Ajustes del autor (p.ej. reubicar la hipótesis de caminata aleatoria) |
-| Implementación (puntos 5 y 6) | Código de `src/asistente/` (EDGAR, Damodaran, indicadores, etiquetas, riesgo, simulación), notebooks 01 a 04 y `run_all.sh`, escritos por Claude Code en tareas pequeñas con prueba primero | 75 pruebas automatizadas (pytest); cada tarea revisada por un segundo agente; el autor fijó los criterios (sin look-ahead, fecha `filed`, k y N por evidencia) y revisó los resultados. Los notebooks se ejecutan de punta a punta con `run_all.sh` |
-| Interpretación de resultados (puntos 6 y 7) | Borradores de las lecturas con cifras, síntesis y conclusiones a partir de las salidas de los notebooks | Las cifras salen de celdas ejecutadas (T7) y cada conclusión cita notebook y sección (T4); el autor decide qué se afirma y mantiene la salvedad de que los resultados son asociativos y que los indicadores técnicos muestran señal débil. Correcciones surgidas de las revisiones: línea base GBM con deriva, IC por bloques de fechas, ajuste por splits |
-| Documentación (README, markdowns 1 a 5 y 7, reporte, diapositivas) | Redacción y estructuración a partir de las salidas y de la guía de la entrega | El autor revisa y valida el contenido; los datos de la validación con el stakeholder no se inventan (plantilla por completar tras la sesión) |
+| Definición del problema y del producto (puntos 1 y 2) | Ideación y estructuración con el asistente conversacional y con Claude Code | Las decisiones las tomó el autor: usuario objetivo, alcance, seis niveles de entrada y salida, industria piloto. Se registran en [`.docs/bitacora_ideas.md`](.docs/bitacora_ideas.md). |
+| Revisión de literatura (puntos 1 y 3) | Búsqueda y resumen de artículos académicos y normas | Cada cita se verifica con su DOI o URL oficial antes de usarse. |
+| Hipótesis y enfoque analítico (punto 4) | Propuesta y discusión de P1–P6 con la plantilla del profesor (`business-case.ipynb`) | El autor fijó los umbrales antes de ejecutar, con cada decisión declarada ("se rechaza H0" / "no se rechaza H0") y revisada en `.docs/revisiones/`. |
+| Implementación (puntos 5 y 6) | Código **inline en los notebooks** (recolección, calidad, EDA univariado y multivariado), con comentarios y lecturas con cifras. Lo que usan dos o más notebooks vive en `notebooks/comunes.py`. No hay pruebas automáticas. | El autor fijó las reglas (sin look-ahead, fecha `filed` de los reportes, ventana expansiva, universo del piloto) y revisó los resultados con cuatro revisiones paralelas en `.docs/revisiones/cierre_fase3/`. Los notebooks se ejecutan de punta a punta con `bash run_all.sh`. |
+| Interpretación de resultados (puntos 6 y 7) | Borradores de las lecturas con cifras, síntesis y conclusiones a partir de las salidas de los notebooks y de `data/resultados/*.json` | Las cifras salen de celdas ejecutadas; cada conclusión cita el notebook y la sección. El autor decide qué se afirma y mantiene la salvedad de que los resultados son asociativos. |
+| Documentación (README, markdowns del punto 1 al 7, reporte, diapositivas, guion del video) | Redacción y estructuración a partir de las salidas del análisis | El autor revisa y valida el contenido; los datos de la validación con el stakeholder no se inventan (la plantilla queda pendiente al 2026-10-16). |
 
-## Prompts y momentos clave del flujo
-1. Gemini: "quiero que me guíes para diseñar un producto así: asistente de inversiones en el mercado bursátil…" (definición inicial).
-2. Claude Code: "quiero usar superpowers para poder completar la entrega 1" (inicio del flujo de brainstorming).
-3. "necesitamos consultar literatura académica y basar las decisiones que tomamos en ella… ten en cuenta que esto es una serie de tiempo".
-4. "dime 5 cosas que posiblemente esté omitiendo en el plan" (análisis de brechas).
-5. "lee el contenido de mi materia de ingeniería financiera… e incluyamos todo lo que nos pueda ayudar".
-6. Corrección del autor: "el escenario bajista es de todas formas esperando que la empresa suba de precio" (rediseño del modelo hacia el planteamiento B).
-7. "añade las lecciones del taller 1… aplicadas en la forma mas no en su contenido".
+## Prompts más relevantes
+
+1. Asistente conversacional: "quiero que me guíes para diseñar un producto así: asistente de inversiones en el mercado bursátil…" (definición inicial del producto).
+2. Claude Code: "quiero usar superpowers para poder completar la entrega 1" (inicio del flujo).
+3. "añade las lecciones del taller 1 aplicadas en la forma, no en el contenido" (aterrizaje del enunciado).
+4. **Reencuadre del alcance**: "este proyecto es para un compañero sin formación en finanzas; nada de modelos econométricos ni de ingeniería financiera; solo herramientas del curso MINE-4101 aplicadas a series de tiempo, con una hipótesis por pregunta de negocio" (reescritura total del enfoque analítico).
+5. "las decisiones se escriben con la convención del curso ('se rechaza H0' o 'no se rechaza H0'); cada prueba lleva su matriz de supuestos y, con observaciones dependientes, la decisión sale del IC por bootstrap".
+6. "toda cifra del texto debe salir de una celda ejecutada y cada conclusión enlaza su notebook y su sección; toda recomendación pasa la pregunta '¿el inversor tiene este dato hoy?'".
+7. "no quiero empezar el desarrollo y encontrarme con notebooks o documentos que referencian datos inexistentes, ideas descartadas, afirmaciones sin evidencia o inconsistencias" (consigna de la revisión paralela de cierre de cada fase).
 
 ## Flujo de trabajo
-Brainstorming iterativo (una pregunta a la vez) → bitácora de ideas → planes versionados (`.docs/plans/plan_v1…v5`) → spec → plan de implementación → implementación con TDD → revisión del autor.
 
-## Prompts de la fase de implementación (resumidos)
-8. "Implementa el plan de la entrega 1 con subagentes: una tarea por subagente, con revisión de cumplimiento de la especificación y de calidad al terminar cada una" (inicio de la implementación).
-9. Instrucciones por tarea (resumen): escribir primero la prueba y verla fallar, implementar, ver la prueba en verde, correr la suite completa y hacer el commit con el mensaje indicado; detenerse y reportar si un valor del plan parece incorrecto.
-10. Correcciones del autor y de las revisiones: la línea base del SVM debe usar la deriva estimada solo con datos pasados; los intervalos por régimen deben ser por bloques de fechas; los múltiplos deben usar EPS ajustado por splits y precio sin ajuste por dividendos.
-11. Conclusiones: "toda cifra del texto debe salir de una celda ejecutada y cada conclusión enlaza el notebook y la sección; toda recomendación se revisa con la pregunta ¿el inversor tiene este dato hoy?" (lecciones T4, T6 y T7).
-12. Documentación final: `README.md` con las seis secciones exigidas y el índice actividad -> archivo, y `run_all.sh` para reproducir el análisis.
+Brainstorming iterativo (una pregunta a la vez) → bitácora de ideas → spec en `.docs/superpowers/specs/` → plan versionado en `.docs/superpowers/plans/` → implementación por tareas con revisión por tarea (hasta 5 rondas de corrección con re-revisión) → cierre de fase con **revisión paralela de 4 revisores** (todos en Claude Opus 4.8 / 4.7) y consolidado en `.docs/revisiones/cierre_fase*/`. Antes de declarar cualquier cosa terminada, se ejecutan los notebooks y se muestra la evidencia. El modelo del orquestador principal es superior al de los subagentes (regla de operación del proyecto).
 
-Los prompts no contienen credenciales ni datos personales; la variable `SEC_USER_AGENT` se documenta solo con un valor de ejemplo.
+## Verificación
 
-## Flujo de trabajo en la implementación
-Especificación y plan versionados -> tarea -> subagente implementador (TDD, commit) -> revisión de cumplimiento -> revisión de calidad -> correcciones -> siguiente tarea. El autor decide el alcance, las hipótesis, los criterios de aceptación y qué se afirma en los textos.
+- Las cifras del reporte, de las diapositivas y del README coinciden con `docs/entrega_1/07_conclusiones.md` y con los JSON de `data/resultados/`.
+- Los notebooks se ejecutan sin errores en el orden 01 → 02 → 03 → 04 (comprobado con `bash run_all.sh`).
+- Las técnicas no cubiertas en el material del curso se declaran en [`docs/entrega_1/03_etica_legal.md`](docs/entrega_1/03_etica_legal.md) §3.3 (fuente única).
