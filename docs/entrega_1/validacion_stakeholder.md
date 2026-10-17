@@ -74,7 +74,7 @@ Se compara con la línea base de `01_negocio.md`, sección 1.6. Si la respuesta 
 | 4.3 | 3. Días entre un reporte trimestral y la actualización de sus niveles | Días | (completar tras la sesión) | (completar tras la sesión) |
 | 4.4 | 4. Decisiones que deja registradas (de cada 10) | 0 % | (completar tras la sesión) | (completar tras la sesión) |
 | 4.5 | Cómo mide hoy el riesgo | "A ojo" | (completar tras la sesión) | (completar tras la sesión) |
-| 4.6 | Qué P/E usa: últimos 12 meses (TTM) o último año fiscal, y dónde lo consulta | P/E sobre EPS TTM (spec §4.3b) | (completar tras la sesión) | (completar tras la sesión) |
+| 4.6 | Qué P/E usa: últimos 12 meses (TTM) o último año fiscal, y dónde lo consulta | P/E sobre EPS de los últimos 12 meses (TTM) | (completar tras la sesión) | (completar tras la sesión) |
 | — | 5. Confianza y adopción | Sin línea base | Ver secciones 3 y 4 | — |
 
 ## 6. Cambios que generó en el diseño
