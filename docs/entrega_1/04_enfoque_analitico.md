@@ -2,140 +2,212 @@
 
 *Asistente bursátil para el inversor value colombiano. Entrega 1, MINE-4101 Ciencia de Datos Aplicada (Universidad de los Andes). Autor: Louis Gualtero.*
 
-Este documento traduce las tres preguntas de negocio del producto ([02_ideacion.md](02_ideacion.md)) en hipótesis que se pueden refutar con los datos, asigna a cada una la técnica que la responde y la sección del EDA donde se aborda, define el diseño experimental que evita el look-ahead y fija, para cada métrica de calidad, la regla con la que se decide si la hipótesis se apoya. El mapa completo de hipótesis está en `docs/entrega_1/04_enfoque_analitico.md`. Todo se formula como asociación y no como causa. Lo que aquí se describe es un plan: los resultados del EDA se reportan en los notebooks `02_calidad`, `03_eda_series` y `04_eda_relaciones`, y en este documento solo se citan los que motivaron una decisión de diseño (secciones 4.3.2 y 4.3.4), con la referencia al notebook de donde salen.
+Este documento es la **fuente única** de las hipótesis del proyecto. Para cada pregunta de negocio del [punto 2](02_ideacion.md), define una sola hipótesis con la plantilla del profesor (`business-case.ipynb`), su variable medible, su horizonte, su umbral práctico fijado antes de ver el resultado, la prueba estadística y la decisión. También recoge el diseño experimental que evita el look-ahead y las métricas con las que se juzga la calidad del modelo. **No se repiten aquí las cifras de los resultados;** esos viven en los notebooks [03](../../notebooks/03_eda_univariado.ipynb) y [04](../../notebooks/04_eda_multivariado.ipynb) y en el [punto 7](07_conclusiones.md).
 
-## 4.1 De las preguntas de negocio a las hipótesis
+**Plantilla de inferencia** (se aplica a cada hipótesis):
 
-El inversor value necesita responder tres preguntas para cada nivel de su plan. La primera es si el nivel es razonable para esta empresa, y la responde el eje fundamental comparativo (HF). La segunda es si compra ya o espera, y la responde el eje técnico (HT), cuyo rival es la caminata aleatoria. La tercera es qué tan probable es alcanzar el nivel y en cuánto tiempo, y la responde el eje probabilístico (HP). La caminata aleatoria (eficiencia débil, Fama, 1970) no es una hipótesis transversal. Dice que los precios pasados no predicen la dirección futura, pero no dice nada de la volatilidad ni de los fundamentales. Por eso es la línea base a vencer en el eje técnico (HT0), el supuesto que se verifica en el probabilístico (HP0) y no aplica al fundamental.
+1. **Paso 0 — Umbral práctico:** una diferencia mínima que **cambiaría una decisión**, fijada antes de la prueba.
+2. **H0 / H1 y α:** se escribe la hipótesis nula explícita, la alternativa y el nivel de significancia (α = 0,05).
+3. **Prueba y supuestos verificados:** la prueba estadística y la matriz de supuestos (supuesto → por qué importa → verificación ejecutada → resultado con cifras → qué se hace si falla).
+4. **Estimación con intervalo de confianza antes del p-value:** el estimado puntual y su IC bilateral al 95 % por bootstrap (por bloques de fechas o por empresa, según la estructura).
+5. **Efecto con IC:** el tamaño del efecto reportado con su rango.
+6. **Dos decisiones:**
+   - **Estadística:** se escribe "se rechaza H0" si el IC95 bilateral no incluye el valor nulo; en caso contrario, "no se rechaza H0". Este IC95 bilateral equivale a una prueba unilateral al 2,5 % (porque el intervalo bilateral deja 2,5 % en cada cola). Nunca se dice "se acepta H0".
+   - **De negocio:** el efecto es **accionable** si el **límite inferior del IC** supera el umbral práctico; si se rechaza H0 pero el IC **cruza** el umbral, el efecto se reporta como "**efecto real, pero de magnitud incierta**"; en los demás casos, "**no accionable**".
+7. **Implicación para el inversor y limitaciones.**
 
-Las siete hipótesis principales se formulan con H0 y H1, una variable medible, un horizonte y una referencia. Un rechazo de H0 en una serie de tiempo debe leerse con cautela, porque las observaciones no son independientes, y por eso las pruebas que suponen i.i.d. se complementan con block bootstrap (sección 4.3). Todas las pruebas se corren por ticker y se resumen por industria. El nivel de significancia nominal es 0,05, con corrección por comparaciones múltiples (Benjamini-Hochberg) al resumir los 30 tickers.
+**Lenguaje de asociación**, nunca de causa. Las observaciones de series de tiempo no son independientes, y eso lo arregla el bootstrap por bloques (o por empresa) en el paso 4, no un cambio de la prueba.
 
-| Pregunta | ID | H0 | H1 | Variable medible y horizonte | Referencias |
-|---|---|---|---|---|---|
-| ¿Compro ya o espero? | HT0 | Los log-precios semanales siguen una caminata aleatoria: raíz unitaria (ADF no rechaza) y retornos sin autocorrelación (ρ₁ = … = ρ_K = 0) | Los log-precios son estacionarios en tendencia o los retornos están autocorrelacionados | Log-precios y retornos semanales por ticker, ~15 años; K = 10 rezagos. Además, P_GBM(toque) frente a la tasa empírica de toque de la barrera | Fama (1970) |
-| ¿Compro ya o espero? | HT1 | AUC_SVM − AUC_dec ≤ 0, con AUC_dec la de la tasa empírica de toque por decil de σ_t (etiquetas resueltas antes de t) | AUC_SVM − AUC_dec > 0 (y análogamente Brier_dec − Brier_SVM > 0). El GBM con deriva ≤ t se reporta como referencia teórica | Probabilidad de que el precio toque el nivel de entrada (P_t·exp(−k·σ_t·√N)) en N semanas antes de la barrera superior, con N ∈ {4, 12, 26}; validación walk-forward | Kim (2003); Lo, Mamaysky y Wang (2000); López de Prado (2018) |
-| ¿Compro ya o espero? | HT2 | Cada indicador tiene la misma distribución en las dos clases de la etiqueta (AUC univariada = 0,5) | La distribución difiere: RSI alto, distancia grande a la SMA/EMA o techo del canal Donchian se asocian con mayor probabilidad de retroceso (AUC ≠ 0,5, con signo esperado) | RSI(14), distancia a SMA/EMA, posición Donchian, volumen relativo y momentum 12-1 frente a la etiqueta de triple barrera, N ∈ {4, 12, 26} | Park e Irwin (2007); Jegadeesh (1990) |
-| ¿Es razonable el nivel? | HF1 | El múltiplo (P/E, P/B) tiene raíz unitaria: velocidad de reversión η = 0 | El múltiplo revierte a su media histórica: η > 0 con vida media ln 2/η finita | Serie semanal del múltiplo por empresa, con el EPS o valor en libros anual (10-K) vigente según `filed` (EDGAR) y el precio, desde ~2009; ajuste Ornstein-Uhlenbeck (AR(1)) | Dixit y Pindyck (1994) |
-| ¿Es razonable el nivel? | HF2 | El múltiplo relativo (empresa ÷ mediana de la industria) tiene raíz unitaria: η = 0 | El múltiplo relativo revierte: η > 0, es decir, los descuentos frente al sector tienden a cerrarse | Serie semanal del múltiplo relativo por empresa (denominador anual, 10-K, vigente según `filed`) | Asness, Moskowitz y Pedersen (2013) |
-| ¿Qué tan probable es el objetivo? | HP0 | Los retornos semanales son normales sin efectos ARCH: ACF de r² nula, ARCH-LM no rechaza y la normalidad no se rechaza | Hay colas pesadas o agrupamiento de volatilidad, y el GBM normal no es adecuado (se pasa a GARCH-t) | Retornos semanales por ticker, ventana expansiva; ACF de r y r², ARCH-LM, Jarque-Bera con QQ-plot, persistencia α + β | Cont (2001); Engle (1982) |
-| ¿Qué tan probable es el objetivo? | HP3 | β del ETF sectorial = 0 en el modelo de índice único (R² = 0) | β > 0 y el ETF explica una parte importante de la varianza de la acción | R² y β de r = α + β·r_ETF + ε, móvil y por régimen; descomposición de la varianza en sistemática e idiosincrática | Sharpe (1964) |
+## §4.0 Por qué trabajamos con retornos y cada rama en su frecuencia
 
-Las hipótesis secundarias reciben un análisis más ligero y se enuncian brevemente. HT3: la relación indicador → etiqueta es estable entre regímenes de mercado (HT2 repetida por régimen; Ang y Timmermann, 2012). HT4: la volatilidad semanal se agrupa, por lo que las barreras deben escalarse con σ (ARCH-LM y persistencia del GARCH; Engle, 1982; Bollerslev, 1986). HF3: estar barata frente a la historia y la industria, con calidad (ROIC o ROE sobre la industria), se asocia con mejores retornos a 12 meses (retorno posterior por quintil con `filed`; Fama y French, 1992; Piotroski, 2000), con muestra pequeña y carácter exploratorio. HF4: menor distancia al default de Merton se asocia con mayor drawdown o VaR posterior (Merton, 1974). HF5: los ratios calculados desde EDGAR son consistentes con yfinance, con Damodaran y con el 10-K, lo cual valida la fuente. HP1: el GBM normal subestima las colas y GARCH-t describe mejor el riesgo (Cont, 2001; Kupiec, 1995; Christoffersen, 1998). HP2: las probabilidades del Monte Carlo están calibradas frente a niveles históricos (Glasserman, 2004; López de Prado, 2018). HP1 y HP2 se preparan en esta entrega y su prueba completa requiere simular o entrenar.
+El inversor habla de precios, pero las técnicas del curso suponen datos "parecidos entre sí" (que la media y la variabilidad sean estables) e independientes. Los precios de una acción crecen y la variabilidad cambia por épocas, de modo que las fórmulas se calculan pero sus resultados mienten. **La solución es trabajar con los retornos** (`r_t = ln(P_t / P_{t−1})`), que tienen cinco propiedades que los hacen aptos para el curso. (Evidencia: [notebook 03 §0](../../notebooks/03_eda_univariado.ipynb). Base: `.docs/research/retornos_vs_precios.md`.)
 
-## 4.2 Matriz hipótesis × técnica × sección del EDA
+1. **Estacionariedad aproximada.** Los retornos oscilan alrededor de cero con una variabilidad comparable a lo largo del tiempo; los precios no (crecen).
+2. **Independencia relativa.** La **dirección** de un retorno no se predice casi con la anterior (la autocorrelación de `r_t` es cercana a cero), pero la **magnitud** sí: días volátiles tienden a seguir a días volátiles. Esto se nombra como "agrupamiento de la volatilidad" en Cont (2001).
+3. **Escala homogénea.** Un retorno de 0,02 significa lo mismo (una subida de 2 %) para KO en 2010 y para WMT en 2020. Un cambio de precio en dólares, no.
+4. **Suma de los log-retornos.** El rendimiento acumulado se obtiene sumando log-retornos; esto permite anualizar y descomponer sin preocuparse por el orden multiplicativo.
+5. **Distribución estable pero de colas pesadas.** Los retornos tienen más casos extremos que una normal; las pruebas de este proyecto se escogen para que esto no las rompa (proporciones y medianas por bootstrap antes que medias por t).
 
-Cada técnica de la tabla responde a al menos una hipótesis, y ninguna se lista sin una pregunta que la justifique. Los niveles 1 a 3 son los del EDA de series de tiempo (punto 6): el nivel 1 analiza cada serie, el nivel 2 relaciona indicadores con la etiqueta y el nivel 3 estudia las relaciones entre activos y el análisis multivariado. Las hipótesis marcadas como "preparada" solo se resuelven del todo al entrenar o simular el modelo en la entrega final.
+**Frecuencia de cada rama** (base: `.docs/research/retornos_vs_precios.md` §5):
 
-| Hipótesis | Técnica estadística | Visualización | ML o simulación | Dónde se aborda | Cobertura en la Entrega 1 |
-|---|---|---|---|---|---|
-| HT0 | ADF y KPSS sobre log-precios y sobre cada indicador; Ljung-Box sobre retornos | Series de precio y retorno, ACF de r, curva de calibración de P_GBM frente a la tasa empírica de toque | Probabilidad GBM como línea base | `03_eda_series` (nivel 1) y `04_eda_relaciones` (nivel 2, calibración) | Respondida |
-| HT1 | Intervalo bootstrap para ΔAUC y ΔBrier | Curvas ROC y diagrama de calibración (SVM frente a la tasa por decil de σ_t, con el GBM como referencia) | SVM lineal y RBF con escalado; walk-forward con purga y embargo; coeficientes y SHAP | Diseño en 4.3; chequeo exploratorio opcional en `04_eda_relaciones` | Preparada (etiquetas, referencia GBM y tasas por decil de σ listas) |
-| HT2 | AUC univariada, información mutua, Mann-Whitney con block bootstrap, Spearman y VIF para redundancias | Boxplots por clase, heatmap de correlaciones | Etiqueta de triple barrera para k ∈ {1, 2}σ y N ∈ {4, 12, 26} | `04_eda_relaciones` (nivel 2) | Respondida |
-| HT3 (secundaria) | HT2 repetida por régimen | Boxplots y balance de clases por régimen | — | `04_eda_relaciones` (nivel 3) | Respondida de forma ligera |
-| HT4 (secundaria) | ARCH-LM, persistencia α + β del GARCH(1,1) | ACF de r², volatilidad móvil | EWMA y GARCH(1,1) con ventana expansiva | `03_eda_series` (nivel 1) | Respondida |
-| HF1 | ADF sobre el múltiplo; ajuste OU (η, nivel m, vida media) | Series de múltiplos con su media y percentiles | — | `03_eda_series` (nivel 1) | Respondida |
-| HF2 | ADF y ajuste OU sobre el múltiplo relativo | Percentiles en la historia y en la industria a lo largo del tiempo | — | `04_eda_relaciones` (nivel 3) | Respondida |
-| HF3 (secundaria) | Retorno posterior por quintil con `filed`, Spearman, bootstrap | Barras por quintil | — | `04_eda_relaciones` (nivel 3), exploratorio | Exploratoria |
-| HF4 (secundaria) | Correlación entre d₂ y el drawdown o VaR posterior | Merton d₂ en el tiempo por industria | Distancia al default de Merton | `04_eda_relaciones` (nivel 3) | Exploratoria |
-| HF5 (secundaria) | Diferencias relativas por ratio; coincidencia con el 10-K en 2 o 3 empresas | Tabla de auditoría | — | `02_calidad` | Respondida |
-| HP0 | ACF de r y r², Ljung-Box, ARCH-LM, Jarque-Bera, ajuste normal y t | QQ-plot (acompaña siempre a Jarque-Bera), histogramas | GARCH(1,1) con ventana expansiva | `03_eda_series` (nivel 1) | Respondida |
-| HP1 (secundaria) | Jarque-Bera con QQ-plot, normal frente a t; Kupiec y Christoffersen (backtesting, de recorte) | QQ-plot | GARCH-t | `03_eda_series` (nivel 1) | Respondida (Kupiec y Christoffersen ejecutados) |
-| HP2 (secundaria) | Brier y calibración por niveles ±k·σ | Diagrama de calibración | Monte Carlo walk-forward | Entrega final | Preparada |
-| HP3 | R² y β móvil del modelo de índice único; descomposición de la varianza | Clustermap de correlaciones, β móvil, retornos acumulados por industria | Modelo de índice único | `04_eda_relaciones` (nivel 3) | Respondida |
+- **Técnica (preguntas P4 y la lectura técnica del producto):** **diaria.** La volatilidad se mide mejor con cierres diarios y la etiqueta "¿toca el nivel?" se evalúa día a día dentro de `N` días hábiles.
+- **Riesgo, sector y valoración (P1, P5 y las dos preguntas P2 y P3):** **semanal** (y para P2 y P3 además, con una observación por empresa por **trimestre calendario**). El inversor value toma decisiones semanales y los reportes son trimestrales; esta frecuencia reduce el ruido diario sin esconder las semanas malas.
+- **Turbulencia (P6):** **principal diaria** (en sesiones bursátiles) y **semanal como robustez** (porque la simulación es semanal).
 
-Tres técnicas del EDA no responden a una hipótesis de forma directa y se justifican como apoyo. La descomposición STL del precio mensual y el PCA de los indicadores técnicos informan la redundancia y el comportamiento de las variables que alimentan HT1 y HT2, y la tabla de auditoría de `02_calidad` valida los datos que usan todas las hipótesis. Quedan fuera de esta entrega el exponente de Hurst y, si falta tiempo, el backtesting de VaR y HF3 y HF4.
+**Fuentes citadas:**
+- Hyndman, R. J., y Athanasopoulos, G. (2021). *Forecasting: Principles and Practice* (3.ª ed.). OTexts. https://otexts.com/fpp3/
+- Cont, R. (2001). Empirical properties of asset returns: stylized facts and statistical issues. *Quantitative Finance*, 1(2), 223-236. https://doi.org/10.1080/713665670
+- Campbell, J. Y., Lo, A. W., y MacKinlay, A. C. (1997). *The Econometrics of Financial Markets*. Princeton University Press (libro).
+- Tsay, R. S. (2010). *Analysis of Financial Time Series* (3.ª ed.). Wiley (libro).
 
-## 4.3 Diseño experimental
+## §4.1 Preguntas de negocio e hipótesis
 
-### 4.3.1 La etiqueta
+Son **6 preguntas de negocio** con **una hipótesis cada una**. Juntas suman **15 pruebas estadísticas** (una por hipótesis principal, siete por indicador en P4, dos frecuencias en P6 y dos controles de dirección). **13 pruebas llevan decisión de negocio** (todas las anteriores menos los dos controles de dirección). La lista se fijó **antes de ejecutar** y no se agrega ni se quita ninguna al ver los datos.
 
-La etiqueta es una triple barrera solo-largo (López de Prado, 2018) construida sobre las series semanales de precio ajustado. Para cada semana t se fijan tres barreras. La barrera inferior es el nivel de entrada, P_t·exp(−k·σ_t·√N), y la barrera superior marca el escape hacia arriba, P_t·exp(+k·σ_t·√N), con P_t el precio ajustado en t. La barrera vertical es el horizonte de N semanas. La etiqueta vale 1 si el precio toca la barrera inferior antes que la superior y dentro del horizonte, y 0 si primero toca la superior o se agota el tiempo. Aquí σ_t es la volatilidad semanal EWMA (λ = 0,94) conocida en t, y √N la lleva al horizonte de N semanas; con k = 1 y N = 12 el ancho es σ_t·√12. Así las barreras se adaptan al régimen de volatilidad, lo que es coherente con HT4. La implementación es `etiqueta_entrada` en `src/asistente/etiquetas.py` y la tabla de decisión está en el notebook.
+### P1 — ¿Cuánto me puede doler? (riesgo, semanal)
 
-Los valores de k y N no se fijan a priori sino que se eligen en el EDA (`04_eda_relaciones`, nivel 2) entre k ∈ {1, 2}σ y N ∈ {4, 12, 26} semanas. La decisión se apoya en el balance de clases (que la clase positiva no sea demasiado rara), en la autocorrelación de la etiqueta y en el número de ventanas independientes, y en la literatura. No se usa el desempeño fuera de muestra del SVM para elegirlos, porque eso sería data snooping (Bailey et al., 2017). Como comparación se calculan dos etiquetas más: retorno > 0 y retorno > retorno del ETF sectorial.
+- **Paso 0 (umbral):** la tasa de semanas con una caída fuerte (`z = r / σ_{52 semanas previas} < −2`) debería ocurrir en una fracción pequeña de las semanas si los retornos fueran normales. Un **nulo calibrado por simulación** (porque la volatilidad se estima, no se conoce) da ≈ 2,55 %. El umbral práctico es `1,5 × 2,55 % ≈ 3,8 %`: caídas fuertes un 50 % más frecuentes que lo normal cambiarían el presupuesto de pérdida.
+- **H0:** la tasa de semanas con `z < −2` es igual al nulo calibrado (≈ 2,55 %). **H1:** es mayor.
+- **Prueba:** proporción agregada en todas las semanas y empresas; IC95 bilateral por bootstrap por bloques de 12 semanas.
+- **Supuestos verificados:** dependencia entre semanas (bloque de 12 semanas), QQ-plot de `z` (colas pesadas se mitigan con proporciones) y por subperíodo (2009–2012, 2013–2019, 2020–2021, 2022+).
+- **Decisiones:** se evalúa el IC95 bilateral frente al nulo (estadística) y el límite inferior del IC frente al umbral de 3,8 % (negocio). *Resultado en [03 §4](../../notebooks/03_eda_univariado.ipynb) y en [07 §7.2](07_conclusiones.md).*
 
-Las últimas N semanas de cada serie no tienen la etiqueta resuelta (censura por la derecha). Se excluyen de entrenamiento y evaluación, y no se tratan como clase 0.
+### P2 — ¿El "barata frente a su historia" es temporal? (fundamental; una observación por empresa y trimestre calendario; horizonte de 3 años)
 
-### 4.3.2 Variables del modelo
+El "barata frente a su historia" se mide con el **P/E normalizado = precio ÷ promedio de la utilidad por acción trimestral de los últimos 12 trimestres ya publicados**. Un solo año de utilidades excepcionales puede hacer que una acción parezca barata sin serlo; promediar varios años evita esa ilusión (Graham y Dodd, 1934, recomiendan 5–10 años; Campbell y Shiller, 1998, usan 10). Aquí se usan 3 años porque los fundamentales estructurados empiezan en 2009 y se necesitan años para el percentil histórico y el horizonte; esta limitación se declara en el [punto 7](07_conclusiones.md).
 
-El SVM usa solo información de precios disponible en t, en tres grupos. El primero son los indicadores técnicos que quedaron tras el filtro de redundancia (VIF < 10) de `04_eda_relaciones`: `rsi14`, `dist_sma20`, `vol_rel20`, `donchian20` y `mom_12_1`. El segundo es la volatilidad condicional σ_t de la acción (EWMA y GARCH-t con ventana expansiva). El tercero son rasgos de régimen calculados hacia atrás: el drawdown acumulado del SPY desde su máximo y su volatilidad reciente. Los fundamentales no entran al modelo para que la lectura técnica sea independiente de la fundamental.
+- **Paso 0 (umbral):** una **diferencia anualizada en log** del cambio del P/E normalizado a 3 años (`Δlog(P/E normalizado)/3`) entre el quintil barato y el caro **mayor que 0,03** (≈ 9 % en 3 años). Esto cambiaría la lectura "barata" de trampa a oportunidad.
+- **H0:** el cambio medio del `log(P/E normalizado)` a 3 años es igual en el quintil más barato y en el más caro de cada fecha trimestral calendario. **H1:** el barato sube su P/E normalizado más (el "barata" es temporal).
+- **Prueba:** en cada fecha trimestral calendario se ordenan las 21 empresas por su propio percentil del P/E normalizado y se forman **quintiles balanceados por fecha** con `k = round(0,2 · n)` empresas, donde `n` es el número de empresas con datos ese día. Solo se usa una fecha si tiene **≥ 15 empresas** con datos (regla fija). Se compara el quintil barato con el caro con Welch e **IC95 bilateral por bootstrap por empresa** (principal; preserva el solapamiento de ventanas de 3 años dentro de una empresa) y por fechas (sensibilidad). **Descomposición** `Δlog(P/E normalizado) = Δlog(precio) − Δlog(utilidad promedio 3 años)`, con tres lecturas fijadas antes: rebote del precio (oportunidad), subida de la utilidad promedio (normalización de utilidades) y caída de la utilidad promedio (deterioro, trampa de valor). **Mann-Whitney** como sensibilidad por colas pesadas.
+- **Supuestos verificados:** solapamiento de ventanas de 3 años (bootstrap por empresa), colas pesadas (Mann-Whitney), supervivencia (declarada en el punto 7), censura al final (observaciones sin 3 años futuros completos se excluyen).
+- **Decisiones:** IC95 bilateral del Δlog anualizado frente a 0 (estadística) y su límite inferior frente a 0,03 (negocio); Holm sobre las 13 pruebas con decisión como sensibilidad. *Resultado en [04 §2](../../notebooks/04_eda_multivariado.ipynb) y en [07 §7.2](07_conclusiones.md).*
 
-Los rasgos de volatilidad y régimen se incluyen por evidencia del EDA y no por suposición. Ningún indicador técnico separó las clases por sí solo (AUC univariada entre 0,496 y 0,514, HT2 no concluyente). En cambio, la tasa observada de la etiqueta baja de 20,6 % en el decil 1 de σ a 7,8 % en el decil 10, y la relación cambia entre regímenes (HT3). Esto concuerda con el agrupamiento de la volatilidad (Engle, 1982; Bollerslev, 1986; HT4 apoyada) y con la dependencia de los retornos del régimen de mercado (Ang y Timmermann, 2012). Los regímenes que el EDA definió con fechas (2008-09, COVID, 2022) se fijaron ex post y no se usan como variable, porque eso sería look-ahead. Se sustituyen por las medidas hacia atrás descritas arriba, cada una con una prueba de que su valor en t no cambia si se trunca la serie después de t.
+### P3 — Si compro barata, ¿me va mejor después? (fundamental; mismas fechas y mismo percentil que P2; horizonte de 3 años)
 
-Como σ_t entra al modelo, la línea base que decide HT1 también la usa: es la tasa empírica de toque por decil de σ_t (4.3.4). Así, HT1 mide si los indicadores técnicos y el régimen aportan algo más allá de la volatilidad, y no solo si el SVM redescubre que σ importa.
+- **Paso 0 (umbral):** diferencia anualizada en log del **retorno en exceso sobre el XLP a 3 años** mayor que 0,05 por año. La literatura (Fama y French) sitúa la prima histórica por comprar barato entre 3 y 5 puntos por año; se exige el extremo alto.
+- **H0:** el retorno medio en exceso sobre el XLP a 3 años del quintil barato es igual al del quintil caro. **H1:** el barato rinde más.
+- **Prueba:** quintiles por fecha trimestral calendario con la misma regla de P2 (balanceados, k = round(0,2·n), ≥ 15 empresas por fecha); Welch con **IC95 bilateral por bootstrap por empresa** (principal) y por fechas (sensibilidad). **Descomposición del retorno total = retorno del XLP + exceso por quintil** (suma exacta en log). Regresión múltiple `exceso ~ percentil + ROE` con **errores estándar agrupados por empresa**. Sensibilidad: horizontes de 1, 2 y 4 años; el de 1 año no lleva decisión (es la exploración previa que motivó pasar al horizonte de 3 años).
+- **Supuestos verificados:** solapamiento de ventanas de 3 años, dependencia dentro de empresa, colas pesadas.
+- **Decisiones:** IC95 bilateral frente a 0 (estadística) y límite inferior del IC anualizado frente a 0,05 (negocio). *Resultado en [04 §3](../../notebooks/04_eda_multivariado.ipynb) y en [07 §7.2](07_conclusiones.md).*
 
-### 4.3.3 Validación walk-forward con purga y embargo
+### P4 — ¿Compro ya o espero? (técnica, diaria; 7 pruebas, una por indicador)
 
-Los datos se dividen en el tiempo, nunca al azar. La validación es walk-forward con ventana expansiva: el modelo se entrena con todo lo observado hasta una fecha y se evalúa en el bloque siguiente, y el procedimiento se repite avanzando el bloque. Como cada etiqueta usa información de las N semanas siguientes, dos observaciones vecinas comparten ventana y la muestra efectiva es mucho menor que el número de filas. Por eso se aplican dos controles de López de Prado (2018). La purga elimina del entrenamiento toda observación cuya ventana de etiqueta [t, t + N] se solape con el bloque de prueba. El embargo descarta además una franja de semanas inmediatamente posterior al bloque de prueba (al menos N). Con varios tickers en el mismo modelo, la purga y el embargo se aplican por fecha para todos los tickers, porque los retornos de la misma semana están correlacionados entre acciones. Los hiperparámetros del SVM (C y, para el RBF, γ) se eligen con una validación temporal anidada dentro del tramo de entrenamiento. Se reserva un tramo final que no se usa para elegir k, N ni hiperparámetros, y se evalúa una sola vez.
+- **Paso 0 (umbral):** **ΔAUC ≥ 0,01** por indicador. Debajo de ese valor, agregar la variable al modelo técnico no justifica el ruido (en la exploración previa, variables sin señal **bajaron** la AUC total).
+- **H0 (por indicador):** `ΔAUC = AUC(volatilidad + indicador) − AUC(solo volatilidad) = 0`. **H1:** `ΔAUC > 0`.
+- **Prueba:** regresión logística con la magnitud de los retornos (`|r_t|`, `σ20/σ252` y `σ252`) como línea base de magnitud, y el mismo modelo más el indicador. Se evalúa en orden cronológico con corte 2018 (ajuste 2009–2018; prueba 2019+) y espacio de `N` días hábiles. **IC95 por bloques de fechas al nivel Bonferroni `1 − 0,05/7 ≈ 99,3 %`** (percentiles 0,36 y 99,64; 5000 réplicas), con una submuestra sin solapamiento (una fila cada `N` días hábiles por ticker; todas las filas solo como sensibilidad).
+- **Elección de N (fijada antes):** candidatos `N ∈ {20, 40, 60}` días hábiles. Se eligen **solo con 2009–2018**: se descartan los `N` cuya tasa de toque quede fuera del 10–40 % en entrenamiento; entre los que quedan, gana el `N` con mayor AUC del **modelo A** (regresión logística con `|r_t|`, `σ20/σ252` y `σ252`) en una validación interna (ajuste 2009–2015; validación desde 2016 + N hasta 2018-12-31 − N). La prueba (2019+) **no se usa para elegir**. **N = 60** fue el ganador; los tres `N` se reportan como sensibilidad.
+- **Decisiones (por indicador):** IC Bonferroni frente a 0 (estadística) y su límite inferior frente a 0,01 (negocio). *Resultado en [04 §5](../../notebooks/04_eda_multivariado.ipynb) y en [07 §7.2](07_conclusiones.md).*
 
-### 4.3.4 Líneas base
+### P5 — ¿Cuánto del movimiento viene del sector? (sector, semanal)
 
-Las cuatro líneas base son obligatorias y se evalúan con exactamente los mismos bloques, purgas y embargos que el SVM. La primera, y la que decide HT1 (4.4), es la tasa empírica de toque por decil de σ_t: para cada fecha t se asigna a la observación la frecuencia de la clase 1 en su decil de σ_t, calculada solo con etiquetas ya resueltas antes de t (t' + N ≤ t) y con cortes de deciles expansivos (estimados con las σ disponibles hasta t). Como σ_t es una variable del SVM, esta línea base mide cuánto aporta el modelo más allá de la volatilidad. La probabilidad GBM con la σ_t del mismo instante, que da la probabilidad teórica de tocar la barrera inferior antes que la superior en N semanas, queda como referencia teórica: su AUC se reporta, pero no decide. Se usa con la deriva estimada solo con datos ≤ t, porque el EDA mostró que, con la misma muestra, el GBM con μ = 0 sobreestima la clase 1 en 9,5 pp y con deriva pasada en 0,8 pp (GBM menos observada; `04_eda_relaciones`, §3). La sobreestimación persiste en σ alta: en el decil 10 es de 19,4 pp con μ = 0 y de 12,3 pp con deriva. Además, la pendiente de calibración del GBM con deriva es negativa (b = −0,294, IC −0,641 a −0,011; `04_eda_relaciones`, §3): a mayor P_GBM, menor tasa observada, lo que indica que ordena las filas al revés y que su AUC queda por debajo de 0,5. Superarlo sería casi trivial, y por eso no es el rival que decide. Este cambio de rival (antes la regla de HT1 se escribía contra el GBM) se hizo antes de evaluar HT1, que sigue preparada; es un ajuste del pre-registro y no una decisión post hoc. La segunda es predecir siempre la clase mayoritaria. La tercera es la regresión logística con las mismas variables, que mide cuánto aporta el SVM frente a un modelo lineal simple. La cuarta es el momentum 12-1 (Jegadeesh, 1990) usado como puntaje de un solo indicador, que mide si un indicador clásico basta.
+- **Paso 0 (umbral):** **ΔR² mediano = 0,05** entre el modelo `r ~ r_SPY + r_XLP` y el modelo `r ~ r_SPY`, con los 21 empresas de la industria piloto.
+- **H0:** `ΔR² = 0`. **H1:** `ΔR² > 0`. Como `ΔR² ≥ 0` por construcción, la decisión estadística es casi trivial; **la de negocio decide**.
+- **Prueba:** regresión múltiple semanal por ticker; **IC95 bilateral por bootstrap por empresa** del ΔR² mediano. Prueba F de modelos anidados solo como referencia (los residuos tienen colas pesadas). PCA de los 21 retornos y clustermap para detectar subgrupos.
+- **Transparencia:** P5 es confirmatoria. La industria piloto se eligió viendo su ΔR² en una exploración previa (declarado en [01 §1.5](01_negocio.md)).
+- **Decisiones:** IC95 bilateral frente a 0 (estadística, por completitud) y su límite inferior frente a 0,05 (negocio). *Resultado en [04 §6](../../notebooks/04_eda_multivariado.ipynb) y en [07 §7.2](07_conclusiones.md).*
 
-### 4.3.5 Cómo se evita el look-ahead y la fuga de información
+### P6 — ¿Vienen juntas las sesiones turbulentas? (técnica, principal diaria; semanal como robustez; 2 controles de dirección sin decisión de negocio)
 
-La pregunta de control, por la lección T6 de la guía, es si el inversor tiene este dato hoy. La etiqueta es lo único que mira al futuro; todo lo demás se calcula con información disponible en t.
+- **Paso 0 (umbral):** **P(turbulenta | turbulenta) ≥ 30 %** frente al 20 % de base (una sesión turbulenta es la que tiene `|r|` en el 20 % superior de la propia historia previa de la acción). Un aumento de 10 puntos (50 % relativo) cambiaría la decisión de esperar.
+- **H0:** `P(T | T) = P(T | calma)` (la turbulencia no se agrupa). **H1:** `P(T | T) > P(T | calma)`.
+- **Prueba:** tablas 2×2 (turbulencia hoy × mañana; dirección hoy × mañana, como control sin decisión de negocio) con V de Cramér. Decisión estadística: se rechaza H0 si el **IC95 bilateral por bootstrap por bloques** de la **diferencia** `P(T|T) − P(T|calma)` excluye 0 (el p-value del chi-cuadrado no es válido con dependencia). Spearman de `|z_t|` frente a `|z_{t−1}|` como confirmación. Dos frecuencias (diaria y semanal) + 2 controles de dirección = 4 pruebas; **los dos controles de dirección llevan solo decisión estadística**, sin decisión de negocio.
+- **Decisiones (frecuencia principal diaria y la secundaria semanal):** IC95 bilateral de la diferencia frente a 0 (estadística) y límite inferior del IC95 de `P(T|T)` frente a 30 % (negocio). *Resultado en [03 §5](../../notebooks/03_eda_univariado.ipynb) y en [07 §7.2](07_conclusiones.md).*
 
-| Riesgo | Dónde aparece | Control |
-|---|---|---|
-| Fundamentales publicados después | Ratios y múltiplos con EDGAR | Se usa la fecha `filed` y no la de cierre del período; un valor solo existe desde que se publicó |
-| Estadísticos de toda la muestra | Escalado, percentiles, medias de los múltiplos, parámetros OU, GARCH | Se calculan con ventana expansiva hasta t; el escalador se ajusta solo con el entrenamiento de cada bloque |
-| Solape de ventanas de etiqueta | Entrenamiento y prueba contiguos | Purga y embargo (4.3.3) |
-| Elegir k, N o hiperparámetros mirando la prueba | Selección de modelo | k y N se eligen en el EDA con balance de clases y literatura; los hiperparámetros con validación anidada; tramo final intocado |
-| Etiquetas sin resolver | Últimas N semanas | Se excluyen (censura, T3) |
-| Etiqueta conocida solo en t' + N | Tasa base por decil de σ_t (línea base de HT1) y cualquier rasgo construido con etiquetas | Solo se usan etiquetas resueltas antes de t (t' + N ≤ t) y cortes de deciles expansivos; los deciles del EDA usan todo el panel y son descriptivos |
-| Ventanas incompletas | Inicio de la serie (SMA200, GARCH) | Se descartan hasta completar la ventana |
-| Mediana de industria | Múltiplo relativo | Se calcula con los pares disponibles en t, con datos ≤ t |
-| Supervivencia | Universo de 30 empresas que existen hoy (Brown et al., 1992) | No se elimina: se documenta como limitación y los resultados se leen como condicionados a empresas sobrevivientes |
+### Línea base y SVM (adelanto; se entrena en la entrega 2)
 
-Esta lista es una especificación de diseño y no una afirmación de que los controles ya se hayan ejecutado; su cumplimiento se prueba con series sintéticas en los módulos de `src/` y se reporta en los notebooks.
+- **Línea base por decil de σ252:** con los datos del entrenamiento (≤ 2018), se ordenan todos los días por su volatilidad del último año (`σ252`) y se parten en 10 grupos iguales; para cada grupo se cuenta la fracción de días que terminó tocando. Para un día nuevo, la "predicción" es la tasa de su grupo. Es el modelo más simple que usa solo la volatilidad; el SVM tiene que superarlo para demostrar que aporta algo más.
+- **SVM lineal (y RBF como comparación):** variables en escala de retornos (la magnitud `|r_t|`, `σ20/σ252` y `σ252`) más los indicadores técnicos que P4 justifique. Umbral: ΔAUC frente a la línea base por decil de σ ≥ 0,03.
+- **H0 del SVM (entrega 2):** AUC del SVM = AUC de la línea base por decil de σ. **H1:** AUC del SVM > AUC de la línea base.
 
-## 4.4 Métricas de calidad y reglas de decisión
+### Multiplicidad
 
-Cada métrica tiene una línea base y una regla escrita antes de ver los resultados. Los umbrales numéricos (0,05 de significancia, 50 % de los tickers, 0,30 de R², 0,95 de DSR) son convenciones fijadas a priori para este proyecto y no valores tomados de la literatura; si los datos muestran que son inadecuados se ajustan y el cambio se documenta. Todos los intervalos de confianza se estiman con block bootstrap (Politis y Romano, 1994), con bloques de al menos N semanas para respetar la dependencia de las ventanas de la etiqueta. Con menos de 10·N semanas no se calcula IC por régimen; la AUC se reporta como punto descriptivo. Cada hipótesis termina en uno de cuatro estados: apoyada, no apoyada, no concluyente (el intervalo incluye el valor nulo) o preparada (solo se dejó lista la línea base).
+Las 15 pruebas se reportan **sin corrección global**, salvo P4, que ya se corrige con Bonferroni al construir sus IC. **Como sensibilidad**, se aplica **Holm al 0,05 sobre las 13 pruebas con decisión de negocio** y se marca cuáles siguen rechazando H0. Para que Holm reciba un p-value comparable al IC bilateral, los **p bootstrap unilaterales se llevan a escala bilateral** multiplicando por 2 (`p_bilateral = 2 · p_unilateral`, truncado a 1); así la ordenación coincide con la del IC95 bilateral.
 
-| Hipótesis o ámbito | Métrica | Línea base | Regla de decisión |
-|---|---|---|---|
-| HT0 (caminata aleatoria) | ADF y KPSS sobre log-precios; Ljung-Box sobre retornos | — | Se apoya como línea base en un ticker si ADF no rechaza la raíz unitaria, KPSS rechaza la estacionariedad y Ljung-Box no rechaza al 5 %. Se apoya en general si esto ocurre en más de la mitad de los tickers de cada industria |
-| HT0 (calibración de P_GBM) | Regresión logística de la etiqueta sobre logit(P_GBM): intercepto y pendiente | — | P_GBM está calibrada si el IC 95 % del intercepto incluye 0 y el de la pendiente incluye 1. Si no, el GBM es una línea base sesgada y se reporta el sesgo |
-| HT1 | ΔAUC = AUC_SVM − AUC_dec y ΔBrier = Brier_dec − Brier_SVM, con IC bootstrap al 95 % | Tasa empírica de toque por decil de σ_t (etiquetas con t' + N ≤ t, cortes expansivos) | Se apoya si ΔAUC > 0 con IC que excluye 0 y ΔBrier > 0 con IC que excluye 0. Es no concluyente si algún IC incluye 0 y no apoyada si el IC de ΔAUC queda por debajo de 0. Se reporta además frente a la logística, al momentum 12-1 y al GBM con deriva ≤ t (referencia teórica, no decide: su pendiente de calibración es negativa, 4.3.4). El rival se cambió del GBM a la tasa por decil antes de evaluar HT1 (ajuste de pre-registro) |
-| HT1 (utilidad frente al azar) | Balanced accuracy, precision y recall del umbral de decisión, calibración | Clase mayoritaria | El SVM solo se considera útil si su balanced accuracy supera la del clasificador de clase mayoritaria (0,5 por construcción) con IC que excluye ese valor |
-| HT2 | AUC univariada por indicador y Mann-Whitney con block bootstrap; información mutua | AUC = 0,5 | El indicador se asocia con la etiqueta si el IC bootstrap de la AUC excluye 0,5 y el p-valor ajustado (Benjamini-Hochberg) es menor que 0,05 en el sentido esperado. Una |AUC − 0,5| menor que 0,05 se reporta como asociación débil |
-| HT3 (secundaria) | AUC univariada por régimen | AUC = 0,5 | La relación es estable si el signo de la asociación se mantiene en la mayoría de los regímenes con muestra suficiente |
-| HF1 y HF2 | ADF sobre el múltiplo y sobre el múltiplo relativo; η y vida media ln 2/η del ajuste OU | Raíz unitaria (η = 0) | Revierte en una empresa si ADF rechaza al 5 % y η > 0 con vida media menor que la mitad de la historia disponible. Se apoya en general si ocurre en más de la mitad de las empresas de cada industria. El denominador es anual (10-K): con 8 a 16 reportes anuales por ticker (mediana 13, nb03 §8) la n efectiva es pequeña y la potencia de ADF es baja; ADF y OU miden sobre todo la reversión del precio, y se informa |
-| HP0 | ACF de r y r², ARCH-LM, QQ-plot, persistencia α + β | GBM normal | El GBM normal es adecuado si ARCH-LM y Ljung-Box sobre r² no rechazan y el QQ-plot no muestra desviaciones en las colas. Si ARCH-LM rechaza en más de la mitad de los tickers, se pasa a GARCH-t. Jarque-Bera se reporta pero no decide por sí solo con n grande |
-| HP1 (secundaria) | Kupiec y Christoffersen sobre las violaciones del VaR | GBM normal | El modelo es adecuado si no se rechaza la cobertura ni la independencia de las violaciones al 5 % |
-| HP3 | R² y β (con IC 95 %) del modelo de índice único; parte sistemática de la varianza | R² = 0 | Se apoya si el IC de β excluye 0 y el R² mediano de cada industria es al menos 0,30. Se reporta por ticker y por régimen |
-| Financieras (netas de 10 pb por operación) | Mejora del precio de entrada frente a comprar de inmediato, retorno, volatilidad, max drawdown y Deflated Sharpe Ratio (Bailey y López de Prado, 2014) | Comprar de inmediato | La mejora de entrada es positiva si el IC bootstrap de la diferencia media neta de costos excluye 0. Hay evidencia de valor si el DSR es al menos 0,95, que corrige por el número de configuraciones probadas |
-| Por régimen de mercado | Todas las métricas anteriores en 2008-09, expansión, 2020, 2022 y el período reciente (Ang y Timmermann, 2012) | Mismas líneas base | HT1 se declara robusta solo si el signo de ΔAUC se mantiene en la mayoría de los regímenes; si depende de uno solo, se reporta como específica de ese régimen |
+## §4.2 Matriz pregunta × técnica × sección del notebook
 
-La métrica ΔAUC es una métrica del modelo y no un KPI de negocio del punto 1. Las métricas financieras no pueden evaluarse del todo en esta entrega, porque el SVM final es de la entrega siguiente; aquí se deja definido el procedimiento y, si sobra tiempo, se hace un chequeo exploratorio con un SVM lineal walk-forward, reportado como tal. Las explicaciones del modelo se obtienen con los coeficientes del SVM lineal y con SHAP (Lundberg y Lee, 2017).
+| Pregunta | Técnica estadística | Visualización | Simulación / ML | Sección del notebook |
+|---|---|---|---|---|
+| P1 | Proporción con IC95 por bloques de 12 semanas; nulo calibrado por simulación | QQ-plot de z; tasa por subperíodo | — | [03 §4](../../notebooks/03_eda_univariado.ipynb) |
+| P2 | Welch e IC95 por empresa (principal) y por fechas (sensibilidad); Mann-Whitney; descomposición en log | Boxplots por quintil; curvas de descomposición | — | [04 §2](../../notebooks/04_eda_multivariado.ipynb) |
+| P3 | Welch e IC95 por empresa y por fechas; descomposición retorno total = XLP + exceso; regresión con errores agrupados por empresa | Boxplots por quintil; barras de descomposición | — | [04 §3](../../notebooks/04_eda_multivariado.ipynb) |
+| P4 | Regresión logística, AUC y ΔAUC con IC95 por bloques al nivel Bonferroni; Spearman y VIF para redundancia | Curvas ROC; tasa de toque por zona del indicador; mapas de calor de Spearman; PCA de los 7 indicadores | Tasa de toque por decil de σ252 como línea base | [04 §4 y §5](../../notebooks/04_eda_multivariado.ipynb) |
+| P5 | Regresión múltiple por ticker; ΔR² mediano con IC95 por empresa; F de modelos anidados (referencia); VIF; análisis de potencia | ΔR² por empresa; QQ-plot de residuos; clustermap de los 21 retornos; PCA de los 21 retornos | — | [04 §6](../../notebooks/04_eda_multivariado.ipynb) |
+| P6 | Chi-cuadrado con V de Cramér y residuos; IC95 por bloques de la diferencia; Spearman de magnitudes consecutivas | Tablas 2×2; Spearman de \|z_t\| frente a \|z_{t−1}\| | — | [03 §5](../../notebooks/03_eda_univariado.ipynb) |
+
+Ninguna técnica queda suelta: toda técnica listada responde a una pregunta de negocio.
+
+## §4.3 Diseño experimental
+
+**Etiqueta diaria (P4 y SVM).** La etiqueta de entrada vale 1 si el precio toca el nivel inferior antes del superior y dentro del horizonte de `N` días hábiles; vale 0 si primero toca el superior o se agota el tiempo. El nivel inferior está a `k = 1` volatilidad diaria por `√N` por debajo del precio actual; el superior, simétrico hacia arriba. La volatilidad diaria es `σ_t`, estimada con la ventana hacia atrás; `√N` lleva esa volatilidad al horizonte. Las últimas `N` sesiones de cada ticker no tienen etiqueta resuelta (censura) y se excluyen.
+
+**Elección de `k` y `N` fijada de antemano.** `k = 1` (criterio del autor: una caída típica en el horizonte). **`N` se elige solo con el entrenamiento (≤ 2018)** con la regla descrita en P4; el ganador fue `N = 60`. La prueba (2019+) no se usa para elegir.
+
+**Muestra sin solapamiento.** En P4 se usa una fila cada `N` días hábiles por ticker (submuestra sin solapamiento) como principal; **todas las filas** se usan solo como sensibilidad.
+
+**Corte cronológico con espacio.** El entrenamiento (≤ 2018) y la prueba (2019+) se separan por un espacio de **≥ `N` días hábiles** para que ninguna etiqueta del entrenamiento mire a la prueba.
+
+**Variables del SVM en escala de retornos** (incluida la magnitud). Nunca niveles de precio, para que la lectura técnica y la fundamental sean independientes.
+
+**Fuga de selección de P4 y cómo la mitiga la entrega 2.** P4 elige las variables del SVM con el tramo 2019+ (la prueba). Esto se declara como fuga; en la entrega 2, el SVM se evaluará en un tramo posterior a los datos de esta entrega o con validación cronológica sobre ≤ 2018, para que la selección y la evaluación no compartan datos.
+
+**Sin look-ahead.** Toda variable en `t` usa datos ≤ `t` (ventana expansiva, `shift(1)` donde haga falta, cortes de deciles con las σ disponibles hasta `t`). Los ratios usan la fecha publicada del reporte, no la de cierre del período. Los percentiles del P/E normalizado son expansivos.
+
+## §4.4 Métricas del modelo
+
+**SVM (entrega 2):**
+- **ROC-AUC:** probabilidad de que el modelo ordene correctamente un par (día que sí tocó, día que no tocó).
+- **Brier:** error cuadrático medio entre la probabilidad predicha y la realidad.
+- **Diagrama de calibración:** curva que compara la probabilidad predicha con la frecuencia observada por tramos. "De las veces que el modelo dijo 60 %, ¿cuántas sí tocaron?".
+- **Comparación con la tasa de toque por decil de σ252** (línea base por decil de σ): regla ΔAUC = AUC(SVM) − AUC(línea base). **Dos decisiones:** se rechaza H0 (ΔAUC = 0) si el IC95 bilateral por bootstrap por bloques no incluye 0; el SVM es **accionable** si el límite inferior del IC supera 0,03. Métricas por subperíodo (2009–2012, 2013–2019, 2020–2021, 2022+).
+
+**Lectura probabilística (simulación de salidas; entrega 2):**
+- **Calibración de `P(alcanzar el nivel)`:** se compara, en orden cronológico y solo con información ≤ `t`, la probabilidad prometida con la frecuencia histórica con la que el precio sí llegó. Gráfico de calibración (idealmente sobre la diagonal) y **Brier**, frente a la tasa histórica de alcance como línea base.
+
+## §4.5 Constantes del análisis
+
+La tabla explica cada constante del análisis: qué significa, por qué ese valor y si **se fijó después de la exploración previa**. Los valores los usan los notebooks (en su primera celda de código) y vienen de aquí; no se usan números sueltos en el código.
+
+**Estadísticas y de datos**
+
+| Constante | Valor | Qué significa | Por qué ese valor | ¿Se fijó después de la exploración previa? |
+|---|---|---|---|---|
+| α | 0,05 | Probabilidad aceptada de rechazar H0 cuando es cierta | Valor típico del curso, fijado antes de ver datos | no |
+| Nivel del IC | 95 % bilateral | Intervalo compatible con α = 0,05; su cola de 2,5 % hace que decida como una unilateral al 2,5 % | Mismo criterio que α | no |
+| Réplicas de bootstrap | 1000 (5000 en P4) | Cuántas muestras simuladas se usan para el IC | 1000 da percentiles estables al 95 %; P4 usa un nivel más extremo (≈ 99,3 %) y necesita más réplicas para sus colas | no |
+| Bloque del bootstrap | 12 semanas / 60 días hábiles (P1, P4, P6); por empresa en P2, P3 y P5 | Largo de cada tramo consecutivo que se remuestrea | Un trimestre; en la validación los IC se estabilizan desde ese largo. En P2 y P3 las ventanas de 3 años se solapan dentro de cada empresa: remuestrear empresas completas conserva ese solapamiento | sí (se eligió viendo la estabilidad del IC) |
+| Universo | 21 empresas de consumo defensivo + SPY + XLP | Empresas de la industria piloto | Más empresas mejoran el bootstrap por empresa (P3, P5); criterio: estar en el XLP y tener historia desde 2009 | **sí** (la industria se eligió viendo su ΔR² exploratorio frente al SPY; declarado en [01 §1.5](01_negocio.md)) |
+| Bonferroni en P4 | 0,05 / 7 | α por indicador al probar 7 indicadores | Evita que alguno salga "significativo" solo por probar muchos | no |
+| Ventana de σ | 52 semanas / 252 días | Volatilidad del último año | Un año bursátil (252 días hábiles); estable frente a 26/104 y 63/504 en la validación | sí (estabilidad verificada) |
+| INICIO de la historia | 2009-01-01 | Primer dato descargado | Los fundamentales estructurados de la autoridad de EE.UU. empiezan en 2009 | no |
+| Corte entrenamiento/prueba | 2018-12-31 | Hasta aquí se ajusta; después se evalúa | ~10 años para ajustar y ~7 para probar, incluido el COVID y 2022 | no |
+| Validación para elegir N | ajuste 2009–2015, validación 2016–2018 | Elegir N sin mirar la prueba | Deja la prueba (2019+) intacta | no |
+| Subperíodos | 2009–2012, 2013–2019, 2020–2021, 2022+ | Tramos para revisar la estabilidad | Salida de la crisis de 2008, expansión, COVID y mercado bajista de 2022 | no |
+| Antigüedad máxima de un dato de utilidad por acción | 548 días (18 meses) | Más viejo que esto, el dato se considera rancio | El reporte anual sale ≤ 90 días después del cierre; el siguiente llega ~15 meses después; se dan 3 meses de margen | no |
+| Historia mínima del percentil | 52 semanas | Mínimo para calcular el percentil histórico del P/E | Con menos de un año el percentil no es representativo | no |
+| Historia mínima para "turbulenta" | 104 semanas / 504 días | Mínimo para estimar el percentil 80 propio | Dos años dan un percentil estable | no |
+| Empresas por fecha trimestral (P2 y P3) | ≥ 15 | Mínimo para formar quintiles balanceados en esa fecha | Con menos empresas, los quintiles se vuelven inestables (uno de los quintiles podría tener 1 sola empresa) | no |
+| Tamaño del quintil | `k = round(0,2 · n)` | Empresas en el quintil barato y en el caro de cada fecha | Balanceado en cada fecha, sin mirar al futuro; reemplaza una regla anterior con tramos fijos del percentil, que daban grupos de tamaño muy desigual | sí (se corrigió tras ver una primera versión con esa regla) |
+
+**Umbrales de las hipótesis (paso 0: "¿qué diferencia cambiaría la decisión?")**
+
+| Constante | Valor | Qué significa | Por qué ese valor | ¿Se fijó después de la exploración previa? |
+|---|---|---|---|---|
+| P1: caída fuerte | `z < −2` | Caída semanal mayor que 2 veces la volatilidad previa | Convención para un movimiento "fuerte"; con retornos normales ocurriría ~1 de cada 40 semanas | no |
+| P1: nulo | ≈ 2,55 % | Tasa esperada si los retornos fueran normales, medida de la misma forma | Simulación con `σ` estimada (no `Φ(−2) = 2,275 %`, que supone `σ` conocida) | **sí** (corrige la validez del nulo) |
+| P1: umbral | 1,5 × nulo ≈ 3,8 % | Caídas fuertes un 50 % más frecuentes que lo "normal" | Una diferencia así cambiaría cuánto arriesgar por posición | no |
+| P2: umbral | 0,03 anualizado en log (≈ 9 % en 3 años) | Cuánto más debe subir el P/E normalizado de las baratas que el de las caras | Normalización de ~9 % del múltiplo cambia la lectura "barata" de trampa a oportunidad | **sí** |
+| Horizonte de valor (P2, P3) | 3 años | Ventana del resultado | Horizonte típico del inversor value; se fija uno solo para no elegir después el mejor | **sí** (se fijó tras ver la exploración a 1 año de P3; por eso 1 año queda a la vista como sensibilidad sin decisión) |
+| Ventana del P/E normalizado | 12 trimestres (3 años) | Promedio de la utilidad por acción trimestral de los 12 trimestres más recientes ya publicados | Un año de utilidades excepcionales puede hacer que una acción parezca barata sin serlo; promediar varios años evita esa ilusión (Graham y Dodd, 1934; Campbell y Shiller, 1998) | **sí** |
+| P3: umbral | 0,05 anualizado en log | Ventaja mínima del quintil barato en el retorno en exceso sobre el XLP | La prima histórica por comprar barato ronda 3–5 pp por año; se exige el extremo alto | no |
+| P3: resultado medido | log-retorno a 3 años de la acción − el del XLP en la misma ventana | Lo que rindió la acción por encima de su industria | Dentro de una industria, todas las empresas comparten el choque del año; restarlo evita que la diferencia dependa de en qué año se compró | no |
+| P2 y P3: grupos | Quintiles por fecha trimestral calendario, balanceados (`k = round(0,2 · n)`) | En cada fecha, las empresas se ordenan por su percentil propio del P/E normalizado | Grupos balanceados en cada fecha y sin mirar al futuro (percentil expansivo y orden con solo esa fecha) | **sí** |
+| P4: umbral | ΔAUC = 0,01 por indicador | Mejora mínima para que un indicador entre al SVM | Un punto de AUC es la mejora mínima que justifica agregar una variable (en la exploración, variables sin señal bajaron la AUC total) | **sí** |
+| P5: umbral | ΔR² mediano = 0,05 | El sector explica al menos 5 % más de la varianza que el mercado solo | Por debajo de eso, el sector casi no cambia la simulación | no |
+| P6: "turbulenta" | `|r|` en el 20 % superior de su historia | Una de cada 5 sesiones más agitadas de cada acción | Quintil superior: regla simple y comparable entre acciones | no |
+| P6: umbral | 30 % (frente al 20 % base) | Probabilidad de otra sesión turbulenta tras una turbulenta | Un aumento de 10 pp (50 % relativo) cambiaría la decisión de esperar | no |
+| SVM: umbral | ΔAUC = 0,03 | Mejora mínima sobre la línea base por decil de σ | Mejoras de 0,02–0,04 sobre una buena línea base ya son valiosas | no |
+
+**Etiqueta de la rama técnica**
+
+| Constante | Valor | Qué significa | Por qué ese valor | ¿Se fijó después de la exploración previa? |
+|---|---|---|---|---|
+| k | 1 | El nivel de entrada está a 1 volatilidad diaria por `√N` bajo el precio actual | Una caída "típica" en el horizonte; da una tasa de toque que no es ni trivial ni rarísima | no |
+| N (candidatos) | 20, 40, 60 días hábiles | Horizonte de espera (1, 2 o 3 meses) | El usuario pidió "1 mes o más" | no |
+| N (elegido, solo con 2009–2018) | 60 | Horizonte que entra al SVM | Ganador por mayor AUC del modelo A en la validación interna; su tasa de toque está dentro del 10–40 % | no (procedimiento fijado antes; el valor se eligió solo con el entrenamiento) |
+| Balance aceptable | 10–40 % de toques | Filtro para descartar horizontes | Con < 10 % hay muy pocos casos positivos; con > 40 % el nivel se toca casi siempre | no |
+| Deciles de σ | 10 grupos | Grupos de la línea base por decil de σ252 | Cada decil conserva miles de observaciones y separa bien la tasa | no |
+
+## Nota de transparencia
+
+Varios umbrales y constantes se fijaron **después de una primera exploración** de los datos (columna "¿Se fijó después de la exploración previa?" con "sí"). En ningún caso se cambió la dirección de una H1 ni un umbral para acercarse al resultado; los cambios documentados corrigen validez (por ejemplo, el nulo de P1) o reemplazan procedimientos inestables (quintiles balanceados en lugar de la regla anterior con tramos del percentil fijos). Esta nota también vive en el [punto 7](07_conclusiones.md) como limitación.
 
 ## Referencias
 
-Los DOI de los artículos se consultaron en Crossref el 13 de octubre de 2026 (título, revista y año coinciden). Los libros y el documento de arXiv no tienen DOI de artículo. Las referencias provienen de la spec.
-
-- Ang, A., y Timmermann, A. (2012). Regime changes and financial markets. *Annual Review of Financial Economics*, 4, 313-337. https://doi.org/10.1146/annurev-financial-110311-101808
-- Asness, C. S., Moskowitz, T. J., y Pedersen, L. H. (2013). Value and momentum everywhere. *The Journal of Finance*, 68(3), 929-985. https://doi.org/10.1111/jofi.12021
-- Bailey, D. H., y López de Prado, M. (2014). The deflated Sharpe ratio. *The Journal of Portfolio Management*, 40(5), 94-107. https://doi.org/10.3905/jpm.2014.40.5.094
-- Bailey, D. H., Borwein, J., López de Prado, M., y Zhu, Q. J. (2017). The probability of backtest overfitting. *The Journal of Computational Finance*, 20(4). https://doi.org/10.21314/JCF.2016.322
-- Bollerslev, T. (1986). Generalized autoregressive conditional heteroskedasticity. *Journal of Econometrics*, 31(3), 307-327. https://doi.org/10.1016/0304-4076(86)90063-1
-- Brown, S. J., Goetzmann, W., Ibbotson, R. G., y Ross, S. A. (1992). Survivorship bias in performance studies. *The Review of Financial Studies*, 5(4), 553-580. https://doi.org/10.1093/rfs/5.4.553
-- Christoffersen, P. F. (1998). Evaluating interval forecasts. *International Economic Review*, 39(4), 841-862. https://doi.org/10.2307/2527341
-- Christoffersen, P. F. (2012). *Elements of Financial Risk Management* (2.ª ed.). Academic Press. (Libro, sin DOI de artículo.)
-- Cont, R. (2001). Empirical properties of asset returns: stylized facts and statistical issues. *Quantitative Finance*, 1(2), 223-236. https://doi.org/10.1080/713665670
-- Dixit, A. K., y Pindyck, R. S. (1994). *Investment under Uncertainty*. Princeton University Press. (Libro.)
-- Engle, R. F. (1982). Autoregressive conditional heteroscedasticity with estimates of the variance of United Kingdom inflation. *Econometrica*, 50(4), 987-1007. https://doi.org/10.2307/1912773
-- Fama, E. F. (1970). Efficient capital markets: a review of theory and empirical work. *The Journal of Finance*, 25(2), 383-417. https://doi.org/10.1111/j.1540-6261.1970.tb00518.x
+- Graham, B., y Dodd, D. (1934). *Security Analysis*. McGraw-Hill (libro).
+- Campbell, J. Y., y Shiller, R. J. (1998). Valuation ratios and the long-run stock market outlook. *Journal of Portfolio Management*, 24(2), 11-26. https://doi.org/10.3905/jpm.24.2.11
 - Fama, E. F., y French, K. R. (1992). The cross-section of expected stock returns. *The Journal of Finance*, 47(2), 427-465. https://doi.org/10.1111/j.1540-6261.1992.tb04398.x
-- Glasserman, P. (2004). *Monte Carlo Methods in Financial Engineering*. Springer. https://doi.org/10.1007/978-0-387-21617-1
 - Jegadeesh, N. (1990). Evidence of predictable behavior of security returns. *The Journal of Finance*, 45(3), 881-898. https://doi.org/10.1111/j.1540-6261.1990.tb05110.x
-- Kim, K. (2003). Financial time series forecasting using support vector machines. *Neurocomputing*, 55(1-2), 307-319. https://doi.org/10.1016/S0925-2312(03)00372-2
-- Kupiec, P. H. (1995). Techniques for verifying the accuracy of risk measurement models. *The Journal of Derivatives*, 3(2), 73-84. https://doi.org/10.3905/jod.1995.407942
-- Lo, A. W., Mamaysky, H., y Wang, J. (2000). Foundations of technical analysis: computational algorithms, statistical inference, and empirical implementation. *The Journal of Finance*, 55(4), 1705-1765. https://doi.org/10.1111/0022-1082.00265
-- López de Prado, M. (2018). *Advances in Financial Machine Learning*. Wiley. (Libro.)
-- Lundberg, S. M., y Lee, S.-I. (2017). A unified approach to interpreting model predictions. *Advances in Neural Information Processing Systems 30*. arXiv:1705.07874.
-- Merton, R. C. (1974). On the pricing of corporate debt: the risk structure of interest rates. *The Journal of Finance*, 29(2), 449-470. https://doi.org/10.1111/j.1540-6261.1974.tb03058.x
-- Park, C.-H., y Irwin, S. H. (2007). What do we know about the profitability of technical analysis? *Journal of Economic Surveys*, 21(4), 786-826. https://doi.org/10.1111/j.1467-6419.2007.00519.x
-- Piotroski, J. D. (2000). Value investing: the use of historical financial statement information to separate winners from losers. *Journal of Accounting Research*, 38 (suplemento), 1-41. https://doi.org/10.2307/2672906
 - Politis, D. N., y Romano, J. P. (1994). The stationary bootstrap. *Journal of the American Statistical Association*, 89(428), 1303-1313. https://doi.org/10.1080/01621459.1994.10476870
-- Sharpe, W. F. (1964). Capital asset prices: a theory of market equilibrium under conditions of risk. *The Journal of Finance*, 19(3), 425-442. https://doi.org/10.1111/j.1540-6261.1964.tb02865.x
+- Cameron, A. C., Gelbach, J. B., y Miller, D. L. (2008). Bootstrap-based improvements for inference with clustered errors. *The Review of Economics and Statistics*, 90(3), 414-427. https://doi.org/10.1162/rest.90.3.414
+- Künsch, H. R. (1989). The jackknife and the bootstrap for general stationary observations. *The Annals of Statistics*, 17(3), 1217-1241. https://doi.org/10.1214/aos/1176347265
+- Efron, B., y Tibshirani, R. J. (1993). *An Introduction to the Bootstrap*. Chapman & Hall (libro).

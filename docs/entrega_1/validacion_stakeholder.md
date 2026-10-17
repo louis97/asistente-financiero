@@ -1,6 +1,8 @@
 # Registro de la sesión de validación con el stakeholder
 
-> **Plantilla.** El autor realiza la sesión y completa este documento el mismo día. Ninguna respuesta está inventada: todo campo con "(completar tras la sesión)" sigue pendiente. Guion: `guion_validacion.md`. Mockup evaluado: `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, cifras de ejemplo).
+> **Estado al 16 de octubre de 2026 (pendiente):** la sesión con el inversor se registra en este archivo; mientras no haya notas de la sesión, todas las respuestas quedan como "(completar tras la sesión)" y los cambios que la sesión genere se reflejan en el [punto 2](02_ideacion.md). No se inventa ningún resultado.
+>
+> **Plantilla.** El autor realiza la sesión y completa este documento el mismo día. Guion: [../../.docs/guion_validacion.md](../../.docs/guion_validacion.md). Mockup evaluado: `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, cifras de ejemplo).
 
 ## 1. Datos de la sesión
 
