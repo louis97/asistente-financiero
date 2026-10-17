@@ -12,7 +12,8 @@
    0.03918639455782313
   ],
   "decision_estadistica": "no se rechaza H0",
-  "decision_negocio": "no accionable"
+  "decision_negocio": "no accionable",
+  "p_boot": 0.04895104895104895
  },
  "P6_diaria": {
   "estimado": 0.30508855777340455,
@@ -27,7 +28,8 @@
    0.14733673449398868
   ],
   "decision_estadistica": "se rechaza H0",
-  "decision_negocio": "efecto real, pero de magnitud incierta"
+  "decision_negocio": "efecto real, pero de magnitud incierta",
+  "p_boot": 0.000999000999000999
  },
  "P6_semanal": {
   "estimado": 0.28231837606837606,
@@ -42,7 +44,8 @@
    0.11699501696515144
   ],
   "decision_estadistica": "se rechaza H0",
-  "decision_negocio": "efecto real, pero de magnitud incierta"
+  "decision_negocio": "efecto real, pero de magnitud incierta",
+  "p_boot": 0.000999000999000999
  },
  "P6_dir_diaria": {
   "estimado": 0.5140847933010854,
@@ -57,7 +60,8 @@
    -0.010198674804975641
   ],
   "decision_estadistica": "se rechaza H0",
-  "decision_negocio": null
+  "decision_negocio": null,
+  "p_boot": 0.001998001998001998
  },
  "P6_dir_semanal": {
   "estimado": 0.5327216552757232,
@@ -72,6 +76,7 @@
    -0.01887195635438265
   ],
   "decision_estadistica": "se rechaza H0",
-  "decision_negocio": null
+  "decision_negocio": null,
+  "p_boot": 0.001998001998001998
  }
 }

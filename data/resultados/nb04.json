@@ -1,0 +1,162 @@
+{
+ "P2": {
+  "estimado": 0.15271613566106887,
+  "ic": [
+   0.09068197313958676,
+   0.22062234974818043
+  ],
+  "umbral": 0.03,
+  "estimado_estadistico": 0.15271613566106887,
+  "ic_estadistico": [
+   0.09068197313958676,
+   0.22062234974818043
+  ],
+  "decision_estadistica": "se rechaza H0",
+  "decision_negocio": "accionable",
+  "p_boot": 0.000999000999000999
+ },
+ "P3": {
+  "estimado": 0.006066550726177111,
+  "ic": [
+   -0.032139105725522796,
+   0.048997926824316466
+  ],
+  "umbral": 0.05,
+  "estimado_estadistico": 0.006066550726177111,
+  "ic_estadistico": [
+   -0.032139105725522796,
+   0.048997926824316466
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "no accionable",
+  "p_boot": 0.36363636363636365
+ },
+ "P5": {
+  "estimado": 0.2245881763168971,
+  "ic": [
+   0.17519987929209424,
+   0.2911418349853744
+  ],
+  "umbral": 0.05,
+  "estimado_estadistico": 0.2245881763168971,
+  "ic_estadistico": [
+   0.17519987929209424,
+   0.2911418349853744
+  ],
+  "decision_estadistica": "se rechaza H0",
+  "decision_negocio": "accionable",
+  "p_boot": 0.000999000999000999
+ },
+ "P4_rsi14": {
+  "estimado": -0.007665162559296612,
+  "ic": [
+   -0.03995866597814862,
+   0.02807596178826104
+  ],
+  "umbral": 0.01,
+  "estimado_estadistico": -0.007665162559296612,
+  "ic_estadistico": [
+   -0.03995866597814862,
+   0.02807596178826104
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "no accionable",
+  "p_boot": 0.7268546290741852
+ },
+ "P4_dist_sma20": {
+  "estimado": -0.00974777276408656,
+  "ic": [
+   -0.07697743185472061,
+   0.07106652196304926
+  ],
+  "umbral": 0.01,
+  "estimado_estadistico": -0.00974777276408656,
+  "ic_estadistico": [
+   -0.07697743185472061,
+   0.07106652196304926
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "no accionable",
+  "p_boot": 0.6294741051789642
+ },
+ "P4_dist_sma50": {
+  "estimado": -0.02353060279995367,
+  "ic": [
+   -0.06554780367102037,
+   0.026124303317030813
+  ],
+  "umbral": 0.01,
+  "estimado_estadistico": -0.02353060279995367,
+  "ic_estadistico": [
+   -0.06554780367102037,
+   0.026124303317030813
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "no accionable",
+  "p_boot": 0.9114177164567087
+ },
+ "P4_dist_sma200": {
+  "estimado": 0.004411084114312125,
+  "ic": [
+   -0.014336820215012895,
+   0.02527662178909745
+  ],
+  "umbral": 0.01,
+  "estimado_estadistico": 0.004411084114312125,
+  "ic_estadistico": [
+   -0.014336820215012895,
+   0.02527662178909745
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "no accionable",
+  "p_boot": 0.2471505698860228
+ },
+ "P4_vol_rel20": {
+  "estimado": -0.0008677542519959225,
+  "ic": [
+   -0.011491371599305442,
+   0.010020070672275705
+  ],
+  "umbral": 0.01,
+  "estimado_estadistico": -0.0008677542519959225,
+  "ic_estadistico": [
+   -0.011491371599305442,
+   0.010020070672275705
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "no accionable",
+  "p_boot": 0.5438912217556489
+ },
+ "P4_donchian20": {
+  "estimado": -0.0033842415827838312,
+  "ic": [
+   -0.02891613289599823,
+   0.02268512063210382
+  ],
+  "umbral": 0.01,
+  "estimado_estadistico": -0.0033842415827838312,
+  "ic_estadistico": [
+   -0.02891613289599823,
+   0.02268512063210382
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "no accionable",
+  "p_boot": 0.6382723455308938
+ },
+ "P4_mom_12_1": {
+  "estimado": -0.01838192757144519,
+  "ic": [
+   -0.05465258353045191,
+   0.019221305837143383
+  ],
+  "umbral": 0.01,
+  "estimado_estadistico": -0.01838192757144519,
+  "ic_estadistico": [
+   -0.05465258353045191,
+   0.019221305837143383
+  ],
+  "decision_estadistica": "no se rechaza H0",
+  "decision_negocio": "no accionable",
+  "p_boot": 0.8914217156568687
+ }
+}

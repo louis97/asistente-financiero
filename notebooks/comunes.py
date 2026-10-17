@@ -68,12 +68,18 @@ def a_ancho(df_largo: pd.DataFrame, campo: str = "close") -> pd.DataFrame:
     return df_largo.pivot(index="fecha", columns="ticker", values=campo).sort_index()
 
 
-def ic_bootstrap_fechas(df, estadistico, bloque, reps=1000, semilla=42, col_fecha="fecha", nivel=0.95):
+def ic_bootstrap_fechas(df, estadistico, bloque, reps=1000, semilla=42, col_fecha="fecha", nivel=0.95,
+                        devolver_reps=False):
     """IC por bootstrap por BLOQUES de fechas consecutivas (Künsch 1989; Politis y Romano 1994).
 
     Toma tramos de `bloque` fechas seguidas, en su orden original, con todas las acciones de esas
     fechas juntas: conserva la dependencia en el tiempo y entre acciones (las crisis las mueven a todas).
     Devuelve (estimación con todos los datos, límite inferior, límite superior).
+
+    Con `devolver_reps=True` devuelve también el arreglo de las `reps` réplicas del estadístico
+    (compatible hacia atrás: por defecto el resultado no cambia). Se usa, por ejemplo, para el
+    p-value bootstrap unilateral de percentil p = (1 + #réplicas del lado del nulo) / (1 + reps),
+    coherente con el IC de percentil al 1 − 2α (p < α ⇔ el nulo queda fuera del IC).
     """
     fechas = np.sort(df[col_fecha].unique())
     nf = len(fechas)
@@ -89,14 +95,22 @@ def ic_bootstrap_fechas(df, estadistico, bloque, reps=1000, semilla=42, col_fech
         vals[r] = estadistico(df.iloc[np.concatenate([filas[f] for f in fs])])
     q = (1 - nivel) / 2 * 100
     lo, hi = np.nanpercentile(vals, [q, 100 - q])
+    if devolver_reps:
+        return float(estadistico(df)), float(lo), float(hi), vals
     return float(estadistico(df)), float(lo), float(hi)
 
 
-def ic_bootstrap_grupos(df, estadistico, col_grupo="ticker", reps=1000, semilla=42, nivel=0.95):
+def ic_bootstrap_grupos(df, estadistico, col_grupo="ticker", reps=1000, semilla=42, nivel=0.95,
+                        devolver_reps=False):
     """IC por bootstrap por GRUPOS (cluster bootstrap de business-case.ipynb; Cameron, Gelbach y Miller 2008).
 
     Remuestrea grupos completos (p. ej., cada acción con toda su historia, en orden) con reemplazo.
     Se usa cuando el estimando es "la empresa típica" (un valor por empresa).
+
+    Con `devolver_reps=True` devuelve también el arreglo de las `reps` réplicas del estadístico
+    (compatible hacia atrás: por defecto el resultado no cambia). Permite calcular el p-value
+    bootstrap unilateral de percentil p = (1 + #réplicas del lado del nulo) / (1 + reps),
+    coherente con el IC de percentil al 1 − 2α (p < α ⇔ el nulo queda fuera del IC).
     """
     grupos = df[col_grupo].unique()
     if len(grupos) < 2:
@@ -109,4 +123,6 @@ def ic_bootstrap_grupos(df, estadistico, col_grupo="ticker", reps=1000, semilla=
         vals[r] = estadistico(df.iloc[np.concatenate([filas[x] for x in g])])
     q = (1 - nivel) / 2 * 100
     lo, hi = np.nanpercentile(vals, [q, 100 - q])
+    if devolver_reps:
+        return float(estadistico(df)), float(lo), float(hi), vals
     return float(estadistico(df)), float(lo), float(hi)
