@@ -1,6 +1,6 @@
 # Diccionario de datos (punto 5.3)
 
-Describe las instantáneas de `data/snapshots/` que se descargan en [`notebooks/01_recoleccion.ipynb`](../../notebooks/01_recoleccion.ipynb) y los campos derivados que calculan [`notebooks/03_eda_univariado.ipynb`](../../notebooks/03_eda_univariado.ipynb) y [`notebooks/04_eda_multivariado.ipynb`](../../notebooks/04_eda_multivariado.ipynb). Todas las definiciones de términos se consultan en el [glosario](glosario.md).
+Describe las [instantáneas](glosario.md) de `data/snapshots/` que se descargan en [`notebooks/01_recoleccion.ipynb`](../../notebooks/01_recoleccion.ipynb) y los campos derivados que calculan [`notebooks/03_eda_univariado.ipynb`](../../notebooks/03_eda_univariado.ipynb) y [`notebooks/04_eda_multivariado.ipynb`](../../notebooks/04_eda_multivariado.ipynb). Todas las definiciones de términos se consultan en el [glosario](glosario.md).
 
 **Universo.** 21 empresas de consumo defensivo con historia desde 2009 y en el XLP (KO, PEP, PG, WMT, COST, CL, MDLZ, KMB, GIS, MO, PM, HSY, KR, SYY, ADM, CLX, CHD, MKC, STZ, CAG, TSN), más dos ETF usados como referencia: el SPY (mercado) y el XLP (sector). KHC queda excluida porque sus precios empiezan en 2015. Los dos ETF viven solo en las tablas de precios; los demás snapshots guardan únicamente las 21 empresas.
 
@@ -9,6 +9,8 @@ Describe las instantáneas de `data/snapshots/` que se descargan en [`notebooks/
 **Unidades.** USD son dólares corrientes; "adimensional" es una razón sin unidad; "fracción" es 0,05 = 5 %. Las columnas `uso` nombran las hipótesis P1–P6 definidas en [`04_enfoque_analitico.md`](04_enfoque_analitico.md) §4.1–§4.5.
 
 **Regla de temporalidad (fecha de publicación).** Toda columna `filed_<campo>` guarda la primera fecha en que ese dato fue público; una fila de ratios solo se puede usar en una decisión en `t` si `filed ≤ t`. Esta regla se audita en nb02 §3 y evita el look-ahead en todas las uniones de precios con fundamentales.
+
+**Índice.** 1. Precios semanales · 2. Precios semanales sin ajuste por dividendos · 3. Precios diarios · 4. Splits · 5. Foto de identidad de yfinance · 6. Hechos EDGAR crudos · 7. Tabla anual · 8. Ratios anuales · 9. Tabla trimestral · 10. Ratios TTM · 11. Múltiplo semanal (derivado) · 12. Indicadores diarios (derivados) · 13. Variables de magnitud y etiqueta diaria · 14. Tabla por industria Damodaran.
 
 ---
 
@@ -45,7 +47,7 @@ Uso: control del precio ajustado en nb01 §1.2 y lectura de contexto en nb02 §1
 
 ## 5. Foto de identidad de yfinance (`info_yf.parquet`)
 
-Foto del día del endpoint `info` de yfinance para las 21 empresas. 21 filas. Se usa como fuente de triangulación de identidad y de los ratios (nb02 §4–§5).
+Foto del día del endpoint `info` de yfinance para las 21 empresas. 21 filas. Se usa como fuente de [triangulación](glosario.md) de identidad y de los ratios (nb02 §4–§5).
 
 | Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción | Uso (P1–P6) |
 |---|---|---|---|---|---|---|---|
@@ -67,7 +69,7 @@ Capa cruda extraída del endpoint `companyfacts` de la SEC EDGAR para las 21 emp
 
 | Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción | Uso (P1–P6) |
 |---|---|---|---|---|---|---|---|
-| `concepto` | EDGAR XBRL | texto | etiqueta XBRL | nombres us-gaap (p. ej., `Revenues`, `NetIncomeLoss`) | Vacío: no ocurre | Nombre del concepto reportado. Los sinónimos (p. ej., `Revenues` ≡ `RevenueFromContractWithCustomerExcludingAssessedTax`) se mapean en nb01 §3.1 | — |
+| `concepto` | EDGAR [XBRL](glosario.md) | texto | etiqueta XBRL | nombres us-gaap (p. ej., `Revenues`, `NetIncomeLoss`) | Vacío: no ocurre | Nombre del concepto reportado. Los sinónimos (p. ej., `Revenues` ≡ `RevenueFromContractWithCustomerExcludingAssessedTax`) se mapean en nb01 §3.1 | — |
 | `unidad` | EDGAR | texto | USD, shares, pure | USD, shares, pure | Vacío: no ocurre | Unidad declarada | — |
 | `start` | EDGAR | fecha | día | 2006–hoy | Vacío: hecho puntual (saldo), no hecho de flujo | Inicio del período que cubre el hecho (flujo) | — |
 | `end` | EDGAR | fecha | día | 2006–hoy | Vacío: no ocurre | Cierre del período (flujo) o fecha del saldo (balance) | — |
@@ -202,8 +204,8 @@ Panel que une `precios_semanales_sd` con `ratios_ttm` por `ticker` y la última 
 | `close` | `precios_semanales_sd` | real | USD por acción | > 0 | Vacío: no ocurre | Precio sin ajuste por dividendos (nb01 §4.3) | — |
 | `eps_ttm` | `ratios_ttm` | real | USD por acción | cualquier signo | 0 o negativo: P/E actual queda vacío (no "barato"). Vacío: sin dato publicado | Último EPS TTM con `filed ≤ fecha` | P/E actual del producto (no entra a P1–P6) |
 | `eps_prom_3a` | `ratios_ttm` | real | USD por acción | cualquier signo | 0 o negativo: P/E normalizado vacío. Vacío: sin dato publicado | Último `eps_prom_3a` con `filed ≤ fecha` | — |
-| `pe_actual` | derivado | real | veces | > 0 | Vacío: `eps_ttm ≤ 0` o sin dato |  `close ÷ eps_ttm`. Múltiplo "actual". Ejemplo KO 2026-10-12: 92,00 / 3,18 ≈ 29. Uso: contexto de | P2 |
-| `pe_norm` | derivado | real | veces | > 0 | Vacío: `eps_prom_3a ≤ 0` o sin dato | `close ÷ eps_prom_3a`. **Múltiplo principal de P2 y P3**. Ejemplo KO 2026-10-12: 92,00 / 2,73 ≈ 33,8 | — |
+| `pe_actual` | derivado | real | veces | > 0 | Vacío: `eps_ttm ≤ 0` o sin dato |  `close ÷ eps_ttm`. [P/E "actual"](glosario.md). Ejemplo KO 2026-10-12: 92,00 / 3,18 ≈ 29. Uso: contexto de P2 | P2 |
+| `pe_norm` | derivado | real | veces | > 0 | Vacío: `eps_prom_3a ≤ 0` o sin dato | `close ÷ eps_prom_3a`. **Múltiplo principal de P2 y P3**. Ejemplo KO 2026-10-12: `eps_prom_3a ≈ 2,725` → `pe_norm = 92,00 / 2,725 ≈ 33,8` | — |
 | `pb` | derivado | real | veces | > 0 | Vacío: `bvps ≤ 0` o sin dato |  `close ÷ bvps`. Contexto de la lectura de P2 | P2 |
 | `pct_norm` | derivado | real | fracción | 0 a 1 | Vacío: menos de 52 semanas de historia (regla fijada en nb04 §1) | **Percentil expansivo** del `pe_norm` de la empresa dentro de su propia historia hasta `fecha`. Alimenta los quintiles por fecha de P2 §2.3 | P2, P3 |
 
@@ -223,7 +225,7 @@ Siete indicadores técnicos calculados por ticker sobre `precios_diarios`. Todos
 
 ## 13. Variables de magnitud y etiqueta diaria (nb04 §4)
 
-Panel diario que une `precios_diarios` con la volatilidad hacia atrás y la etiqueta de triple barrera solo-largo. Base de P4.
+Panel diario que une `precios_diarios` con la volatilidad hacia atrás y la [etiqueta de entrada](glosario.md) "toca el nivel". Base de P4.
 
 | Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción | Uso (P1–P6) |
 |---|---|---|---|---|---|---|---|
@@ -232,7 +234,7 @@ Panel diario que une `precios_diarios` con la volatilidad hacia atrás y la etiq
 | `sigma20` | `r` | real | fracción | > 0 | Vacío: menos de 20 sesiones previas | Desviación estándar de los últimos 20 retornos diarios (`shift(1)` previo) | — |
 | `sigma252` | `r` | real | fracción | > 0 | Vacío: menos de 252 sesiones previas | **σ252 diaria**. Desviación estándar de los últimos 252 retornos (`shift(1)` previo). Umbral de la etiqueta de entrada | — |
 | `sigma20_sigma252` | derivado | real | adimensional | > 0 | Vacío: alguna σ faltante | `sigma20 ÷ sigma252`. Aceleración o calma relativa | — |
-| `y` | derivado | binario | 0 o 1 | {0, 1} | 1: en los siguientes N = 60 días hábiles el precio tocó `close × (1 − k·σ252)` antes que `close × (1 + k·σ252)` o antes del tiempo. 0: salida por arriba o por tiempo. Vacío: censura (menos de N sesiones futuras) o falta σ252. k = 1 (nb04 §4). **Nunca es 0 por falta de dato** | Etiqueta de entrada "toca el nivel". Variable objetivo del SVM (fuera del alcance de la entrega 1) y de los ΔAUC de P4 (nb04_p4.json) | P4 |
+| `y` | derivado | binario | 0 o 1 | {0, 1} | 1: en los siguientes N = 60 días hábiles el precio tocó `close × exp(−k · σ252 · √N)` antes que `close × exp(k · σ252 · √N)` o antes del tiempo. 0: salida por arriba o por tiempo. Vacío: censura (menos de N sesiones futuras) o falta σ252. k = 1 (nb04 §4). **Nunca es 0 por falta de dato** | Etiqueta de entrada "toca el nivel". Variable objetivo del SVM (fuera del alcance de la entrega 1) y de los ΔAUC de P4 (nb04_p4.json) | P4 |
 
 ## 14. Tabla por industria Damodaran (`damodaran_pe.parquet` y `damodaran_margenes.parquet`)
 

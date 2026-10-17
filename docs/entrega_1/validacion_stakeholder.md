@@ -14,7 +14,7 @@
 | Participante | Inversor value, inversor del autor (anónimo). No se registran nombre, contacto ni montos invertidos. |
 | Perfil (años invirtiendo, mercados, frecuencia de análisis) | (completar tras la sesión) |
 | Autorización informada leída y aceptada (Ley 1581 de 2012, arts. 4, 8, 9 y 12) | (completar tras la sesión: sí/no) |
-| Versión del mockup mostrada (fecha de generación) | (completar tras la sesión) |
+| Versión del mockup mostrada (fecha de generación) | Versión del mockup: la de esta fecha (N = 60, recuadro de desempeño histórico) |
 
 ## 2. Tareas sobre el mockup (parte 1 del guion)
 
@@ -24,7 +24,7 @@ Resultado: sí (sin ayuda), con ayuda o no. En observaciones, dónde miró, dón
 |---|---|---|---|
 | 1 | Encontrar si KO está cara o barata frente a su historia | (completar tras la sesión) | (completar tras la sesión) |
 | 2 | Interpretar la lectura técnica del nivel value (línea base y rango) | (completar tras la sesión) | (completar tras la sesión) |
-| 3 | Qué haría con 42 % de probabilidad (40 días hábiles) frente a una línea base de 35 % | (completar tras la sesión) | (completar tras la sesión) |
+| 3 | Qué haría con 42 % de probabilidad (60 días hábiles) frente a una línea base de 35 % | (completar tras la sesión) | (completar tras la sesión) |
 | 4 | Leer la probabilidad de la salida base en el horizonte (3 años, editable) | (completar tras la sesión) | (completar tras la sesión) |
 | 5 | Panel de riesgo: qué usaría y qué no entiende | (completar tras la sesión) | (completar tras la sesión) |
 | 6 | Ajustar el nivel deep value y registrar la decisión | (completar tras la sesión) | (completar tras la sesión) |

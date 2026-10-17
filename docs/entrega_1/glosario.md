@@ -16,6 +16,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **año fiscal (y cierre fiscal distinto de diciembre)** · Período de doce meses que cada empresa escoge para contar sus resultados. La mayoría usa enero–diciembre, pero algunas no: WMT y COST cierran su año fiscal en enero. nb02 §2b (chequeo 5) marca estos casos para que al sumar cuatro trimestres se respete el año fiscal, no el calendario.
 
+**asociación (lenguaje de)** · Convención del curso: las conclusiones se escriben como asociaciones ("A y B tienden a ir juntos"), nunca como causas ("A causa B"). Las técnicas usadas aquí observan patrones; no manipulan ni aíslan variables.
+
 **AUC (*area under the ROC curve*)** · Mide qué tan bien un puntaje separa las dos clases de una etiqueta binaria (0/1). Toma valores de 0 a 1: 0,5 es azar y 1 es separación perfecta. Ejemplo: la línea base por decil de σ252 diaria del nb04 §4.5 tiene AUC = 0,591 en la prueba 2019–2024.
 
 **Bonferroni** · Corrección por multiplicidad: cuando se hacen k pruebas se usa un nivel de confianza de 1 − α/k en cada una, para que la tasa global de falsos positivos siga siendo α. nb04 §5.3 usa 1 − 0,05/7 ≈ 99,3 % para los 7 indicadores de P4.
@@ -40,6 +42,12 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **clustermap** · Mapa de calor que ordena filas y columnas de una matriz (por ejemplo, de correlaciones) agrupando lo parecido con un dendrograma. Ejemplo: nb04 §6.6 muestra el clustermap de los 21 retornos semanales de la industria.
 
+**comisionista (sociedad comisionista de bolsa)** · Entidad vigilada por la SFC que ejecuta órdenes de compra y venta de valores por cuenta del inversor. En Colombia es la vía por la que una persona natural accede al mercado de valores (local o internacional, a través del Mercado Global Colombiano).
+
+**contado (spot)** · Compra o venta de un valor para liquidación inmediata al precio del día, en vez de a plazo o con un derivado. En este proyecto se asume que el inversor opera siempre al contado.
+
+**data snooping** · Probar muchas combinaciones de parámetros, variables o reglas sobre los mismos datos y reportar la mejor: infla el desempeño aparente y aumenta la probabilidad de un falso positivo. Se mitiga con una lista fija de pruebas declaradas antes de ejecutar, umbrales fijos y validación cronológica (ver también **sobreajuste**; [punto 3](03_etica_legal.md) §3.1).
+
 **decil** · Grupo que resulta de partir una variable en diez partes iguales por sus percentiles 10, 20, …, 90. El decil 1 es el 10 % más bajo y el 10 el 10 % más alto. nb04 §4.5 arma los deciles de σ252 diaria.
 
 **decisión de negocio (regla accionable / efecto real, pero de magnitud incierta / no accionable)** · Se fija un umbral práctico antes de ver los datos. Después se mira el IC estimado: accionable si el límite inferior supera el umbral; "efecto real, pero de magnitud incierta" si se rechaza H0 pero el IC cruza el umbral; no accionable en los demás casos.
@@ -60,21 +68,29 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **Δlog(P/E normalizado)** · Cambio del logaritmo del P/E normalizado en un horizonte (3 años). Se descompone en `Δlog(precio) − Δlog(EPS promedio)`: separa cuánto del cambio vino del precio y cuánto de las utilidades. La suma es exacta porque el log convierte el cociente en una resta.
 
+**enfoque value** · Estrategia de compra que busca empresas cuyo precio en bolsa queda por debajo de una valoración razonable (por su historia o por su industria), con horizonte largo. Es el enfoque del usuario del producto; se contrapone al enfoque de crecimiento, que paga múltiplos altos a cambio de utilidades que se esperan mayores en el futuro.
+
 **EPS (*earnings per share*, utilidad por acción)** · `utilidad neta ÷ acciones diluidas`. Es la utilidad que corresponde a cada acción. Ejemplo: KO 2026-04-03, `eps_ttm = 3,18` USD por acción (`ratios_ttm`).
 
 **EPS TTM (de los últimos 12 meses)** · `utilidad_neta_ttm ÷ acciones del último trimestre`. El numerador es la suma de la utilidad neta de los cuatro trimestres más recientes ya publicados; el denominador es el `acciones` del cierre del último trimestre (nb01 §4.3). Ejemplo: KO 2026-04-03 con `eps_ttm = 3,18` USD por acción.
+
+**estacionariedad** · Propiedad de una serie temporal cuyos momentos (media y variabilidad) no cambian con el tiempo. Los precios no son estacionarios (crecen y la variabilidad cambia por épocas); los retornos sí lo son de forma aproximada. Las técnicas del curso suponen estacionariedad (ver [punto 4](04_enfoque_analitico.md) §4.0).
 
 **ETF (*exchange-traded fund*)** · Fondo que agrupa muchas acciones y se compra como una sola. Replica una canasta (un índice). En el proyecto se usan dos: el SPY y el XLP.
 
 **ETF sectorial (XLP)** · ETF que agrupa las empresas de consumo defensivo de EE.UU. (Consumer Staples Select Sector SPDR Fund). nb03 y nb04 lo usan como "la industria" para P3 y P5.
 
-**etiqueta de entrada ("toca el nivel")** · Variable binaria del nb04 §4: vale 1 si el precio cae a `close × (1 − k·σ252)` dentro de los siguientes N días hábiles, y 0 si en esos N días sube a `close × (1 + k·σ252)` o se agota el tiempo. k = 1 y N = 60 en nb04. Las últimas N observaciones quedan censuradas.
+**etiqueta de entrada ("toca el nivel")** · Variable binaria del nb04 §4: vale 1 si el precio cae a `close × exp(−k · σ252 · √N)` dentro de los siguientes N días hábiles, y 0 si en esos N días sube a `close × exp(k · σ252 · √N)` o se agota el tiempo. k = 1 y N = 60 en nb04. Las últimas N observaciones quedan censuradas.
 
 **exceso sobre el XLP** · Para P3, retorno logarítmico de la empresa menos retorno logarítmico del XLP sobre el mismo horizonte: `log(P_T/P_0) − log(XLP_T/XLP_0)`. Un exceso positivo significa que la empresa superó al sector; uno negativo, que quedó por debajo.
 
 **filed (fecha de publicación)** · Fecha en que un reporte de EDGAR se hizo público. Es la primera fecha en que un inversor pudo usar esa información. Toda unión con precios se hace por `filed` para evitar look-ahead. Ejemplo: `tabla_trimestral` fila 2023Q1 de KO tiene `filed = 2023-04-26` (26 días después del cierre del trimestre).
 
 **frecuencia diaria y semanal** · Dos resoluciones de precios: `precios_diarios` tiene una fila por día hábil; `precios_semanales` una fila por lunes de la semana. nb03 maneja P1 en semanal y P6 en diaria y semanal.
+
+**fuerza relativa (a 14 días)** · Nombre común del **RSI** (ver más abajo). Mide la fuerza de las variaciones positivas frente a las negativas en las últimas 14 sesiones.
+
+**fundamentales (análisis fundamental)** · Estudio del valor de una empresa a partir de sus estados financieros: ingresos, utilidad, patrimonio, deuda y los **ratios** y **múltiplos** derivados de ellos. Se contrapone al análisis técnico, que mira solo precios y volúmenes.
 
 **H0 / H1** · H0 es la hipótesis nula (el "no hay efecto" o el valor de referencia). H1 es la hipótesis alternativa. Se escribe la dirección de H1 antes de ver los datos y no se cambia. Ejemplo P1: H0 `p ≤ 2,55 %`, H1 `p > 2,55 %` (nb03 §4.2).
 
@@ -85,6 +101,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **indicador técnico** · Variable derivada solo de precios y volumen históricos (sin información fundamental). nb04 §5 estudia siete: `rsi14`, `dist_sma20`, `dist_sma50`, `dist_sma200`, `vol_rel20`, `donchian20`, `mom_12_1`. Todos miran solo hacia atrás.
 
 **industria piloto (consumo defensivo)** · Las 21 empresas de consumo defensivo con historia desde 2009 y en el XLP (KO, PEP, PG, WMT, COST, CL, MDLZ, KMB, GIS, MO, PM, HSY, KR, SYY, ADM, CLX, CHD, MKC, STZ, CAG, TSN). KHC queda fuera porque sus precios comienzan en 2015. Se analiza esta industria para la entrega 1; el producto se diseñó para cualquier industria.
+
+**instantánea (snapshot)** · Archivo con fecha congelada que fija la versión exacta de los datos usada en el análisis. Garantiza que correr el proyecto con la misma instantánea reproduce las mismas cifras aunque la fuente cambie. Las del proyecto viven en `data/snapshots/` (fecha de corte: 2026-10-15).
 
 **IC** · Alias de "intervalo de confianza". Ver abajo.
 
@@ -106,6 +124,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **momentum 12-1 (`mom_12_1`)** · `precio_{t−21} / precio_{t−252} − 1`. Mide el retorno de los últimos 12 meses, saltándose el último mes para separar el efecto "momentum" del "reversión de corto plazo". nb04 §5.
 
+**múltiplo** · Razón entre el precio de una acción y una magnitud contable por acción (utilidades, patrimonio, ventas). Se usa para comparar precios entre empresas y a lo largo del tiempo. Los dos múltiplos del producto son el **P/E** y el **P/B**. Ejemplo: KO con precio 92 USD y `eps_ttm = 3,18` tiene un P/E (TTM) ≈ 29.
+
 **N = 60 días (horizonte de la etiqueta)** · Cuántos días hábiles hacia adelante mira la etiqueta de P4 para decidir si el precio "toca el nivel". N = 60 (≈ 3 meses bursátiles) se eligió en nb04 §4.3 maximizando AUC entre los candidatos cuya tasa de toque cae en 10–40 %.
 
 **nivel de entrada** · Precio por debajo del precio actual que el usuario fijaría como oportunidad de compra. En el producto son 3 niveles de entrada por acción.
@@ -120,9 +140,11 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **P/B (*price-to-book*)** · `precio ÷ BVPS`. Múltiplo que compara el precio con el patrimonio contable por acción. P/B = 1 significa "pago el patrimonio exactamente". nb04 §1.
 
-**P/E (*price-to-earnings*)** · `precio ÷ EPS`. Múltiplo que indica cuántas unidades de precio se pagan por cada unidad de utilidad. El P/E "actual" usa el EPS TTM. Ejemplo: KO 2026-10-12 con `close = 92,00` USD y `eps_ttm = 3,18` tiene P/E actual ≈ 29.
+**P/E (*price-to-earnings*)** · `precio ÷ EPS`. Múltiplo que indica cuántas unidades de precio se pagan por cada unidad de utilidad. Ejemplo: KO 2026-10-12 con `close = 92,00` USD y `eps_ttm = 3,18` tiene P/E ≈ 29.
 
-**P/E normalizado** · `precio ÷ EPS promedio de los últimos 3 años` (12 trimestres ya publicados; variable `eps_prom_3a` del `ratios_ttm`). Un solo año excepcional puede hacer que una acción parezca barata sin serlo; promediar varios años evita esa ilusión. Ejemplo: KO 2026-10-12 con `eps_prom_3a = 2,73` tiene P/E normalizado ≈ 33,8, por encima del P/E actual. Referencias: Graham y Dodd (1934), *Security Analysis*, McGraw-Hill; Campbell y Shiller (1998), *Journal of Portfolio Management*, 24(2), 11–26, DOI 10.3905/jpm.24.2.11.
+**P/E "actual"** · P/E calculado con el EPS de los últimos 12 meses ya publicados (**EPS TTM**). Es el P/E que se actualiza con cada reporte trimestral. Ejemplo: KO 2026-10-12 con `close = 92,00` y `eps_ttm = 3,18` tiene P/E actual ≈ 29. Se contrapone al **P/E normalizado**.
+
+**P/E normalizado** · `precio ÷ EPS promedio de los últimos 3 años` (12 trimestres ya publicados; variable `eps_prom_3a` del `ratios_ttm`). Un paso intermedio evita el redondeo: `eps_prom_3a ≈ 2,725` da P/E normalizado ≈ 33,8 (`92,00 / 2,725`). Un solo año excepcional puede hacer que una acción parezca barata sin serlo; promediar varios años evita esa ilusión. Ejemplo: KO 2026-10-12 con `eps_prom_3a ≈ 2,725` tiene P/E normalizado ≈ 33,8, por encima del P/E actual. Referencias: Graham y Dodd (1934), *Security Analysis*, McGraw-Hill; Campbell y Shiller (1998), *Journal of Portfolio Management*, 24(2), 11–26, DOI 10.3905/jpm.24.2.11.
 
 **PCA (análisis de componentes principales)** · Técnica no supervisada que proyecta variables correlacionadas en pocos ejes ortogonales ordenados por varianza explicada. En nb04 §6.6 el PC1 de los 21 retornos semanales se interpreta como "el movimiento común de la industria".
 
@@ -131,6 +153,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **percentil 5 (del retorno)** · Valor del percentil 5 de la distribución de retornos. Si el p5 del retorno semanal de KO es −4 %, significa que una de cada 20 semanas KO cae al menos 4 %.
 
 **percentil expansivo** · Percentil de un valor dentro de su propia historia hasta `t`: usa todas las observaciones de la misma empresa anteriores a `t`. Se calcula con ventana expansiva (`shift(1)` previo) para evitar look-ahead. nb04 §1.
+
+**posición larga** · Comprar un activo con la expectativa de que suba. En el proyecto el inversor solo opera en largo: compra la acción y la vende más adelante. Se contrapone a la posición corta (vender prestada una acción esperando que baje).
 
 **prueba F de modelos anidados** · Compara el R² de dos regresiones donde una incluye a la otra (anidadas). Dice si las variables extra aportan información significativa. nb04 §6.3 (P5).
 
@@ -141,6 +165,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **quintil por fecha** · Clasificación en quintiles que se recalcula en cada fecha trimestral. Reglas de nb04 §2.3: (i) una fecha entra a los quintiles solo si tiene al menos 15 empresas con `pct_norm` publicado; (ii) con n empresas vigentes, `k = round(0,2·n)` empresas de menor `pct_norm` forman el quintil barato y las k de mayor `pct_norm` el caro (quintiles balanceados); los empates se rompen por orden de llegada. Evita el look-ahead porque usa solo la distribución disponible hasta esa fecha.
 
 **R²** · Fracción de la variación de la variable respuesta que explica una regresión. Va de 0 a 1. nb04 §6.3 (P5).
+
+**ratio** · Razón entre dos magnitudes contables (p. ej. `ROE = utilidad ÷ patrimonio`). A diferencia del **múltiplo**, no mezcla precio con contabilidad: compara partes del negocio entre sí. Ejemplo: KO con `roe_ttm = 0,41` (41 %).
 
 **regresión a la media** · Fenómeno estadístico: una medición extrema con parte de azar tiende a quedar menos extrema en la siguiente medición. No es una "fuerza"; es el efecto de que el azar se promedia. En el proyecto se usa lenguaje de asociación, nunca de causa.
 
@@ -154,13 +180,17 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **ROE (*return on equity*, rentabilidad del patrimonio)** · `utilidad neta ÷ patrimonio`. Qué fracción del patrimonio contable se ganó en el año. Ejemplo: KO 2026-04-03, `roe_ttm = 0,41` (41 %).
 
-**RSI (*relative strength index*)** · Indicador técnico entre 0 y 100 que mide la fuerza de las variaciones positivas frente a las negativas en una ventana (14 días en el proyecto). Valores altos (>70) sugieren sobrecompra; bajos (<30), sobreventa. nb04 §5.
+**RSI (*relative strength index*, también "fuerza relativa")** · Indicador técnico entre 0 y 100 que mide la fuerza de las variaciones positivas frente a las negativas en una ventana (14 días en el proyecto). Valores altos (>70) sugieren sobrecompra; bajos (<30), sobreventa. nb04 §5.
 
-**semana turbulenta** · Semana en que `|retorno| > σ252 diaria` (umbral del curso). Se usa en la variante semanal de P6 (nb03 §5). Sinónimo semanal de la "sesión turbulenta".
+**screener** · Herramienta web que filtra un universo grande de acciones por criterios cuantitativos (p. ej. patrimonio, utilidad, deuda) y devuelve la lista corta de las que cumplen. El inversor del producto usa un screener para elegir qué activos analizar; el asistente **no** hace screening (ver [punto 1](01_negocio.md) §1.4).
+
+**semana turbulenta** · Semana en que `|retorno|` supera el percentil 80 de la propia historia previa de la acción (ventana expansiva, `shift(1)`). Se usa en la variante semanal de P6 (nb03 §5). Sinónimo semanal de la "sesión turbulenta".
 
 **sesgo de supervivencia** · Analizar solo las empresas que sobrevivieron hasta hoy puede sobreestimar los retornos: las que quebraron o fueron deslistadas quedan fuera de la muestra. Es más relevante en horizontes largos (3 años). nb02 §6.
 
-**sesión turbulenta** · Sesión bursátil (día) en que `|retorno diario| > σ252 diaria`. P6 (diaria) estudia la probabilidad de que una sesión turbulenta venga seguida por otra (nb03 §5). Es la variante diaria de la "semana turbulenta".
+**sobreajuste (*overfitting*)** · Un modelo o un procedimiento aprende el ruido de los datos y no la señal; funciona bien en lo que ya vio y falla en lo nuevo. Se controla con corte cronológico, Bonferroni/Holm y validación en datos distintos a los del ajuste. Ver también **data snooping**.
+
+**sesión turbulenta** · Sesión bursátil (día) en que `|retorno diario|` supera el percentil 80 de la propia historia previa de la acción (ventana expansiva, `shift(1)`). P6 (diaria) estudia la probabilidad de que una sesión turbulenta venga seguida por otra (nb03 §5). Es la variante diaria de la "semana turbulenta".
 
 **σ20 diaria** · Desviación estándar de los retornos diarios de las últimas 20 sesiones (un mes bursátil). nb04 §4.
 
@@ -186,9 +216,15 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **trampa de valor** · Una acción se ve barata (P/E bajo) porque el mercado anticipa que sus utilidades van a caer. Si uno compra pensando "está barata" sin mirar las utilidades, el P/E se puede corregir hacia la media bajando el precio, no subiendo el EPS. nb04 §3.8 testea este patrón.
 
+**turbulencia** · En este proyecto, la propiedad de que una sesión bursátil (o una semana) tenga `|retorno|` por encima del percentil 80 de la propia historia previa de la acción (ver **sesión turbulenta** y **semana turbulenta**). P6 estudia si las sesiones turbulentas vienen juntas (agrupamiento de la volatilidad).
+
+**triangulación** · Contrastar un mismo hecho con dos o más fuentes independientes para detectar errores. Ejemplos del proyecto: `eps_ttm` calculado desde `tabla_trimestral` se compara con el `trailingEps` que publica yfinance, y el sector reportado por yfinance se compara con la pertenencia al XLP (nb02 §4 y §5).
+
 **TTM (últimos 12 meses, *trailing twelve months*)** · Suma de los cuatro trimestres más recientes ya publicados. Da una lectura "siempre al día" sin esperar al cierre del año fiscal. nb01 §4.3.
 
 **V de Cramér** · Medida del tamaño del efecto de una tabla de contingencia (va de 0 a 1). Acompaña a la prueba chi-cuadrado para expresar la magnitud de la asociación en una unidad interpretable. nb03 §5.4.
+
+**validación cronológica** · Procedimiento de evaluación que respeta el orden temporal: el modelo se ajusta con observaciones hasta `t` y se evalúa con las posteriores (nunca al revés). Evita el look-ahead y mide un desempeño comparable al de uso real. En el proyecto el corte es 2018 (entrenamiento) frente a 2019+ (prueba) con un espacio de ≥ N días hábiles entre ambos.
 
 **VIF (*variance inflation factor*)** · Diagnóstico de multicolinealidad en regresión múltiple: cuánto se infla la varianza del coeficiente de una variable por su correlación con las demás. VIF > 10 suele considerarse problemático. nb04 §6.3.
 
@@ -199,6 +235,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **volumen relativo (`vol_rel20`)** · `volumen del día ÷ promedio de volumen de los últimos 20 días`. Un valor de 1 significa "volumen igual al promedio reciente"; 2 significa "el doble".
 
 **Welch (prueba t de Welch)** · Variante de la prueba t de dos muestras que no asume igualdad de varianzas. nb04 §2.4 la usa como prueba de referencia en P2 (bootstrap por empresa decide).
+
+**XBRL** · Formato estándar en el que la autoridad de EE.UU. (SEC) obliga a publicar los estados financieros: cada cifra lleva una etiqueta (p. ej. `NetIncomeLoss`) que permite leerla por software y compararla entre empresas y entre reportes. En este proyecto se usa para construir la tabla trimestral y los ratios TTM (nb01 §3).
 
 **XLP** · ETF sectorial de consumo defensivo (Consumer Staples Select Sector SPDR Fund). Representa "la industria" en P3 y P5. nb04 §3 y §6.
 
