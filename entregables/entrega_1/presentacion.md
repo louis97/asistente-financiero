@@ -38,16 +38,21 @@ colortheme: default
 
 ## 5. Enfoque analítico (6 preguntas, 1 hipótesis cada una)
 
-| Preg. | Qué pregunta | Umbral |
+| Preg. | Pregunta | Decide en la herramienta |
 |---|---|---|
-| P1 | ¿Caídas semanales > 2σ más frecuentes que una normal? | 3,8 % |
-| P2 | ¿Barato > caro a 3 años en Δlog(P/E normalizado)? | +0,03 anualizado |
-| P3 | ¿Barato gana al XLP a 3 años? | +0,05 anualizado |
-| P4 | ¿Algún indicador técnico mejora la AUC base? | +0,01 (×7) |
-| P5 | ¿XLP agrega ΔR² al SPY? | +0,05 |
-| P6 | ¿La turbulencia se agrupa? | 0,30 |
+| P1 | ¿Caídas semanales fuertes > normal? | Panel de riesgo: "frecuencia de caídas fuertes" |
+| P2 | ¿Barato sube P/E norm. > caro a 3 años? | Lectura fundam.: percentil P/E norm. + adv. deterioro |
+| P3 | ¿Barato gana al XLP a 3 años? | Exceso sobre XLP **no entra como señal** |
+| P4 | ¿Indicador técnico mejora la AUC base? | Lectura técnica: SVM solo de magnitud, con línea base |
+| P5 | ¿XLP agrega ΔR² al SPY? | Panel de riesgo + simulación acción + XLP |
+| P6 | ¿La turbulencia se agrupa? | Lectura probab.: simulación por bloques, k·σ252 |
 
-Plantilla: umbral → H0/H1 → prueba y supuestos → IC95 por bootstrap → decisión estadística y de negocio.
+Plantilla por hipótesis: umbral → H0/H1 → IC95 por bootstrap → decisión.
+
+## 5b. P1 y P/E normalizado en palabras simples
+
+- **Caída semanal fuerte (P1):** semana en que la acción cae más de 2 veces su volatilidad semanal del último año (`z < −2`). Con retornos normales y σ conocida pasaría en el 2,3 % de las semanas; con σ estimada, la tasa comparable calibrada por simulación es ≈ 2,55 %. P1 pregunta si en el piloto pasa más.
+- **P/E normalizado:** precio ÷ **EPS promedio de 3 años** (utilidad neta de 12 trimestres ÷ 3 ÷ acciones). Evita que un solo año excepcional haga parecer barata o cara una acción.
 
 ## 6. Datos (tres fuentes gratuitas, instantánea fechada)
 
