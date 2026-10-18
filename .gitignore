@@ -6,5 +6,6 @@ __pycache__/
 data/raw/
 *.env
 entrega_1/.claude/
-.claude/settings.local.json
+.claude/
+.docs/
 .superpowers/
