@@ -32,7 +32,7 @@ monofont: "Courier New"
 ## 3b. Feedback del inversor y respuesta en el mockup v2
 
 - Validación 2026-10-18: sesión asíncrona por mensajería con un inversor; no respondió el formulario y entregó feedback libre.
-- **Aceptado en v2 (H1 definiciones, H2 columnas separadas y notas aparte, H3 columna % vs. precio actual):** franja "Cómo leer esta pantalla" con 7 definiciones de una línea; P/E y P/B en columnas separadas; columna "% vs. precio actual"; panel de riesgo con 5 filas espaciadas; marca descriptiva del precio actual sin veredicto.
+- **Aceptado en v2 (H1 definiciones, H2 columnas separadas y notas aparte, H3 columna % vs. precio actual):** franja "Cómo leer esta pantalla" con 8 definiciones de una línea (incluye SVM); P/E y P/B en columnas separadas; columna "% vs. precio actual"; panel de riesgo con 5 filas espaciadas; marca descriptiva del precio actual sin veredicto.
 - **No se adopta (H4):** el "veredicto" que pidió el participante choca con RN1 y con la regla de no recomendar.
 - **Aplazado al punto 7 (H5):** prototipo navegable con más usuarios y medición de los KPI 1, 2 y 5 (sin línea base en esta sesión).
 - Técnica (SVM, "se entrena en la entrega 2"): **21 / 42 / 71 %** frente a línea base **16 / 35 / 66 %**. Probabilística: **81 / 62 / 37 %**.
@@ -46,6 +46,10 @@ monofont: "Courier New"
 
 ## 5. Enfoque analítico (6 preguntas, 1 hipótesis cada una)
 
+**Plantilla por hipótesis:** umbral → H0/H1 → IC95 por bootstrap → decisión.
+
+\footnotesize
+
 | Preg. | Pregunta | Decide en la herramienta |
 |---|---|---|
 | P1 | ¿Caídas semanales fuertes > normal? | Panel de riesgo: "frecuencia de caídas fuertes" |
@@ -55,7 +59,7 @@ monofont: "Courier New"
 | P5 | ¿XLP agrega ΔR² al SPY? | Panel de riesgo + simulación acción + XLP |
 | P6 | ¿La turbulencia se agrupa? | Lectura probab.: simulación por bloques, k·σ252 |
 
-Plantilla por hipótesis: umbral → H0/H1 → IC95 por bootstrap → decisión.
+\normalsize
 
 ## 5b. P1 y P/E normalizado en palabras simples
 

@@ -2,7 +2,7 @@
 
 > **Uso real:** enviado el 2026-10-18 al participante junto con el mockup v1; no se respondió el formulario y se recibió feedback libre. Ver [validacion_stakeholder.md](validacion_stakeholder.md).
 
-**Fecha prevista:** 16 de octubre de 2026. **Duración:** 15–20 minutos. **Participante:** inversor value (stakeholder del punto 1); no se registra su nombre. **Material:** el mockup `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, industria piloto consumo defensivo). **Registro:** el autor anota las respuestas en `validacion_stakeholder.md` el mismo día.
+**Formato previsto en el diseño:** sesión guiada de 15–20 minutos el 16 de octubre de 2026 (no se ejecutó así; el uso real fue asíncrono por mensajería el 2026-10-18, el participante no respondió el formulario y entregó feedback libre; ver [validacion_stakeholder.md](validacion_stakeholder.md)). **Participante:** inversor value (stakeholder del punto 1); no se registra su nombre. **Material:** el mockup `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, industria piloto consumo defensivo). **Registro:** el autor anota las respuestas en `validacion_stakeholder.md` el mismo día.
 
 ## Objetivo de la sesión
 

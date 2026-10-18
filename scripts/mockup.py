@@ -2,7 +2,7 @@
 
 Los niveles y las probabilidades son de EJEMPLO (ilustrativos; se marcan en la imagen).
 Las cifras del panel de riesgo que dependen del sector salen de los datos reales
-de nb04 §6.1 para el ticker de ejemplo (KO, industria piloto consumo defensivo):
+de nb04 §6.3 para el ticker de ejemplo (KO, industria piloto consumo defensivo):
 R² del modelo mercado + sector y ΔR² que aporta el sector.
 
 Cambios de la v2 respecto a la v1 (feedback 2026-10-18):
@@ -78,7 +78,7 @@ NOTAS = {
        "la lectura «¿suele ser temporal?» no aplica.",
 }
 
-# Franja "Cómo leer esta pantalla": 8 definiciones de una línea, coherentes con el glosario.
+# Franja "Cómo leer esta pantalla": 8 definiciones de una línea (incluye SVM), coherentes con el glosario.
 GLOSARIO_FRANJA = [
     ("P/E", "precio ÷ utilidad por acción (TTM = últimos 12 meses). Dice cuántos dólares se pagan "
             "por cada dólar de utilidad."),
@@ -98,7 +98,7 @@ GLOSARIO_FRANJA = [
                    "días de volatilidad parecida. Si el modelo no la supera, no aporta."),
 ]
 
-# Panel de riesgo: las primeras cuatro cifras son ilustrativas; la quinta sale de nb04 §6.1 para KO
+# Panel de riesgo: las primeras cuatro cifras son ilustrativas; la quinta sale de nb04 §6.3 para KO
 # (R² del modelo r ~ r_SPY + r_XLP y ΔR² que aporta el XLP sobre el modelo r ~ r_SPY). Semanal,
 # 927 semanas 2009–2026.
 RIESGO = [
@@ -107,12 +107,12 @@ RIESGO = [
     ("Peor semana típica (1 de cada 20 cae al menos esto)", "−3,4 %",
      "percentil 5 del retorno semanal (valor ilustrativo)."),
     ("Caídas semanales fuertes al año", "2,1 vs 1,0",
-     "veces reales frente a lo esperado si el mercado fuera normal (valor ilustrativo)."),
+     "veces observadas frente a lo esperado si el mercado fuera normal (valor ilustrativo)."),
     ("Peor caída desde un pico (y cuánto tardó en recuperarse)", "−37 % · 14 meses",
      "mayor caída acumulada observada; año de referencia 2020 (valor ilustrativo)."),
     ("Cuánto se mueve con el sector (XLP)", "R² 0,61 · ΔR² 0,29",
      "KO: el modelo mercado + sector explica 61 % del movimiento; añadir el sector al mercado "
-     "aporta 0,29 más de R² (cifras reales, nb04 §6.1)."),
+     "aporta 0,29 más de R² (cifras reales, nb04 §6.3)."),
 ]
 
 # Recuadro de desempeño histórico del modelo técnico. Las métricas se calculan
@@ -142,7 +142,7 @@ def encabezado(ax):
             "Muestra probabilidades con su incertidumbre; nunca dice «compra» ni «vende».",
             fontsize=10.5, color=ROJO, weight="bold", va="center")
     ax.text(0.0, 0.00, "MOCKUP (v2): los niveles y las probabilidades son de EJEMPLO (ilustrativos); "
-            "la cifra «R² · ΔR²» del panel de riesgo es real para KO (nb04 §6.1).",
+            "la cifra «R² · ΔR²» del panel de riesgo es real para KO (nb04 §6.3).",
             fontsize=9.5, color=GRIS, va="center", style="italic")
     ax.text(1.0, 0.88, "Industria: consumo defensivo (industria piloto del EDA)",
             fontsize=10, ha="right", va="center", color="white", weight="bold",
@@ -150,13 +150,13 @@ def encabezado(ax):
 
 
 def franja_glosario(ax):
-    """Franja 'Cómo leer esta pantalla' con 7 definiciones de una línea (hallazgo H1)."""
+    """Franja 'Cómo leer esta pantalla' con 8 definiciones de una línea, incluida SVM (hallazgo H1)."""
     ax.axis("off")
     ax.add_patch(plt.Rectangle((0, 0), 1, 1, transform=ax.transAxes, fill=True,
                                fc="#f5f8fb", ec="#9fb8d0", lw=0.8))
     ax.text(0.015, 0.92, "Cómo leer esta pantalla (glosario de bolsillo)",
             fontsize=10.5, weight="bold", va="center", color=AZUL)
-    # 7 entradas en una sola columna, cada una en una línea, con etiqueta en negrita.
+    # 8 entradas en una sola columna, cada una en una línea, con etiqueta en negrita.
     n = len(GLOSARIO_FRANJA)
     y0, y1 = 0.80, 0.05
     for k, (termino, def_) in enumerate(GLOSARIO_FRANJA):
@@ -235,10 +235,10 @@ def grafico_precio(ax):
     cercano_alto = min(altos, key=lambda nv: nv[1]) if altos else None
     partes = []
     if cercano_bajo is not None:
-        partes.append(f"{cercano_bajo[0]} ${cercano_bajo[1]:.0f}")
-    partes.append(f"precio actual ${PRECIO:.0f}")
+        partes.append(f"{cercano_bajo[0]} ${cercano_bajo[1]:.2f}")
+    partes.append(f"precio actual ${PRECIO:.2f}")
     if cercano_alto is not None:
-        partes.append(f"{cercano_alto[0]} ${cercano_alto[1]:.0f}")
+        partes.append(f"{cercano_alto[0]} ${cercano_alto[1]:.2f}")
     frase = " · ".join(partes)
     ax.text(0.02, 0.02, f"Posición: {frase} (descriptivo, sin veredicto).",
             transform=ax.transAxes, fontsize=8.8, color=GRIS, style="italic")
