@@ -38,7 +38,7 @@ La conclusión del diagnóstico es que el inversor actúa como enrutador manual 
 | 3 | Riesgo medido a ojo o con una alarma | Panel de riesgo descriptivo por activo ([volatilidad](glosario.md), [percentil 5](glosario.md), [caída máxima](glosario.md), frecuencia de caídas fuertes y dependencia del sector: [R²](glosario.md) y [ΔR²](glosario.md)) | KPI 5 (confianza) |
 | 4 | No hay dónde anotar lo que se concluye | Registro de decisiones con fecha, nivel, lectura y nota | KPI 4 (decisiones documentadas) |
 | 5 | No se sabe si el nivel es razonable frente a la historia y la industria | Lectura fundamental comparativa ([percentiles](glosario.md) frente a la historia y la industria, incluyendo el [P/E normalizado](glosario.md)) | KPI 1 y KPI 5 |
-| 6 | Timing de entrada solo con gráficos y patrones básicos | Lectura técnica: probabilidad del modelo técnico frente a la [línea base por decil de σ](glosario.md) | KPI 5 (la calidad del score se evalúa con las métricas del [punto 4](04_enfoque_analitico.md), sección 4.4) |
+| 6 | Timing de entrada solo con gráficos y patrones básicos | Lectura técnica: probabilidad del modelo técnico frente a la [línea base por decil de σ](glosario.md) | KPI 5 (la calidad de la probabilidad del modelo técnico se evalúa con las métricas del [punto 4](04_enfoque_analitico.md), sección 4.4) |
 
 ## 2.4 Requerimientos
 
@@ -55,18 +55,21 @@ Los requerimientos se priorizan con MoSCoW (Must, Should, Could, Won't para esta
 | RF7 | Permitir que el usuario ajuste sus niveles y umbrales | Should | El usuario edita un nivel y la pantalla se recalcula |
 | RF8 | Registro de decisiones con fecha, nivel y nota | Should | Hay una entrada por decisión (KPI 4) |
 | RF9 | Escenarios del sector en la simulación (por ejemplo, filtrar bloques de semanas con el ETF a la baja) | Could | El usuario cambia el supuesto del ETF y ve el efecto |
-| RF10 | Alertas automáticas, conexión al bróker, gestión de portafolio y screening de todo el mercado | Won't | Fuera del alcance (entrega 2 en adelante) |
+| RF10 | Alertas automáticas, conexión al bróker, gestión de portafolio, screening de todo el mercado, calcular el valor intrínseco o sugerir niveles | Won't | Fuera del alcance (entrega 2 en adelante) |
 | RF11 | Para un ticker de una industria no validada, marcar visiblemente "industria no validada" y advertir que las probabilidades no están validadas en esa industria | Must | Un ticker fuera del universo piloto muestra la marca y las probabilidades con advertencia; la lectura fundamental y el panel de riesgo descriptivo sí se muestran |
+
+Los nombres de los seis niveles de RF1 describen el papel que cada precio juega para el usuario: en las entradas, **deep value** es el precio al que, según el usuario, la empresa está muy barata; **value**, barata; **valoración histórica**, un precio coherente con el múltiplo habitual de la empresa; en las salidas, los tres precios objetivo del usuario en un escenario **negativo**, **base** y **positivo**. La herramienta no estima el valor intrínseco ni propone niveles: los fija el usuario con su propia valoración y la herramienta solo los lee (ver RF10 y el hallazgo H3 de §2.9, en el que el participante los pensaba como % de ganancia).
 
 | ID | Requerimiento no funcional | MoSCoW | Verificación |
 |---|---|---|---|
-| RN1 | Explicabilidad: el modelo técnico es un SVM lineal cuyos coeficientes son legibles; el score se presenta como probabilidad, nunca como "compra" o "vende" | Must | Cada score viene con su rango de incertidumbre, línea base y errores históricos |
+| RN1 | Explicabilidad: el modelo técnico es un SVM lineal cuyos coeficientes son legibles; la probabilidad del modelo técnico se presenta como tal, nunca como "compra" o "vende" | Must | Cada probabilidad viene con su rango de incertidumbre, línea base y errores históricos |
 | RN2 | Sin look-ahead: toda lectura en t usa solo datos ≤ t y la fecha publicada del reporte | Must | Reglas del [punto 4](04_enfoque_analitico.md), sección 4.3 |
 | RN3 | Latencia de actualización ≤ 1 día tras un reporte | Must | KPI 3 |
 | RN4 | Datos gratuitos (yfinance, autoridad de EE.UU. y Damodaran) y reproducibles mediante instantáneas con fecha | Must | Todo corre sin claves de pago |
 | RN5 | Disclaimer visible: "No es asesoría de inversión" | Must | Presente en cada pantalla |
 | RN6 | Ejecución a demanda o con la frecuencia que fije el usuario, no en tiempo real | Should | Coincide con lo pedido en la entrevista |
 | RN7 | Respuesta de la API para un ticker en un tiempo interactivo | Could | Se medirá en la fase de construcción |
+| RN8 | Ayuda contextual (tooltips) para cada término técnico de la pantalla (AUC, Brier, calibración, línea base, percentil, σ, P/E, P/B, ΔR², simulación) | Must | Cada término tiene un tooltip de una línea, coherente con el glosario |
 
 ## 2.5 Componentes analíticos y tecnológicos
 
@@ -138,11 +141,12 @@ La tabla relaciona cada elemento del mockup con los requerimientos de la secció
 | Botón "Registrar decisión" | RF8 |
 | Marca "industria no validada" (para tickers fuera del piloto) | RF11 |
 | Disclaimer "No es asesoría de inversión" | RN5 |
+| Sin elemento en el wireframe: se implementa en el dashboard (ayuda contextual con tooltips para cada término técnico) | RN8 |
 | Sin elemento en el wireframe: RF9 (Could, escenarios del sector), RN4 (datos gratuitos) y RN6 (ejecución a demanda), que son propiedades del sistema y no de la pantalla | RF9, RN4, RN6 |
 
 ## 2.8 Principios de diseño
 
-Primero, el usuario ajusta sus niveles y umbrales. La literatura sobre aversión al algoritmo muestra que las personas pierden confianza en un modelo después de verlo equivocarse, pero la recuperan cuando pueden modificar su resultado, aunque sea un poco (Dietvorst et al., 2015 y 2018). Por eso los seis niveles son del usuario y el modelo solo les asigna probabilidades (RF7). Segundo, el score se presenta como una probabilidad acompañada de su incertidumbre, de su línea base y de su desempeño histórico, incluidos los errores, y nunca como "compra" o "vende". El uso de ayudas automatizadas lleva a complacencia y a sesgo de automatización cuando el usuario delega el juicio (Parasuraman & Manzey, 2010), y una probabilidad con su contexto invita a contrastar y no a obedecer (RN1). Esto se pondrá a prueba en la sesión de validación, con la pregunta sobre si el usuario confiaría más al ver la línea base y los errores históricos.
+Primero, el usuario ajusta sus niveles y umbrales. La literatura sobre aversión al algoritmo muestra que las personas pierden confianza en un modelo después de verlo equivocarse, pero la recuperan cuando pueden modificar su resultado, aunque sea un poco (Dietvorst et al., 2015 y 2018). Por eso los seis niveles son del usuario y el modelo solo les asigna probabilidades (RF7). Segundo, la probabilidad del modelo técnico se presenta con su incertidumbre, su línea base y su desempeño histórico, incluidos los errores, y nunca como "compra" o "vende". El uso de ayudas automatizadas lleva a complacencia y a sesgo de automatización cuando el usuario delega el juicio (Parasuraman & Manzey, 2010), y una probabilidad con su contexto invita a contrastar y no a obedecer (RN1). La comprobación de que esta presentación aumenta la confianza no se obtuvo en la validación asíncrona del 2026-10-18 porque el formulario no se respondió ([validacion_stakeholder.md](validacion_stakeholder.md)); queda para la validación con prototipo navegable ([punto 7](07_conclusiones.md) §7.4).
 
 ## 2.9 Validación con el stakeholder
 
