@@ -6,6 +6,9 @@ date: "Octubre 2026"
 aspectratio: 169
 theme: default
 colortheme: default
+mainfont: "Arial Unicode MS"
+sansfont: "Arial Unicode MS"
+monofont: "Courier New"
 ---
 
 ## 1. Problema

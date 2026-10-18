@@ -50,30 +50,34 @@ Detalle: <https://github.com/louis97/asistente-financiero/blob/main/docs/entrega
 
 ## 4. Enfoque analítico
 
-El trabajo responde a **seis preguntas de negocio con una hipótesis cada una**. Cada hipótesis se evalúa con la misma secuencia: un umbral práctico fijado antes de ver los datos, hipótesis nula y alternativa con α = 0,05, prueba con su matriz de supuestos, estimación con intervalo de confianza al 95 % (IC95: el rango en el que cae el valor estimado el 95 % de las veces si se repitiera el experimento; aquí construido por bootstrap, un remuestreo que no supone una forma teórica para los datos), y dos decisiones. La **decisión estadística** es "se rechaza H0" si el IC95 bilateral no incluye el valor nulo y "no se rechaza H0" en el otro caso. La **decisión de negocio** es "accionable" si el límite inferior del IC95 supera el umbral, "efecto real, pero magnitud incierta" si se rechaza H0 pero el IC95 cruza el umbral, y "no accionable" en los demás casos. El lenguaje es de asociación, nunca de causa.
+El trabajo responde a **seis preguntas de negocio con una hipótesis cada una**. Cada hipótesis sigue la misma secuencia: umbral práctico fijado antes, H0/H1 y α = 0,05, prueba con su matriz de supuestos, estimación con intervalo de confianza al 95 % (IC95: rango en el que cae el estimado el 95 % de las veces si se repitiera el experimento, construido por bootstrap, un remuestreo que no supone una forma teórica), y dos decisiones. La **estadística** es "se rechaza H0" si el IC95 no incluye el valor nulo y "no se rechaza H0" si lo incluye. La **de negocio** es "accionable" si el límite inferior del IC95 supera el umbral, "efecto real, magnitud incierta" si se rechaza H0 pero el IC95 cruza el umbral, y "no accionable" en los demás casos. Lenguaje de asociación, nunca de causa.
 
-La tabla reúne cada pregunta con lo que **decide en la herramienta** —qué pieza del producto depende de la respuesta—, el umbral, el estimado con IC95 y las dos decisiones. Los umbrales están en logaritmo anualizado cuando la variable es un retorno a tres años; 0,03 anualizado en log equivale a cerca de 9 % acumulado en tres años.
+La tabla reúne cada pregunta con lo que **decide en la herramienta** —qué pieza del producto depende de la respuesta—, el umbral, el estimado con IC95 y las dos decisiones. Un umbral de 0,03 anualizado en log equivale a cerca de 9 % acumulado en tres años.
 
-\small
-\begin{tabularx}{\linewidth}{@{}p{0.5cm} X X p{1.8cm} X p{2.3cm}@{}}
+\begin{tabularx}{\linewidth}{@{}p{0.5cm} X X p{1.6cm} X p{2.0cm}@{}}
 \hline
-\textbf{P.} & \textbf{Pregunta} & \textbf{Decide en la herramienta} & \textbf{Umbral} & \textbf{Estimado · IC95} & \textbf{Decisión (est. · neg.)} \\
+\textbf{P.} & \textbf{Pregunta} & \textbf{Decide en la herramienta} & \textbf{Umbral} & \textbf{Estimado · IC95} & \textbf{Decisión} \\
 \hline
-P1 & ¿Caídas semanales fuertes más que una normal igual? & Panel de riesgo (frec. de caídas fuertes) vs.\ nulo calibrado; sin alarma. & 3,83 \% sem. & 3,08 \% · [2,46; 3,92] \% & no rechaza H0 · no accionable \\
-P2 & ¿El quintil barato sube su P/E norm.\ más que el caro a 3 años? & Lectura fundam.\ de entradas: percentil del P/E norm.\ con \textbf{advertencia de posible deterioro de utilidades}. & +0,03 anual.\ en log & +0,153 · [+0,091; +0,221] & rechaza H0 · accionable \\
-P3 & ¿El quintil barato gana al XLP a 3 años? & \textbf{El exceso sobre el XLP no entra como señal}; solo como contexto. & +0,05 anual.\ en log & +0,006 · [−0,032; +0,049] & no rechaza H0 · no accionable \\
-P4 & ¿Algún indicador técnico mejora la AUC sobre la base por decil de σ? & Lectura técnica de entradas: SVM con \{|r$_t$|, σ20/σ252, σ252\} (solo magnitud) vs.\ su base. & +0,01 en ΔAUC (×7) & 7 IC95 (Bonferroni ≈ 99,3 \%) cruzan 0; mayor abs.\ mom\_12\_1 −0,018 · [−0,055; +0,019] & no rechaza H0 (×7) · no acc.\ (×7) \\
-P5 & ¿XLP agrega ΔR² al SPY semanal? & Panel de riesgo (dependencia del sector) y simulación conjunta acción + XLP; justifica una industria a la vez. & +0,05 en ΔR² & ΔR² mediano 0,225 · [+0,175; +0,291] & rechaza H0 · accionable (confirm.) \\
-P6 & ¿La turbulencia se agrupa? & Lectura probabilística de salidas: simulación por \textbf{bloques de semanas} acción+XLP; niveles en k·σ252. & 0,30 & P(T\textbar T) diaria 0,305 · [0,275; 0,340] & rechaza H0 · efecto real, magnitud incierta \\
+P1 & ¿Caídas semanales fuertes más que una normal igual? & Panel de riesgo: frec.\ de caídas fuertes. & 3,83 \% sem. & 3,08 \% · [2,46; 3,92] \% & no rechaza · no acc. \\
+P2 & ¿El quintil barato sube su P/E norm.\ más que el caro a 3 años? & Lectura fundam.\ de entradas: percentil del P/E norm. & +0,03 anual.\ log & +0,153 · [+0,091; +0,221] & rechaza · acc. \\
+P3 & ¿El quintil barato gana al XLP a 3 años? & Exceso sobre XLP no entra como señal. & +0,05 anual.\ log & +0,006 · [−0,032; +0,049] & no rechaza · no acc. \\
+P4 & ¿Algún indicador técnico mejora la AUC base? & Lectura técnica: SVM solo con variables de magnitud. & +0,01 ΔAUC (×7) & 7 IC95 cruzan 0; mom\_12\_1 −0,018 · [−0,055; +0,019] & no rechaza (×7) · no acc. \\
+P5 & ¿XLP agrega ΔR² al SPY semanal? & Panel de riesgo (dep.\ del sector) y simulación acción + XLP. & +0,05 ΔR² & 0,225 · [+0,175; +0,291] & rechaza · acc.\ (confirm.) \\
+P6 & ¿La turbulencia se agrupa? & Lectura probabilística: simulación por bloques de semanas. & 0,30 & P(T\textbar T) diaria 0,305 · [0,275; 0,340] & rechaza · magnitud incierta \\
 \hline
 \end{tabularx}
-\normalsize
+
+La lectura de P2 incluye una **advertencia descriptiva de posible deterioro de utilidades** (compatible con trampa de valor); los niveles de P6 se expresan en **k · σ252 diaria** (volatilidad del último año); y P5 justifica analizar una industria a la vez.
 
 **P1 en palabras simples.** Una caída fuerte es una semana en que la acción cae más de 2 veces su volatilidad semanal típica del último año (`z < −2`, donde `z` es el retorno sobre su σ reciente). Si los retornos siguieran una distribución normal (campana de Gauss) con esa volatilidad conocida, pasaría en el 2,3 % de las semanas; como la volatilidad se estima con el pasado y no se conoce, la tasa comparable, calibrada por simulación con la misma receta, es ≈ 2,55 %. P1 pregunta si en consumo defensivo pasa más que eso: si no, el panel no infla la "frecuencia de caídas fuertes" artificialmente.
 
 **P/E normalizado en palabras simples.** El P/E es precio sobre utilidad por acción (EPS). El P/E normalizado es precio dividido por el **EPS promedio de los últimos 3 años** (utilidad neta de los 12 trimestres ya publicados ÷ 3 ÷ acciones). Promediar 3 años evita que un solo año excepcional —malo o bueno— haga parecer barata o cara una acción. "Barata frente a su historia" se opera como el quintil con el P/E normalizado más bajo de la industria en esa fecha.
 
-**Diseño experimental y métricas del modelo.** La **etiqueta** vale 1 si el precio toca, dentro de los próximos **N = 60 días hábiles**, un nivel ubicado a **`k = 1` volatilidad diaria por √N por debajo** del precio actual (el nivel superior es simétrico hacia arriba; vale 0 si primero toca el superior o se agota el tiempo). Toda variable en `t` usa solo datos ≤ `t` (ventana expansiva, `shift(1)` y fecha `filed`); los percentiles del P/E normalizado son expansivos. **Entrenamiento y prueba se separan con un corte cronológico en 2018-12-31** —ajuste 2009-2018, prueba 2019+— con un **espacio de al menos N = 60 días hábiles** entre ambos para que ninguna etiqueta del entrenamiento mire a la prueba. La estabilidad se verifica por **subperíodos** (2009-2012, 2013-2019, 2020-2021 y 2022+). La **línea base** es la tasa de toque por decil de volatilidad del último año (σ252): se parten los días del entrenamiento en 10 grupos por σ252 y la predicción para un día nuevo es la tasa de su grupo; da **AUC 0,591 en la prueba** (nb04 §4.5). Las métricas del SVM son AUC (probabilidad de ordenar correctamente un día que sí tocó frente a otro que no; 0,5 es azar), Brier (error cuadrático medio entre la probabilidad predicha y la realidad; menor es mejor) y calibración (si el modelo dice 30 %, ¿pasa cerca del 30 % de las veces?), por subperíodo. **La entrega 1 deja listas** la etiqueta, la línea base y la selección de variables (P4); **el SVM y su desempeño se calculan en la entrega 2**.
+**Diseño experimental.** La **etiqueta** vale 1 si el precio toca, dentro de los próximos **N = 60 días hábiles**, un nivel ubicado a **`k = 1` volatilidad diaria por √N por debajo** del precio actual (el nivel superior es simétrico hacia arriba; vale 0 si primero toca el superior o se agota el tiempo). Toda variable en `t` usa solo datos ≤ `t` (ventana expansiva, `shift(1)` y fecha `filed`); los percentiles del P/E normalizado son expansivos. En P2 y P3 se toma una observación por empresa y trimestre calendario, y las ventanas de 3 años sin resultado completo se excluyen (censura).
+
+**Validación cronológica.** Entrenamiento y prueba se separan con un **corte cronológico en 2018-12-31** —ajuste 2009-2018, prueba 2019+— con un **espacio de al menos N = 60 días hábiles** entre ambos para que ninguna etiqueta del entrenamiento mire a la prueba. La estabilidad se verifica por **subperíodos** (2009-2012, 2013-2019, 2020-2021 y 2022+). La **línea base** es la tasa de toque por decil de volatilidad del último año (σ252): se parten los días del entrenamiento en 10 grupos por σ252 y la predicción para un día nuevo es la tasa de su grupo; da **AUC 0,591 en la prueba** (nb04 §4.5).
+
+**Métricas y qué queda para la entrega 2.** Las métricas del SVM son AUC (probabilidad de ordenar correctamente un día que sí tocó frente a otro que no; 0,5 es azar), Brier (error cuadrático medio entre la probabilidad predicha y la realidad; menor es mejor) y calibración (si el modelo dice 30 %, ¿pasa cerca del 30 % de las veces?), por subperíodo. **La entrega 1 deja listas** la etiqueta, la línea base y la selección de variables (P4); **el SVM y su desempeño se calculan en la entrega 2**.
 
 Detalle: <https://github.com/louis97/asistente-financiero/blob/main/docs/entrega_1/04_enfoque_analitico.md>
 
@@ -97,7 +101,7 @@ El EDA combina las cuatro vistas (univariada y multivariada, cada una gráfica y
 \begin{minipage}[t]{0.48\textwidth}
 \centering
 \includegraphics[width=\linewidth]{assets/nb04_p4_zonas.png}
-\captionof*{figure}{\footnotesize \textbf{Figura 3. P4:} ΔAUC por indicador técnico sobre la línea base por decil de σ252. Los siete IC95 bilaterales (Bonferroni ≈ 99,3 \%) cruzan 0; mayor en valor absoluto \texttt{mom\_12\_1} (ΔAUC −0,018, IC [−0,055; +0,019]). Línea base \textbf{AUC 0,591} con N = 60. \texttt{variables\_svm = \{|r\_t|, σ20/σ252, σ252\}} (solo magnitud). nb04 §5.3.}
+\captionof*{figure}{\footnotesize \textbf{Figura 3. P4:} ΔAUC por indicador técnico sobre la línea base por decil de σ252. Los siete IC95 bilaterales (Bonferroni ≈ 99,3 \%) cruzan 0; mayor en valor absoluto \texttt{mom\_12\_1} (ΔAUC −0,018, IC [−0,055; +0,019]) y más estrecho \texttt{vol\_rel20} (ΔAUC −0,001, IC [−0,011; +0,010]). Línea base \textbf{AUC 0,591} con N = 60. \texttt{variables\_svm = \{|r\_t|, σ20/σ252, σ252\}} (solo magnitud). nb04 §5.3.}
 \end{minipage}
 \end{figure}
 
