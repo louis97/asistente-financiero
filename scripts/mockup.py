@@ -8,7 +8,7 @@ R² del modelo mercado + sector y ΔR² que aporta el sector.
 Cambios de la v2 respecto a la v1 (feedback 2026-10-18):
   - franja "Cómo leer esta pantalla" con definiciones de una línea;
   - P/E y P/B en columnas separadas y columna "% vs. precio actual" en cada nivel;
-  - encabezados en lenguaje llano, con la columna de la lectura técnica marcada
+  - encabezados reescritos, con la columna de la lectura técnica marcada
     "se entrena en la entrega 2";
   - interpretación de la fundamental movida a "Notas" bajo la tabla;
   - marca descriptiva del precio actual, sin veredicto;

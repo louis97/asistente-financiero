@@ -22,7 +22,7 @@ El producto se diseña para servir a cualquier industria; la entrega 1 lo desarr
 
 Detalle y fuentes en [`docs/entrega_1/07_conclusiones.md`](docs/entrega_1/07_conclusiones.md). Las cifras se copian de `data/resultados/nb03.json`, `nb04.json` y `nb04_p4.json`.
 
-1. **Las caídas semanales fuertes no son más frecuentes que las que daría una normal medida igual** (P1): 3,08 % semanal, IC95 por bloques de fechas [2,46 %; 3,92 %], umbral 3,83 %; no se rechaza H0, no accionable.
+1. **Las caídas semanales fuertes no son más frecuentes que las que daría una normal medida igual** (P1): 3,08 % semanal (≈ 1 de cada 32, ≈ 1,6/año), IC95 por bloques de fechas [2,46 %; 3,92 %] (≈ 1,3–2,0/año), umbral 3,83 % (≈ 1 de cada 26, ≈ 2/año); no se rechaza H0, no accionable.
 2. **Las acciones baratas suben su P/E normalizado más que las caras a 3 años** (P2): +0,153 anualizado en log, IC95 por empresa [+0,091; +0,221], umbral 0,03; se rechaza H0 y la decisión es accionable. La descomposición es **compatible con trampa de valor, no la afirma**.
 3. **El quintil barato no gana al XLP a 3 años** dentro del sector (P3): +0,006, IC95 [−0,032; +0,049]; no se rechaza H0.
 4. **Ningún indicador técnico mejora la AUC sobre la línea base por decil de σ** (P4): los 7 ΔAUC tienen IC95 Bonferroni al ≈ 99,3 % que cruzan 0. Consecuencia: `variables_svm = {|r_t|, σ20/σ252, σ252}` (solo magnitud); la línea base da **AUC 0,591** con N = 60.

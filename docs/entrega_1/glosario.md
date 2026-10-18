@@ -1,6 +1,6 @@
 # Glosario (fuente única de definiciones)
 
-Audiencia: un compañero de MINE-4101 sin formación en finanzas. Cada entrada se cuenta en 1–2 líneas con un ejemplo numérico tomado de las instantáneas en `data/snapshots/` o de los resultados `data/resultados/nb03.json`, `nb04.json` y `nb04_p4.json`. Los enlaces desde los notebooks apuntan a `docs/entrega_1/glosario.md`.
+Cada entrada se cuenta en 1–2 líneas con un ejemplo numérico tomado de las instantáneas en `data/snapshots/` o de los resultados `data/resultados/nb03.json`, `nb04.json` y `nb04_p4.json`. Los enlaces desde los notebooks apuntan a `docs/entrega_1/glosario.md`.
 
 El orden es alfabético (los números y letras griegas se ordenan por su nombre: Δ como "delta", σ como "sigma"). Los sinónimos ("sesión turbulenta" ≡ "semana turbulenta"; "bootstrap por empresa" ≡ "bootstrap por ticker") se referencian entre sí.
 
@@ -132,7 +132,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **nivel de salida** · Precio por encima del precio actual que el usuario fijaría como oportunidad de venta. En el producto son 3 niveles de salida por acción, todos por encima del precio actual.
 
-**nulo calibrado por simulación** · Valor de referencia que se calcula remuestreando los retornos observados bajo "no hay efecto". Fija el nulo con los mismos datos y preserva la cola. nb03 §4.1 lo usa para P1: calibra la tasa esperada de caídas fuertes bajo caminata aleatoria. Resultado: 2,55 %.
+**nulo calibrado por simulación** · Valor de referencia que se calcula simulando retornos normales i.i.d. con la **misma receta** de σ estimada que se aplica a los datos observados. Con σ estimada (no conocida) la tasa de caídas con `z < −2` supera Φ(−2) = 2,275 %; el nulo calibrado da la referencia justa aplicando la misma receta. nb03 §4.1 lo usa para P1 (función `nulo_caidas_fuertes`). Resultado: 2,55 %.
 
 **p bilateral equivalente** · Cuando una prueba se reporta por el IC, el p-value se calcula bilateralmente a partir de las réplicas del bootstrap, aunque H1 sea unilateral. Es solo informativo (la decisión viene del IC). nb04 §3.5.
 
@@ -155,6 +155,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **percentil expansivo** · Percentil de un valor dentro de su propia historia hasta `t`: usa todas las observaciones de la misma empresa anteriores a `t`. Se calcula con ventana expansiva (`shift(1)` previo) para evitar look-ahead. nb04 §1.
 
 **posición larga** · Comprar un activo con la expectativa de que suba. En el proyecto el inversor solo opera en largo: compra la acción y la vende más adelante. Se contrapone a la posición corta (vender prestada una acción esperando que baje).
+
+**presupuesto de pérdida** · Pérdida semanal que el inversor acepta en una acción. Si la fija con la volatilidad histórica (p. ej., una caída de 2 σ), espera tocarla ≈ 1,3 veces al año (2,55 %); si las caídas fuertes pasaran el 3,8 % de las semanas, la tocaría ≈ 2 veces y el presupuesto se agotaría más seguido. Es el término que P1 (nb03 §4.1) compara contra el nulo calibrado.
 
 **prueba F de modelos anidados** · Compara el R² de dos regresiones donde una incluye a la otra (anidadas). Dice si las variables extra aportan información significativa. nb04 §6.3 (P5).
 

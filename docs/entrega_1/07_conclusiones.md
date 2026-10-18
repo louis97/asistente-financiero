@@ -4,7 +4,7 @@ Las cifras de este documento salen de celdas ejecutadas de los notebooks [02](..
 
 ## 7.1 Conclusiones
 
-**C1. Las caídas semanales de más de 2 volatilidades no son más frecuentes que las que daría una [normal medida de la misma forma](glosario.md).** P1 (en consumo defensivo) estima una tasa agregada de 3,08 % semanal, [IC95](glosario.md) por [bloques de fechas](glosario.md) [2,46 %; 3,92 %], frente a un nulo calibrado por simulación de 2,55 % y un umbral de 3,83 %; **no se rechaza H0 y la decisión de negocio es no accionable**. En los subperíodos agregados, 2013–2019 y 2022+ quedan por encima del nulo; el COVID queda con [IC](glosario.md) ancho por tener pocas semanas. Fuente: [nb03 §4](../../notebooks/03_eda_univariado.ipynb) y [`nb03.json`](../../data/resultados/nb03.json) clave `P1`.
+**C1. Las caídas semanales de más de 2 volatilidades no son más frecuentes que las que daría una [normal medida de la misma forma](glosario.md).** P1 (en consumo defensivo) estima una tasa agregada de 3,08 % semanal (≈ 1 de cada 32, ≈ 1,6/año), [IC95](glosario.md) por [bloques de fechas](glosario.md) [2,46 %; 3,92 %] (≈ 1,3–2,0/año), frente a un nulo calibrado por simulación de 2,55 % (≈ 1 de cada 39, ≈ 1,3/año) y un umbral de 3,83 % (≈ 1 de cada 26, ≈ 2/año); **no se rechaza H0 y la decisión de negocio es no accionable**. En los subperíodos agregados, 2013–2019 y 2022+ quedan por encima del nulo; el COVID queda con [IC](glosario.md) ancho por tener pocas semanas. Fuente: [nb03 §4](../../notebooks/03_eda_univariado.ipynb) y [`nb03.json`](../../data/resultados/nb03.json) clave `P1`.
 
 ![P1 por empresa](../../entregables/entrega_1/assets/nb03_p1_por_empresa.png)
 

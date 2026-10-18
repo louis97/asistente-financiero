@@ -61,9 +61,9 @@ monofont: "Courier New"
 
 \normalsize
 
-## 5b. P1 y P/E normalizado en palabras simples
+## 5b. Qué mide P1 y qué es el P/E normalizado
 
-- **Caída semanal fuerte (P1):** semana en que la acción cae más de 2 veces su volatilidad semanal del último año (`z < −2`). Con retornos normales y σ conocida pasaría en el 2,3 % de las semanas; con σ estimada, la tasa comparable calibrada por simulación es ≈ 2,55 %. P1 pregunta si en el piloto pasa más.
+- **Caída semanal fuerte (P1):** semana en que la acción cae más de 2 veces su volatilidad semanal del último año (`z < −2`). Con retornos normales y σ conocida pasaría en el 2,3 % de las semanas (≈ 1 de cada 44, ≈ 1,2/año); con σ estimada, la tasa comparable calibrada por simulación es ≈ 2,55 % (≈ 1 de cada 39, ≈ 1,3/año). El umbral de 3,83 % (≈ 1 de cada 26, ≈ 2/año) agotaría más seguido el presupuesto de pérdida.
 - **P/E normalizado:** precio ÷ **EPS promedio de 3 años** (utilidad neta de 12 trimestres ÷ 3 ÷ acciones). Evita que un solo año excepcional haga parecer barata o cara una acción.
 
 ## 6. Datos (tres fuentes gratuitas, instantánea fechada)
@@ -77,7 +77,7 @@ monofont: "Courier New"
 
 | Preg. | Estimado · IC95 · Decisión |
 |---|---|
-| P1 | 3,08 % · [2,46; 3,92] % · **no se rechaza H0**, no accionable |
+| P1 | 3,08 % (≈ 1,6/año) · [2,46; 3,92] % (≈ 1,3–2,0/año) · **no se rechaza H0**, no accionable |
 | P2 | +0,153 · [+0,091; +0,221] · **se rechaza H0**, accionable |
 | P3 | +0,006 · [−0,032; +0,049] · **no se rechaza H0**, no accionable |
 | P4 | 7 indicadores con IC que cruzan 0 · **no se rechaza H0** (×7) |
