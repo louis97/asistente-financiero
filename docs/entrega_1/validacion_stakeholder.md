@@ -2,7 +2,7 @@
 
 > **Estado al 16 de octubre de 2026 (pendiente):** la sesión con el inversor se registra en este archivo; mientras no haya notas de la sesión, todas las respuestas quedan como "(completar tras la sesión)" y los cambios que la sesión genere se reflejan en el [punto 2](02_ideacion.md). No se inventa ningún resultado.
 >
-> **Plantilla.** El autor realiza la sesión y completa este documento el mismo día. Guion: [../../.docs/guion_validacion.md](../../.docs/guion_validacion.md). Mockup evaluado: `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, cifras de ejemplo).
+> **Plantilla.** El autor realiza la sesión y completa este documento el mismo día. Guion: [guion_validacion.md](guion_validacion.md). Mockup evaluado: `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, cifras de ejemplo).
 
 ## 1. Datos de la sesión
 
