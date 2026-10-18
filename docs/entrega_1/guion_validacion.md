@@ -69,7 +69,7 @@ Preguntas sobre su proceso real, no sobre el mockup. Se anota el número que dig
 | 4.3 | "Cuando una empresa publica su reporte trimestral, ¿cuántos días pasan hasta que actualizas tus niveles? ¿Alguna vez no los actualizas?" | 3. Latencia |
 | 4.4 | "¿Anotas en algún lugar por qué compraste o vendiste? ¿Dónde y qué anotas? De 10 decisiones, ¿cuántas quedan anotadas?" | 4. Decisiones registradas |
 | 4.5 | "¿Cómo mides hoy el riesgo de una acción antes de comprarla?" | Dolor de riesgo no cuantificado |
-| 4.6 | "¿Usas el P/E de los últimos 12 meses (TTM, que cambia con cada reporte trimestral) o el del último año fiscal? ¿Dónde lo consultas?" | Definición del P/E (EPS TTM, spec §4.3b) |
+| 4.6 | "¿Usas el P/E de los últimos 12 meses (TTM, que cambia con cada reporte trimestral) o el del último año fiscal? ¿Dónde lo consultas?" | Definición del P/E (EPS TTM; ver [glosario.md](glosario.md)) |
 
 ## Después de la sesión
 

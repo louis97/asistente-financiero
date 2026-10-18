@@ -26,7 +26,8 @@ colortheme: default
 
 ![](assets/mockup.png){width=78%}
 
-Validación con el stakeholder: **pendiente** (sesión 2026-10-16).
+- Técnica (SVM, solo entradas): **21 / 42 / 71 %** frente a línea base por decil de volatilidad **16 / 35 / 66 %**. Probabilística (solo salidas): **81 / 62 / 37 %**. Panel de riesgo con 5 cifras descriptivas; el recuadro de desempeño histórico del SVM **se calcula en la entrega 2**.
+- Validación con el stakeholder: **pendiente** (sesión 2026-10-16).
 
 ## 4. Ética y regulación
 
