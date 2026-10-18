@@ -2,7 +2,7 @@
 
 *Asistente bursátil para el inversor value colombiano. Entrega 1, MINE-4101 Ciencia de Datos Aplicada (Universidad de los Andes). Autor: Louis Gualtero.*
 
-Este documento es la **fuente única** de las hipótesis del proyecto. Para cada pregunta de negocio del [punto 2](02_ideacion.md), define una sola hipótesis con la plantilla del profesor (`business-case.ipynb`), su variable medible, su horizonte, su umbral práctico fijado antes de ver el resultado, la prueba estadística y la decisión. También recoge el diseño experimental que evita el [look-ahead](glosario.md) y las métricas con las que se juzga la calidad del modelo. **No se repiten aquí las cifras de los resultados;** esos viven en los notebooks [03](../../notebooks/03_eda_univariado.ipynb) y [04](../../notebooks/04_eda_multivariado.ipynb) y en el [punto 7](07_conclusiones.md).
+Este documento es la **fuente única** de las hipótesis del proyecto. Para cada pregunta de negocio del [punto 2](02_ideacion.md), define una sola hipótesis con la plantilla de inferencia (ver pasos abajo), su variable medible, su horizonte, su umbral práctico fijado antes de ver el resultado, la prueba estadística y la decisión. También recoge el diseño experimental que evita el [look-ahead](glosario.md) y las métricas con las que se juzga la calidad del modelo. **No se repiten aquí las cifras de los resultados;** esos viven en los notebooks [03](../../notebooks/03_eda_univariado.ipynb) y [04](../../notebooks/04_eda_multivariado.ipynb) y en el [punto 7](07_conclusiones.md).
 
 **Plantilla de inferencia** (se aplica a cada hipótesis):
 
@@ -20,7 +20,7 @@ Este documento es la **fuente única** de las hipótesis del proyecto. Para cada
 
 ## §4.0 Por qué trabajamos con retornos y cada rama en su frecuencia
 
-El inversor habla de precios, pero las técnicas del curso suponen datos "parecidos entre sí" (que la media y la variabilidad sean estables) e independientes. Los precios de una acción crecen y la variabilidad cambia por épocas, de modo que las fórmulas se calculan pero sus resultados mienten. **La solución es trabajar con los [retornos](glosario.md)** (`r_t = ln(P_t / P_{t−1})`), que tienen cinco propiedades que los hacen aptos para el curso. (Evidencia: [notebook 03 §0](../../notebooks/03_eda_univariado.ipynb). Base: `.docs/research/retornos_vs_precios.md`.)
+El inversor habla de precios, pero las técnicas aquí aplicadas suponen datos "parecidos entre sí" (que la media y la variabilidad sean estables) e independientes. Los precios de una acción crecen y la variabilidad cambia por épocas, de modo que las fórmulas se calculan pero sus resultados mienten. **La solución es trabajar con los [retornos](glosario.md)** (`r_t = ln(P_t / P_{t−1})`), que tienen cinco propiedades que los hacen aptos para estas pruebas. (Evidencia: [notebook 03 §0](../../notebooks/03_eda_univariado.ipynb).)
 
 1. **[Estacionariedad](glosario.md) aproximada.** Los retornos oscilan alrededor de cero con una variabilidad comparable a lo largo del tiempo; los precios no (crecen).
 2. **Independencia relativa.** La **dirección** de un retorno no se predice casi con la anterior (la autocorrelación de `r_t` es cercana a cero), pero la **magnitud** sí: días volátiles tienden a seguir a días volátiles. Esto se nombra como "agrupamiento de la [volatilidad](glosario.md)" en Cont (2001).
@@ -28,7 +28,7 @@ El inversor habla de precios, pero las técnicas del curso suponen datos "pareci
 4. **Suma de los [log-retornos](glosario.md).** El rendimiento acumulado se obtiene sumando log-retornos; esto permite anualizar y descomponer sin preocuparse por el orden multiplicativo.
 5. **Distribución estable pero de colas pesadas.** Los retornos tienen más casos extremos que una normal; las pruebas de este proyecto se escogen para que esto no las rompa (proporciones y medianas por bootstrap antes que medias por t).
 
-**Frecuencia de cada rama** (base: `.docs/research/retornos_vs_precios.md` §5):
+**Frecuencia de cada rama**:
 
 - **Técnica (preguntas P4 y la lectura técnica del producto):** **diaria.** La volatilidad se mide mejor con cierres diarios y la etiqueta "¿toca el nivel?" se evalúa día a día dentro de `N` [días hábiles](glosario.md).
 - **Riesgo, sector y valoración (P1, P5 y las dos preguntas P2 y P3):** **semanal** (y para P2 y P3 además, con una observación por empresa por **trimestre calendario**). El inversor value toma decisiones semanales y los reportes son trimestrales; esta frecuencia reduce el ruido diario sin esconder las semanas malas.
@@ -154,7 +154,7 @@ La tabla explica cada constante del análisis: qué significa, por qué ese valo
 
 | Constante | Valor | Qué significa | Por qué ese valor | ¿Se fijó después de la exploración previa? |
 |---|---|---|---|---|
-| α | 0,05 | Probabilidad aceptada de rechazar H0 cuando es cierta | Valor típico del curso, fijado antes de ver datos | no |
+| α | 0,05 | Probabilidad aceptada de rechazar H0 cuando es cierta | Nivel de significancia habitual (α = 0,05), fijado antes de ver datos | no |
 | Nivel del IC | 95 % bilateral | Intervalo compatible con α = 0,05; su cola de 2,5 % hace que decida como una unilateral al 2,5 % | Mismo criterio que α | no |
 | Réplicas de bootstrap | 1000 (5000 en P4) | Cuántas muestras simuladas se usan para el IC | 1000 da percentiles estables al 95 %; P4 usa un nivel más extremo (≈ 99,3 %) y necesita más réplicas para sus colas | no |
 | Bloque del bootstrap | 12 semanas / 60 días hábiles (P1, P4, P6); por empresa en P2, P3 y P5 | Largo de cada tramo consecutivo que se remuestrea; en P2, P3 y P5 se remuestrean empresas completas | Un trimestre; en la validación los IC se estabilizan desde ese largo. En P2 y P3 las ventanas de 3 años se solapan dentro de cada empresa: remuestrear empresas completas conserva ese solapamiento | sí (se eligió viendo la estabilidad del IC) |

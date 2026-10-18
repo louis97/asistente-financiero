@@ -197,8 +197,8 @@ def main():
     panel_riesgo(fig.add_subplot(gs[2, 1]))
     desempeno_historico(fig.add_subplot(gs[3, :]))
     registro_decision(fig.add_subplot(gs[4, :]))
-    fig.text(0.05, 0.030, "Validado en consumo defensivo (21 empresas, benchmarks SPY y XLP). "
-             "En otras industrias el modelo no está validado y la pantalla lo avisa.",
+    fig.text(0.05, 0.030, "Industria piloto: consumo defensivo (21 empresas, referentes SPY y XLP). "
+             "En otras industrias la pantalla avisa que el análisis no se ha probado.",
              fontsize=10, color="#2e7d32", weight="bold", va="center")
     fig.text(0.05, 0.010, "Línea base por volatilidad: frecuencia histórica con la que el precio tocó niveles a la misma "
              "distancia en días de volatilidad parecida (volatilidad diaria del último año). Si el modelo no la supera, "

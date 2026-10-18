@@ -1,6 +1,6 @@
 # Glosario (fuente única de definiciones)
 
-Audiencia: un compañero del curso MINE-4101 sin formación en finanzas. Cada entrada se cuenta en 1–2 líneas con un ejemplo numérico tomado de las instantáneas en `data/snapshots/` o de los resultados `data/resultados/nb03.json`, `nb04.json` y `nb04_p4.json`. Los enlaces desde los notebooks apuntan a `docs/entrega_1/glosario.md`.
+Audiencia: un compañero de MINE-4101 sin formación en finanzas. Cada entrada se cuenta en 1–2 líneas con un ejemplo numérico tomado de las instantáneas en `data/snapshots/` o de los resultados `data/resultados/nb03.json`, `nb04.json` y `nb04_p4.json`. Los enlaces desde los notebooks apuntan a `docs/entrega_1/glosario.md`.
 
 El orden es alfabético (los números y letras griegas se ordenan por su nombre: Δ como "delta", σ como "sigma"). Los sinónimos ("sesión turbulenta" ≡ "semana turbulenta"; "bootstrap por empresa" ≡ "bootstrap por ticker") se referencian entre sí.
 
@@ -16,7 +16,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **año fiscal (y cierre fiscal distinto de diciembre)** · Período de doce meses que cada empresa escoge para contar sus resultados. La mayoría usa enero–diciembre, pero algunas no: WMT y COST cierran su año fiscal en enero. nb02 §2b (chequeo 5) marca estos casos para que al sumar cuatro trimestres se respete el año fiscal, no el calendario.
 
-**asociación (lenguaje de)** · Convención del curso: las conclusiones se escriben como asociaciones ("A y B tienden a ir juntos"), nunca como causas ("A causa B"). Las técnicas usadas aquí observan patrones; no manipulan ni aíslan variables.
+**asociación (lenguaje de)** · Convención del proyecto: las conclusiones se escriben como asociaciones ("A y B tienden a ir juntos"), nunca como causas ("A causa B"). Las técnicas usadas aquí observan patrones; no manipulan ni aíslan variables.
 
 **AUC (*area under the ROC curve*)** · Mide qué tan bien un puntaje separa las dos clases de una etiqueta binaria (0/1). Toma valores de 0 a 1: 0,5 es azar y 1 es separación perfecta. Ejemplo: la línea base por decil de σ252 diaria del nb04 §4.5 tiene AUC = 0,591 en la prueba 2019–2024.
 
@@ -38,7 +38,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **censura** · Observación que no se puede resolver porque falta parte del futuro: la etiqueta "¿toca el nivel en 60 días?" queda vacía para los últimos 60 días hábiles de la muestra. Regla del proyecto: una métrica se calcula solo sobre la población donde está definida; las filas censuradas no se mezclan con las completas.
 
-**chi-cuadrado (tabla de contingencia)** · Prueba del curso para una tabla de dos variables categóricas: compara los conteos observados con los esperados bajo independencia. Se acompaña de la **V de Cramér** para medir la fuerza de la relación. nb03 §5 usa chi-cuadrado para P6 (semanal y diaria).
+**chi-cuadrado (tabla de contingencia)** · Prueba estadística para una tabla de dos variables categóricas: compara los conteos observados con los esperados bajo independencia. Se acompaña de la **V de Cramér** para medir la fuerza de la relación. nb03 §5 usa chi-cuadrado para P6 (semanal y diaria).
 
 **clustermap** · Mapa de calor que ordena filas y columnas de una matriz (por ejemplo, de correlaciones) agrupando lo parecido con un dendrograma. Ejemplo: nb04 §6.6 muestra el clustermap de los 21 retornos semanales de la industria.
 
@@ -52,7 +52,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **decisión de negocio (regla accionable / efecto real, pero de magnitud incierta / no accionable)** · Se fija un umbral práctico antes de ver los datos. Después se mira el IC estimado: accionable si el límite inferior supera el umbral; "efecto real, pero de magnitud incierta" si se rechaza H0 pero el IC cruza el umbral; no accionable en los demás casos.
 
-**decisión estadística ("se rechaza H0" / "no se rechaza H0")** · Convención del curso: solo se usan estas dos frases. Nunca "se acepta H0" ni "la hipótesis queda apoyada". La decisión sale del IC frente al valor del nulo (el α del curso es 0,05).
+**decisión estadística ("se rechaza H0" / "no se rechaza H0")** · Convención del proyecto: solo se usan estas dos frases. Nunca "se acepta H0" ni "la hipótesis queda apoyada". La decisión sale del IC frente al valor del nulo (α = 0,05).
 
 **ΔAUC** · Diferencia entre el AUC de un modelo que agrega un indicador y el AUC de la línea base (sin ese indicador). Mide cuánto aporta el indicador. P4 fija el umbral en 0,01. Ejemplo: `rsi14` tiene ΔAUC = −0,008 (no accionable; nb04_p4.json).
 
@@ -74,7 +74,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **EPS TTM (de los últimos 12 meses)** · `utilidad_neta_ttm ÷ acciones del último trimestre`. El numerador es la suma de la utilidad neta de los cuatro trimestres más recientes ya publicados; el denominador es el `acciones` del cierre del último trimestre (nb01 §4.3). Ejemplo: KO 2026-04-03 con `eps_ttm = 3,18` USD por acción.
 
-**estacionariedad** · Propiedad de una serie temporal cuyos momentos (media y variabilidad) no cambian con el tiempo. Los precios no son estacionarios (crecen y la variabilidad cambia por épocas); los retornos sí lo son de forma aproximada. Las técnicas del curso suponen estacionariedad (ver [punto 4](04_enfoque_analitico.md) §4.0).
+**estacionariedad** · Propiedad de una serie temporal cuyos momentos (media y variabilidad) no cambian con el tiempo. Los precios no son estacionarios (crecen y la variabilidad cambia por épocas); los retornos sí lo son de forma aproximada. Las pruebas aquí aplicadas suponen estacionariedad (ver [punto 4](04_enfoque_analitico.md) §4.0).
 
 **ETF (*exchange-traded fund*)** · Fondo que agrupa muchas acciones y se compra como una sola. Replica una canasta (un índice). En el proyecto se usan dos: el SPY y el XLP.
 
@@ -114,11 +114,11 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **look-ahead** · Error de usar información del futuro al tomar una decisión en `t`. En este proyecto se evita con `shift(1)`, ventanas expansivas y la fecha `filed`. La etiqueta es lo único que mira al futuro.
 
-**Mann-Whitney (prueba U)** · Prueba del curso que compara dos muestras independientes por su mediana (en realidad, por su rango). No supone normalidad. Se complementa con bootstrap porque las observaciones no son independientes.
+**Mann-Whitney (prueba U)** · Prueba no paramétrica que compara dos muestras independientes por su mediana (en realidad, por su rango). No supone normalidad. Se complementa con bootstrap porque las observaciones no son independientes.
 
 **margen operativo** · `utilidad operativa ÷ ingresos`. Qué fracción de las ventas queda después de los costos y gastos del negocio (antes de intereses e impuestos). Ejemplo: KO 2026-04-03, `margen_operativo_ttm = 0,29` (29 %).
 
-**MDE (diferencia mínima detectable) / potencia** · El MDE es el efecto más pequeño que una prueba podría detectar con la potencia pedida (80 % en el curso) dado el tamaño muestral y la varianza observada. Si el umbral de negocio queda por debajo del MDE, la prueba está "corta": no sabría distinguir un efecto accionable del nulo. nb04 §2.5 y §3.3 lo calculan antes de estimar.
+**MDE (diferencia mínima detectable) / potencia** · El MDE es el efecto más pequeño que una prueba podría detectar con la potencia pedida (80 % en este proyecto) dado el tamaño muestral y la varianza observada. Si el umbral de negocio queda por debajo del MDE, la prueba está "corta": no sabría distinguir un efecto accionable del nulo. nb04 §2.5 y §3.3 lo calculan antes de estimar.
 
 **media móvil** · Promedio del precio de los últimos n períodos. La "simple" (SMA) le da el mismo peso a cada observación. Es la base de los indicadores `dist_sma20`, `dist_sma50`, `dist_sma200`.
 
@@ -206,7 +206,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **splits (instantánea `splits.parquet`)** · Tabla con los eventos de split por ticker: `ticker`, `fecha` y `ratio`. Se descarga para auditar la trazabilidad del precio ajustado.
 
-**SPY** · ETF que replica al S&P 500. En el proyecto representa "el mercado" en el sentido del curso: el referente de los retornos del universo accionario estadounidense. nb04 §6 (P5).
+**SPY** · ETF que replica al S&P 500. En el proyecto representa "el mercado": el referente de los retornos del universo accionario estadounidense. nb04 §6 (P5).
 
 **submuestra sin solapamiento** · De la tabla diaria se toma una fila cada N días hábiles (misma fecha para todas las acciones). Reduce la dependencia entre observaciones consecutivas de la etiqueta. nb04 §5 construye la submuestra con N = 60 y §5.3b explora su sensibilidad al tamaño del bloque.
 
@@ -244,7 +244,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 ---
 
-### Convenciones del curso usadas en todo el proyecto
+### Convenciones usadas en todo el proyecto
 
 - **"se rechaza H0" / "no se rechaza H0"**, nunca "se acepta H0" ni "la hipótesis queda apoyada".
 - **Dos decisiones por prueba:** una estadística (IC frente al nulo) y una de negocio (límite inferior del IC frente al umbral fijado antes de ver los datos).

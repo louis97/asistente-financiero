@@ -28,7 +28,7 @@ Detalle: <https://github.com/louis97/asistente-financiero/blob/main/docs/entrega
 
 El producto entrega, para cada ticker, **seis niveles definidos por el usuario** (tres de entrada y tres de salida), cada uno en precio y en múltiplo, con tres lecturas: fundamental (percentil propio y de la industria del P/E, del P/E normalizado y de los ratios de calidad), técnica (probabilidad de un SVM lineal frente a la línea base por decil de volatilidad, con N = 60 días hábiles) y probabilística (simulación por remuestreo de bloques de semanas de la acción y del XLP al mismo tiempo). Un panel de riesgo descriptivo muestra cinco cifras directas (volatilidad anualizada, percentil 5 semanal, caída máxima, frecuencia de caídas fuertes y dependencia del sector). Los niveles por múltiplo se recalculan cuando la SEC publica un nuevo reporte. Para tickers fuera del piloto, el panel se marca "industria no validada" y las probabilidades llevan advertencia. La **validación con el stakeholder está pendiente** (sesión programada para el 2026-10-16, sin resultados que reportar).
 
-![Mockup del dashboard. Valores ilustrativos: la columna "Técnica (SVM, N = 60 días)" muestra probabilidades 23 %, 15 % y 7 % frente a la línea base por decil de σ; la columna "Rango de salida" muestra bandas simuladas de la acción + XLP; el panel inferior muestra 5 cifras descriptivas de riesgo.](assets/mockup.png){width=100%}
+![Mockup del dashboard (valores ilustrativos). La columna "Técnica (SVM, solo entradas)" muestra probabilidades de tocar el nivel en 60 días hábiles de 21 %, 42 % y 71 % frente a su línea base por decil de volatilidad diaria de 16 %, 35 % y 66 %. La columna "Probabilística (solo salidas)" muestra la probabilidad de alcanzar cada nivel de salida en el horizonte (3 años) por simulación con retornos históricos: 81 %, 62 % y 37 %. El panel de riesgo trae 5 cifras descriptivas (volatilidad, peor semana típica, frecuencia de caídas fuertes, caída máxima y dependencia del sector). El recuadro "Desempeño histórico del modelo técnico (SVM)" aparece marcado "se calcula en la entrega 2".](assets/mockup.png){width=100%}
 
 Detalle: <https://github.com/louis97/asistente-financiero/blob/main/docs/entrega_1/02_ideacion.md>
 
@@ -40,7 +40,7 @@ Detalle: <https://github.com/louis97/asistente-financiero/blob/main/docs/entrega
 
 ## 4. Enfoque analítico
 
-Seis preguntas de negocio con **una hipótesis cada una** y la plantilla del profesor (umbral práctico fijado antes → H0/H1 y α = 0,05 → prueba con sus supuestos verificados → estimación con IC95 por bootstrap antes del p-value → efecto con IC → decisión estadística ["se rechaza H0" o "no se rechaza H0"] y decisión de negocio [accionable si el límite inferior del IC supera el umbral]).
+Seis preguntas de negocio con **una hipótesis cada una** y la plantilla de inferencia (umbral práctico fijado antes → H0/H1 y α = 0,05 → prueba con sus supuestos verificados → estimación con IC95 por bootstrap antes del p-value → efecto con IC → decisión estadística ["se rechaza H0" o "no se rechaza H0"] y decisión de negocio [accionable si el límite inferior del IC supera el umbral]).
 
 | Preg. | Qué pregunta | Prueba y variable | Umbral |
 |---|---|---|---|
@@ -63,7 +63,7 @@ Detalle: <https://github.com/louis97/asistente-financiero/blob/main/docs/entrega
 
 ## 6. Entendimiento de los datos (EDA)
 
-Las técnicas del curso aplicadas en sus cuatro combinaciones (univariada × multivariada × gráfica × no gráfica): descriptivos robustos, histogramas con KDE, QQ-plot, volatilidad móvil, caída máxima, chi-cuadrado con V de Cramér, Spearman, VIF, PCA, prueba F de modelos anidados y clustermap. Cada prueba lleva su matriz de supuestos (supuesto → por qué importa → verificación con herramientas del curso → resultado → qué se hace si falla); con observaciones dependientes la decisión sale del IC por bootstrap (por bloques de fechas o por empresa). Resultado por hipótesis (cifras de `data/resultados/nb03.json`, `nb04.json` y `nb04_p4.json`):
+Las técnicas de EDA aplicadas en sus cuatro combinaciones (univariada × multivariada × gráfica × no gráfica): descriptivos robustos, histogramas con KDE, QQ-plot, volatilidad móvil, caída máxima, chi-cuadrado con V de Cramér, Spearman, VIF, PCA, prueba F de modelos anidados y clustermap. Cada prueba lleva su matriz de supuestos (supuesto → por qué importa → verificación ejecutada → resultado → qué se hace si falla); con observaciones dependientes la decisión sale del IC por bootstrap (por bloques de fechas o por empresa). Resultado por hipótesis (cifras de `data/resultados/nb03.json`, `nb04.json` y `nb04_p4.json`):
 
 | Preg. | Estimado | IC95 | Umbral | Decisión estadística | Decisión de negocio |
 |---|---|---|---|---|---|

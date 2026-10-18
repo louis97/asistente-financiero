@@ -43,11 +43,10 @@ proyecto_final/
 ├── docs/entrega_1/ 01_negocio ... 07_conclusiones, glosario, evidencia_diagnostico,
 │                   validacion_stakeholder, 05_diccionario_datos (punto 5.3)
 ├── scripts/        mockup.py (genera el mockup del dashboard)
-├── entregables/entrega_1/   reporte.md/.pdf, presentacion.md/.pptx/.pdf, assets/
-└── .docs/          proceso: bitácora, spec, planes, revisiones, enunciado, guion del video
+└── entregables/entrega_1/   reporte.md/.pdf, presentacion.md/.pptx/.pdf, assets/
 ```
 
-El análisis vive **inline en los notebooks**, con comentarios y lecturas con cifras. Solo lo que usan dos o más notebooks va a `notebooks/comunes.py`. No hay pruebas automáticas; la verificación es la ejecución de los notebooks de punta a punta y las revisiones versionadas en `.docs/revisiones/`.
+El análisis vive **inline en los notebooks**, con comentarios y lecturas con cifras. Solo lo que usan dos o más notebooks va a `notebooks/comunes.py`. No hay pruebas automáticas; la verificación es la ejecución de los notebooks de punta a punta y las rondas de revisión paralela por fase (versionadas en un repositorio privado del autor; ver [`USO_IA.md`](USO_IA.md)).
 
 ### Índice de actividades del enunciado (punto → archivo)
 
@@ -62,7 +61,6 @@ El análisis vive **inline en los notebooks**, con comentarios y lecturas con ci
 | 7. Conclusiones iniciales | [`docs/entrega_1/07_conclusiones.md`](docs/entrega_1/07_conclusiones.md); cifras: [`data/resultados/`](data/resultados) |
 | Uso de IA | [`USO_IA.md`](USO_IA.md) |
 | Glosario (términos del dominio) | [`docs/entrega_1/glosario.md`](docs/entrega_1/glosario.md) |
-| Guía operativa (rúbrica interna) | [`.docs/guia_entrega_1.md`](.docs/guia_entrega_1.md) |
 
 ## 5. Instrucciones de ejecución
 
@@ -94,7 +92,7 @@ pandoc presentacion.md -t beamer -o presentacion.pdf --pdf-engine=tectonic
 
 Definidas en [`pyproject.toml`](pyproject.toml) y fijadas en [`uv.lock`](uv.lock) (Python ≥ 3.12): `matplotlib`, `numpy`, `openpyxl`, `pandas`, `pyarrow`, `requests`, `scikit-learn`, `scipy`, `seaborn`, `statsmodels`, `xlrd`, `yfinance`. Desarrollo: `ipykernel`, `jupyter`, `nbconvert`.
 
-## 7. Técnicas no cubiertas en el material de MINE-4101
+## 7. Técnicas no cubiertas en clase
 
 El enunciado exige informar las técnicas o herramientas no cubiertas durante la clase. En este proyecto son 15 y se usan de forma puntual: bootstrap por bloques de fechas, nulo calibrado por simulación, ΔAUC con regresión logística, errores estándar agrupados por empresa, Brier y diagrama de calibración, análisis de potencia (MDE), EPS TTM reconstruido con los 10-Q, SVM, simulación por remuestreo de bloques, Bonferroni, Holm, VIF, prueba F de modelos anidados, Mann-Whitney y clustermap de seaborn. **La lista detallada, con la justificación de cada técnica, vive solo en [`docs/entrega_1/03_etica_legal.md`](docs/entrega_1/03_etica_legal.md) §3.3** (fuente única).
 

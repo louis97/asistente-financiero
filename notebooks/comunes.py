@@ -102,7 +102,7 @@ def ic_bootstrap_fechas(df, estadistico, bloque, reps=1000, semilla=42, col_fech
 
 def ic_bootstrap_grupos(df, estadistico, col_grupo="ticker", reps=1000, semilla=42, nivel=0.95,
                         devolver_reps=False):
-    """IC por bootstrap por GRUPOS (cluster bootstrap de business-case.ipynb; Cameron, Gelbach y Miller 2008).
+    """IC por bootstrap por GRUPOS (cluster bootstrap; Cameron, Gelbach y Miller 2008).
 
     Remuestrea grupos completos (p. ej., cada acción con toda su historia, en orden) con reemplazo.
     Se usa cuando el estimando es "la empresa típica" (un valor por empresa).
