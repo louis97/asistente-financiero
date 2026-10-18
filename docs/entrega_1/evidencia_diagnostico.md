@@ -2,13 +2,13 @@
 
 Este documento resume, sin nombres de terceros, las respuestas que respaldan las líneas base de [01_negocio.md](01_negocio.md) y el diseño de [02_ideacion.md](02_ideacion.md). Procede de la ideación inicial del producto con un asistente de IA conversacional (declarada en [USO_IA.md](../../USO_IA.md)); la transcripción completa no se incluye en el repositorio porque menciona a terceros ajenos al proyecto.
 
-**Cautela:** son dos fuentes: un inversor inversionista de perfil intermedio (entrevistado una vez) y el propio autor, que también invierte. No es una muestra representativa; describe un caso de diseño. Las cifras son declaradas por los participantes, no medidas.
+**Cautela:** son dos fuentes: un inversionista de perfil intermedio (entrevistado una vez) y el propio autor, que también invierte. No es una muestra representativa; describe un caso de diseño. Las cifras son declaradas por los participantes, no medidas.
 
 ## 1. Preguntas y respuestas de la entrevista
 
 Se usaron cuatro preguntas, formuladas para ubicar dónde falla el proceso y no qué quiere el usuario.
 
-| Pregunta | Inversor inversionista | Autor |
+| Pregunta | Inversionista | Autor |
 |---|---|---|
 | 1. Cambios de pantalla para analizar un activo | Entre 10 y 15 | 2 como mínimo (una pantalla técnica y otra fundamental), pueden ser más |
 | 2. Actualización al salir un reporte trimestral | No se actualiza cada vez; sería ideal que se hiciera con cada reporte nuevo | Igual opinión |

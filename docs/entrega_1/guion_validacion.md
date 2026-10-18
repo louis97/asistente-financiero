@@ -1,6 +1,6 @@
 # Guion de validación del mockup con el stakeholder
 
-**Fecha prevista:** 16 de octubre de 2026. **Duración:** 15–20 minutos. **Participante:** inversor value, inversor del autor (stakeholder del punto 1); no se registra su nombre. **Material:** el mockup `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, industria piloto consumo defensivo). **Registro:** el autor anota las respuestas en `validacion_stakeholder.md` el mismo día.
+**Fecha prevista:** 16 de octubre de 2026. **Duración:** 15–20 minutos. **Participante:** inversor value (stakeholder del punto 1); no se registra su nombre. **Material:** el mockup `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, industria piloto consumo defensivo). **Registro:** el autor anota las respuestas en `validacion_stakeholder.md` el mismo día.
 
 ## Objetivo de la sesión
 

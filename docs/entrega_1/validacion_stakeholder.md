@@ -11,7 +11,7 @@
 | Fecha | 16 de octubre de 2026 |
 | Duración real | (completar tras la sesión) |
 | Modalidad (presencial o videollamada) | (completar tras la sesión) |
-| Participante | Inversor value, inversor del autor (anónimo). No se registran nombre, contacto ni montos invertidos. |
+| Participante | Inversor value (anónimo). No se registran nombre, contacto ni montos invertidos. |
 | Perfil (años invirtiendo, mercados, frecuencia de análisis) | (completar tras la sesión) |
 | Autorización informada leída y aceptada (Ley 1581 de 2012, arts. 4, 8, 9 y 12) | (completar tras la sesión: sí/no) |
 | Versión del mockup mostrada (fecha de generación) | Versión del mockup: la de esta fecha (N = 60, recuadro de desempeño histórico) |
