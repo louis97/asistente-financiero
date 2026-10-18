@@ -54,7 +54,7 @@ El trabajo responde a **seis preguntas de negocio con una hipótesis cada una**.
 
 La tabla reúne cada pregunta con lo que **decide en la herramienta** —qué pieza del producto depende de la respuesta—, el umbral, el estimado con IC95 y las dos decisiones. Un umbral de 0,03 **anualizado en log** equivale a cerca de 9 % acumulado en tres años; "anualizado en log" es el cambio porcentual promedio por año, medido con logaritmos para que los años se puedan sumar.
 
-\begin{tabularx}{\linewidth}{@{}p{0.5cm} X X p{1.6cm} X p{2.2cm}@{}}
+\begin{tabularx}{\linewidth}{@{}p{0.5cm} X X p{1.2cm} X p{2.6cm}@{}}
 \hline
 \textbf{P.} & \textbf{Pregunta} & \textbf{Decide en la herramienta} & \textbf{Umbral} & \textbf{Estimado · IC95} & \textbf{Decisión} \\
 \hline

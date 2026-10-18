@@ -27,7 +27,7 @@ monofont: "Courier New"
 
 ## 3. Mockup (v2)
 
-![](assets/mockup.png){width=48%}
+![](assets/mockup.png){width=72%}
 
 ## 3b. Feedback del inversor y respuesta en el mockup v2
 

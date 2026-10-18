@@ -78,7 +78,7 @@ NOTAS = {
        "la lectura «¿suele ser temporal?» no aplica.",
 }
 
-# Franja "Cómo leer esta pantalla": 7 definiciones de una línea, coherentes con el glosario.
+# Franja "Cómo leer esta pantalla": 8 definiciones de una línea, coherentes con el glosario.
 GLOSARIO_FRANJA = [
     ("P/E", "precio ÷ utilidad por acción (TTM = últimos 12 meses). Dice cuántos dólares se pagan "
             "por cada dólar de utilidad."),
@@ -88,6 +88,8 @@ GLOSARIO_FRANJA = [
                   "que el 94 % de su historia."),
     ("industria piloto", "consumo defensivo (alimentos, bebidas, aseo personal y del hogar, y tabaco): "
                          "bienes que se compran en cualquier fase del ciclo económico."),
+    ("SVM", "siglas de support vector machine; un modelo que aprende a separar casos positivos de "
+            "negativos y entrega una probabilidad."),
     ("lectura técnica", "probabilidad de que el precio toque el nivel en 60 días hábiles, con el "
                         "modelo SVM. Solo en entradas."),
     ("lectura probabilística", "probabilidad de que el precio alcance la salida en el horizonte, "
