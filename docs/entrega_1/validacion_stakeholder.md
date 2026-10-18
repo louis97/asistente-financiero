@@ -1,90 +1,26 @@
 # Registro de la sesión de validación con el stakeholder
 
-> **Estado al 16 de octubre de 2026 (pendiente):** la sesión con el inversor se registra en este archivo; mientras no haya notas de la sesión, todas las respuestas quedan como "(completar tras la sesión)" y los cambios que la sesión genere se reflejan en el [punto 2](02_ideacion.md). No se inventa ningún resultado.
->
-> **Plantilla.** El autor realiza la sesión y completa este documento el mismo día. Guion: [guion_validacion.md](guion_validacion.md). Mockup evaluado: `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, cifras de ejemplo).
+## Datos de la sesión
 
-## 1. Datos de la sesión
+- **Fecha:** 2026-10-18.
+- **Modalidad:** asíncrona, por mensajería. Se envió al participante el mockup v1 ([`assets/mockup_v1.png`](../../entregables/entrega_1/assets/mockup_v1.png)) y el formulario ([`guion_validacion.md`](guion_validacion.md)), sin contexto adicional.
+- **Participante:** un inversor value (anónimo). No se registran nombre, contacto ni montos.
+- **Autorización informada:** Ley 1581 de 2012, arts. 4, 8, 9 y 12. Aceptada verbalmente antes del envío.
+- **Resultado:** el formulario no se respondió. El participante dio **feedback libre** (14 observaciones), porque las preguntas del formulario le parecieron demasiado atadas al contexto del autor y del asistente conversacional usado para redactarlas.
 
-| Campo | Valor |
-|---|---|
-| Fecha | 16 de octubre de 2026 |
-| Duración real | (completar tras la sesión) |
-| Modalidad (presencial o videollamada) | (completar tras la sesión) |
-| Participante | Inversor value (anónimo). No se registran nombre, contacto ni montos invertidos. |
-| Perfil (años invirtiendo, mercados, frecuencia de análisis) | (completar tras la sesión) |
-| Autorización informada leída y aceptada (Ley 1581 de 2012, arts. 4, 8, 9 y 12) | (completar tras la sesión: sí/no) |
-| Versión del mockup mostrada (fecha de generación) | Versión del mockup: la de esta fecha (N = 60, recuadro de desempeño histórico) |
+## Hallazgos y decisiones
 
-## 2. Tareas sobre el mockup (parte 1 del guion)
+Las 14 observaciones se agrupan en cinco hallazgos. "Aceptado ahora" significa aplicado en el mockup v2 ([`assets/mockup.png`](../../entregables/entrega_1/assets/mockup.png)) y/o en este punto; "aplazado" se recoge en el [punto 7](07_conclusiones.md) §7.4.
 
-Resultado: sí (sin ayuda), con ayuda o no. En observaciones, dónde miró, dónde dudó y citas cortas.
-
-| # | Tarea | Resultado | Observaciones |
-|---|---|---|---|
-| 1 | Encontrar si KO está cara o barata frente a su historia | (completar tras la sesión) | (completar tras la sesión) |
-| 2 | Interpretar la lectura técnica del nivel value (línea base y rango) | (completar tras la sesión) | (completar tras la sesión) |
-| 3 | Qué haría con 42 % de probabilidad (60 días hábiles) frente a una línea base de 35 % | (completar tras la sesión) | (completar tras la sesión) |
-| 4 | Leer la probabilidad de la salida base en el horizonte (3 años, editable) | (completar tras la sesión) | (completar tras la sesión) |
-| 5 | Panel de riesgo: qué usaría y qué no entiende | (completar tras la sesión) | (completar tras la sesión) |
-| 6 | Ajustar el nivel deep value y registrar la decisión | (completar tras la sesión) | (completar tras la sesión) |
-| 7 | P2: si le sirve saber si el "barata" suele ser temporal y si el rebote vino del precio o de las utilidades (oportunidad frente a trampa de valor), y cómo lo usaría | (completar tras la sesión) | (completar tras la sesión) |
-| — | Vio el aviso "validado en consumo defensivo" y qué esperaría en otra industria | (completar tras la sesión) | (completar tras la sesión) |
-
-## 3. Escalas 1–5 (parte 2 del guion)
-
-| # | Dimensión | Puntaje (1–5) | Justificación del participante |
-|---|---|---|---|
-| 2.1 | Claridad: seis niveles en precio y en múltiplo | (completar tras la sesión) | (completar tras la sesión) |
-| 2.2 | Claridad: tres lecturas | (completar tras la sesión) | (completar tras la sesión) |
-| 2.3 | Claridad: qué nivel merece atención | (completar tras la sesión) | (completar tras la sesión) |
-| 2.4 | Confianza en la probabilidad técnica | (completar tras la sesión) | (completar tras la sesión) |
-| 2.5 | Más confianza con rango y línea base | (completar tras la sesión) | (completar tras la sesión) |
-| 2.6 | Explicabilidad: puede contradecir al modelo | (completar tras la sesión) | (completar tras la sesión) |
-| 2.7 | Control: ajustar él mismo los niveles | (completar tras la sesión) | (completar tras la sesión) |
-| 2.8 | Etiqueta compra/venta frente a probabilidad (ítem inverso) | (completar tras la sesión) | (completar tras la sesión) |
-| 2.9 | Claridad del aviso de no asesoría | (completar tras la sesión) | (completar tras la sesión) |
-| — | Promedio de 2.1–2.6 y 2.9 (KPI 5; meta ≥ 4 en cada ítem) | (completar tras la sesión) | — |
-
-| Pregunta abierta | Respuesta |
-|---|---|
-| ¿Qué te haría dejar de confiar en la herramienta? | (completar tras la sesión) |
-| ¿Qué evidencia necesitarías antes de usarla con tu dinero? | (completar tras la sesión) |
-
-## 4. Cambios e intención de uso (parte 3 del guion)
-
-| # | Pregunta | Respuesta |
+| Hallazgo | Decisión | Razón y cambio |
 |---|---|---|
-| 3.1 | Tres cosas que cambiaría | (completar tras la sesión) |
-| 3.2 | Qué quitaría | (completar tras la sesión) |
-| 3.3 | Qué falta | (completar tras la sesión) |
-| 3.4 | Cuándo la usaría (antes de comprar, tras un reporte, ambos) | (completar tras la sesión) |
-| 3.5 | ¿La usaría? Sí/no y por qué (KPI 5) | (completar tras la sesión) |
-| 3.5 | Intención de uso, 1–5 | (completar tras la sesión) |
-| 3.6 | Horizonte de las salidas: ¿3 años coincide con su tenencia típica? ¿Qué horizonte pondría y si lo cambiaría por empresa? | (completar tras la sesión) |
+| H1. Los conceptos no se explican: P/E, P/B, "consumo defensivo", "probabilística" ni de dónde sale el valor del SVM. | Aceptado ahora | Se agrega una franja "Cómo leer esta pantalla" con 7 definiciones de una línea; la columna técnica se rotula "modelo SVM, se entrena en la entrega 2". Mockup v2. |
+| H2. El mockup está sobrecargado: columna Fundamental con nombre largo y texto generado, P/E y P/B juntos, panel de riesgo comprimido. | Aceptado ahora | P/E y P/B en columnas separadas; la columna Fundamental solo muestra el valor y la interpretación pasa a tres notas numeradas bajo la tabla; el panel de riesgo queda con 5 filas espaciadas y una línea de ayuda. Mockup v2. |
+| H3. El modelo mental de los niveles es otro: el participante los piensa como % de ganancia, no como precios escritos a mano. | Parcial: columna % aceptada ahora; edición en % aplazada | Se agrega la columna "% vs. precio actual" en cada nivel; los niveles siguen definidos en precio y múltiplo (RF1). La edición en % se evalúa en la entrega 2. |
+| H4. Espera un veredicto ("¿está en un precio aceptable?"). | No se adopta; se mitiga | Choca con RN1 y con la regla de no recomendar ([punto 3](03_etica_legal.md)). La marca del precio actual lleva una frase descriptiva ("entre $67 y $76"), nunca un veredicto. |
+| H5. La validación con un formulario atado al contexto y una imagen estática pierde contexto; un reporte generado por un LLM es difícil de leer sin contexto. | Aplazado + aplicado | Un mockup navegable con pruebas de usabilidad se registra como acción próxima en el punto 7. Los textos del reporte y de este registro se redactaron sin apoyarse en generación automática de párrafos. |
 
-## 5. Línea base de los KPI (parte 4 del guion)
+## Línea base de los KPI y limitaciones
 
-Se compara con la línea base de `01_negocio.md`, sección 1.6. Si la respuesta la contradice, se corrige allí y se anota aquí.
-
-| # | KPI | Línea base vigente (sección 1.6) | Respuesta del participante | ¿Confirma o corrige? |
-|---|---|---|---|---|
-| 4.1 | 1. Tiempo de análisis por activo (y si el tiempo cubre una o varias acciones) | 2 a 3 horas por ciclo | (completar tras la sesión) | (completar tras la sesión) |
-| 4.2 | 2. Cambios de pantalla por activo (y cuáles herramientas) | Entre 2 y 15 | (completar tras la sesión) | (completar tras la sesión) |
-| 4.3 | 3. Días entre un reporte trimestral y la actualización de sus niveles | Días | (completar tras la sesión) | (completar tras la sesión) |
-| 4.4 | 4. Decisiones que deja registradas (de cada 10) | 0 % | (completar tras la sesión) | (completar tras la sesión) |
-| 4.5 | Cómo mide hoy el riesgo | "A ojo" | (completar tras la sesión) | (completar tras la sesión) |
-| 4.6 | Qué P/E usa: últimos 12 meses (TTM) o último año fiscal, y dónde lo consulta | P/E sobre EPS de los últimos 12 meses (TTM) | (completar tras la sesión) | (completar tras la sesión) |
-| — | 5. Confianza y adopción | Sin línea base | Ver secciones 3 y 4 | — |
-
-## 6. Cambios que generó en el diseño
-
-| # | Cambio pedido u observación | Decisión (aceptado, aplazado o rechazado) | Razón | Cambio realizado (archivo y sección) |
-|---|---|---|---|---|
-| 1 | (completar tras la sesión) | (completar tras la sesión) | (completar tras la sesión) | (completar tras la sesión) |
-| 2 | (completar tras la sesión) | (completar tras la sesión) | (completar tras la sesión) | (completar tras la sesión) |
-| 3 | (completar tras la sesión) | (completar tras la sesión) | (completar tras la sesión) | (completar tras la sesión) |
-
-## 7. Síntesis (para `02_ideacion.md`, sección "Validación con el stakeholder")
-
-(completar tras la sesión: un párrafo con qué entendió el participante sin ayuda, dónde dudó, su confianza media, la línea base confirmada o corregida y los cambios hechos al diseño. Limitación: es una sola sesión, una observación cualitativa y no una estimación poblacional.)
+- **KPI 1, 2 y 5:** la línea base no se obtuvo en esta sesión (el participante no respondió el formulario con las preguntas del punto 4 del guion). Queda como acción próxima.
+- **Limitaciones:** una sola persona, no representativa; sesión asíncrona sin posibilidad de aclarar en vivo; el feedback se recibió sobre el mockup v1 (la única diferencia con [`mockup_v1.png`](../../entregables/entrega_1/assets/mockup_v1.png) es el pie, corregido antes del envío).

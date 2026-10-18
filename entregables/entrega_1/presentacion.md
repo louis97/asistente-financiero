@@ -25,12 +25,17 @@ monofont: "Courier New"
 - **Panel de riesgo** descriptivo: volatilidad, percentil 5, caída máxima, caídas fuertes, dependencia del sector.
 - **Alcance de la entrega 1**: industria piloto consumo defensivo (21 empresas + SPY + XLP; KHC excluida).
 
-## 3. Mockup
+## 3. Mockup (v2)
 
-![](assets/mockup.png){width=78%}
+![](assets/mockup.png){width=48%}
 
-- Técnica (SVM, solo entradas): **21 / 42 / 71 %** frente a línea base por decil de volatilidad **16 / 35 / 66 %**. Probabilística (solo salidas): **81 / 62 / 37 %**. Panel de riesgo con 5 cifras descriptivas; el recuadro de desempeño histórico del SVM **se calcula en la entrega 2**.
-- Validación con el stakeholder: **pendiente** (sesión 2026-10-16).
+## 3b. Feedback del inversor y respuesta en el mockup v2
+
+- Validación 2026-10-18: sesión asíncrona por mensajería con un inversor; no respondió el formulario y entregó feedback libre.
+- **Aceptado en v2 (H1 definiciones, H2 columnas separadas y notas aparte, H3 columna % vs. precio actual):** franja "Cómo leer esta pantalla" con 7 definiciones de una línea; P/E y P/B en columnas separadas; columna "% vs. precio actual"; panel de riesgo con 5 filas espaciadas; marca descriptiva del precio actual sin veredicto.
+- **No se adopta (H4):** el "veredicto" que pidió el participante choca con RN1 y con la regla de no recomendar.
+- **Aplazado al punto 7 (H5):** prototipo navegable con más usuarios y medición de los KPI 1, 2 y 5 (sin línea base en esta sesión).
+- Técnica (SVM, "se entrena en la entrega 2"): **21 / 42 / 71 %** frente a línea base **16 / 35 / 66 %**. Probabilística: **81 / 62 / 37 %**.
 
 ## 4. Ética y regulación
 
@@ -90,6 +95,6 @@ Barato − caro: **+0,153 anualizado en log** (IC95 por empresa [+0,091; +0,221]
 ## 10. Conclusiones y próximos pasos
 
 - **Insights**: niveles en k·σ252, N = 60; simulación por bloques de la acción + XLP; exceso sobre XLP **no entra como señal**; marca "industria no validada" fuera del piloto.
-- **Limitaciones**: una industria piloto; supervivencia; 3 años (no 5–10); P5 confirmatoria; fuga de selección en P4.
-- **Próximos pasos**: entrenar el SVM con corte cronológico, simulación por bloques, validación con el stakeholder, segunda industria.
+- **Limitaciones**: una industria piloto; supervivencia; 3 años (no 5–10); P5 confirmatoria; fuga de selección en P4; validación del mockup con un solo inversor, asíncrona, y KPI 1, 2 y 5 sin línea base.
+- **Próximos pasos**: entrenar el SVM con corte cronológico, simulación por bloques, **prototipo navegable con más usuarios** y medición de KPI, segunda industria.
 - Repositorio: <https://github.com/louis97/asistente-financiero>. Video: pendiente de subir.

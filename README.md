@@ -53,7 +53,7 @@ El análisis vive **inline en los notebooks**, con comentarios y lecturas con ci
 | Punto del enunciado | Dónde está |
 |---|---|
 | 1. Problema y entendimiento del negocio | [`docs/entrega_1/01_negocio.md`](docs/entrega_1/01_negocio.md) |
-| 2. Ideación del producto de datos | [`docs/entrega_1/02_ideacion.md`](docs/entrega_1/02_ideacion.md); mockup: [`entregables/entrega_1/assets/mockup.png`](entregables/entrega_1/assets/mockup.png), generado por [`scripts/mockup.py`](scripts/mockup.py); validación pendiente: [`docs/entrega_1/validacion_stakeholder.md`](docs/entrega_1/validacion_stakeholder.md) |
+| 2. Ideación del producto de datos | [`docs/entrega_1/02_ideacion.md`](docs/entrega_1/02_ideacion.md); mockup v2: [`entregables/entrega_1/assets/mockup.png`](entregables/entrega_1/assets/mockup.png) (v1 archivado en [`mockup_v1.png`](entregables/entrega_1/assets/mockup_v1.png)), generado por [`scripts/mockup.py`](scripts/mockup.py); registro de la validación con el stakeholder: [`docs/entrega_1/validacion_stakeholder.md`](docs/entrega_1/validacion_stakeholder.md) |
 | 3. Aspectos éticos y legales | [`docs/entrega_1/03_etica_legal.md`](docs/entrega_1/03_etica_legal.md) |
 | 4. Enfoque analítico (hipótesis P1–P6) | [`docs/entrega_1/04_enfoque_analitico.md`](docs/entrega_1/04_enfoque_analitico.md) |
 | 5. Recolección de datos | [`notebooks/01_recoleccion.ipynb`](notebooks/01_recoleccion.ipynb), [`data/snapshots/`](data/snapshots) y [`docs/entrega_1/05_diccionario_datos.md`](docs/entrega_1/05_diccionario_datos.md) |

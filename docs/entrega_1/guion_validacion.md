@@ -1,5 +1,7 @@
 # Guion de validación del mockup con el stakeholder
 
+> **Uso real:** enviado el 2026-10-18 al participante junto con el mockup v1; no se respondió el formulario y se recibió feedback libre. Ver [validacion_stakeholder.md](validacion_stakeholder.md).
+
 **Fecha prevista:** 16 de octubre de 2026. **Duración:** 15–20 minutos. **Participante:** inversor value (stakeholder del punto 1); no se registra su nombre. **Material:** el mockup `entregables/entrega_1/assets/mockup.png` (ticker de ejemplo KO, industria piloto consumo defensivo). **Registro:** el autor anota las respuestas en `validacion_stakeholder.md` el mismo día.
 
 ## Objetivo de la sesión
