@@ -40,7 +40,7 @@ monofont: "Courier New"
 ## 4. Ética y regulación
 
 - **Ley 964 de 2005 y Decreto 2555 de 2010**: el producto no recomienda compra ni venta y no perfila al usuario; leyenda del art. 2.40.1.1.3 en cada pantalla.
-- **Habeas Data (Ley 1581 de 2012)**: anonimización del participante y autorización verificable.
+- **Habeas Data (Ley 1581 de 2012)**: en la validación asíncrona del 2026-10-18 el participante participó de forma voluntaria y no se recogieron datos personales ni su nombre; el guion prevé consentimiento previo e informado bajo código para las sesiones moderadas futuras (ver `docs/entrega_1/03_etica_legal.md` §3.2).
 - **Transparencia**: SVM lineal con coeficientes legibles; probabilidad junto a su línea base y su desempeño histórico.
 - **Sin look-ahead ni data snooping**: fecha `filed`, ventana expansiva, 15 pruebas declaradas antes, Bonferroni en P4.
 
