@@ -84,7 +84,7 @@ monofont: "Courier New"
 | P5 | ΔR² 0,225 · [+0,175; +0,291] · **se rechaza H0**, accionable (confirmatoria) |
 | P6 d. | P(T\|T) 0,305 · [0,275; 0,340] · **se rechaza H0**, magnitud incierta |
 
-## 8. P2: barato sube más, descomposición compatible con trampa de valor
+## 8. P2: barato sube más, trampa de valor afirmada como asociación
 
 ![](assets/nb04_p2_descomposicion.png){width=70%}
 

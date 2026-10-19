@@ -69,7 +69,7 @@ P6 & ¿La turbulencia se agrupa? & Lectura probabilística: simulación por bloq
 
 \footnotesize{Abreviaturas de la columna "Decisión": `acc.` = accionable (el límite inferior del IC95 supera el umbral); `no acc.` = no accionable; `(confirm.)` = confirmatoria (la propiedad se usó también para elegir la industria piloto; §7).}\normalsize
 
-La lectura de P2 incluye una **advertencia descriptiva de posible deterioro de utilidades** (compatible con trampa de valor); los niveles de P6 se expresan en **k · σ252 diaria** (volatilidad del último año); y P5 justifica analizar una industria a la vez.
+La lectura de P2 incluye una **advertencia descriptiva de posible deterioro de utilidades** (trampa de valor afirmada como asociación, Figura 2); los niveles de P6 se expresan en **k · σ252 diaria** (volatilidad del último año); y P5 justifica analizar una industria a la vez.
 
 **Qué mide P1.** Una caída fuerte es una semana en que la acción cae más de 2 veces su volatilidad semanal típica del último año (`z < −2`, donde `z` es el retorno sobre su σ reciente). Si los retornos siguieran una distribución normal (campana de Gauss) con esa volatilidad conocida, pasaría en el 2,3 % de las semanas (≈ 1 de cada 44, ≈ 1,2 al año); como la volatilidad se estima con el pasado y no se conoce, la tasa comparable, calibrada por simulación con la misma receta, es ≈ 2,55 % (≈ 1 de cada 39, ≈ 1,3 al año). El umbral práctico de 3,83 % (≈ 1 de cada 26, ≈ 2 al año) duplicaría esa frecuencia y agotaría más seguido el presupuesto de pérdida fijado con la volatilidad histórica. El estimado es 3,08 % (≈ 1 de cada 32, ≈ 1,6 al año; IC95 1,3–2,0 al año): el panel no infla la "frecuencia de caídas fuertes" artificialmente.
 
