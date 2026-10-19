@@ -46,7 +46,7 @@ proyecto_final/
 └── entregables/entrega_1/   reporte.md/.pdf, presentacion.md/.pptx/.pdf, assets/
 ```
 
-El análisis vive **inline en los notebooks**, con comentarios y lecturas con cifras. Solo lo que usan dos o más notebooks va a `notebooks/comunes.py`. No hay pruebas automáticas; la verificación es la ejecución de los notebooks de punta a punta y las rondas de revisión paralela por fase (versionadas en un repositorio privado del autor; ver [`USO_IA.md`](USO_IA.md)).
+El análisis vive **inline en los notebooks**, con comentarios y lecturas con cifras. Solo lo que usan dos o más notebooks va a `notebooks/comunes.py`. No hay pruebas automáticas; la verificación es la ejecución de los notebooks de punta a punta y las rondas de revisión paralela por fase (ver [`USO_IA.md`](USO_IA.md) para el flujo con IA).
 
 ### Índice de actividades del enunciado (punto → archivo)
 
