@@ -194,7 +194,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **σ20 diaria** · Desviación estándar de los retornos diarios de las últimas 20 sesiones (un mes bursátil). nb04 §4.
 
-**σ20/σ252** · Razón `σ20 diaria ÷ σ252 diaria`. Capta la aceleración o calma relativa de la volatilidad. Es una de las tres variables del "modelo A" (la línea base de magnitud) de nb04 §5.
+**σ20/σ252** · Razón `σ20 diaria ÷ σ252 diaria`. Capta la aceleración o calma relativa de la volatilidad. Es una de las tres variables del modelo A (regresión logística con las tres variables de magnitud; AUC 0,577 en la prueba) de nb04 §5.
 
 **σ252 diaria (volatilidad anualizada)** · Desviación estándar de los retornos diarios de las últimas 252 sesiones (un año bursátil). nb03 §0.3 y nb04 §4.
 

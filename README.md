@@ -43,7 +43,7 @@ proyecto_final/
 ├── docs/entrega_1/ 01_negocio ... 07_conclusiones, glosario, evidencia_diagnostico,
 │                   validacion_stakeholder, 05_diccionario_datos (punto 5.3)
 ├── scripts/        mockup.py (genera el mockup del dashboard)
-└── entregables/entrega_1/   reporte.md/.pdf, presentacion.md/.pptx/.pdf, assets/
+└── entregables/entrega_1/   reporte.md/.pdf, presentacion.pptx, assets/
 ```
 
 El análisis vive **inline en los notebooks**, con comentarios y lecturas con cifras. Solo lo que usan dos o más notebooks va a `notebooks/comunes.py`. No hay pruebas automáticas; la verificación es la ejecución de los notebooks de punta a punta y las rondas de revisión paralela por fase (ver [`USO_IA.md`](USO_IA.md) para el flujo con IA).
@@ -79,14 +79,14 @@ RUN_DOWNLOAD=1 bash run_all.sh
 
 `run_all.sh` ejecuta `uv sync` y los 4 notebooks en orden con `nbconvert --execute`. Por defecto **no descarga**: el notebook 01 carga las instantáneas versionadas de `data/snapshots/`. Con `RUN_DOWNLOAD=1` el notebook 01 refresca la instantánea desde yfinance, SEC EDGAR y Damodaran. Al final, `scripts/mockup.py` regenera el mockup.
 
-Para regenerar el reporte PDF y la presentación en Beamer:
+Para regenerar el reporte PDF:
 
 ```bash
 cd entregables/entrega_1
 pandoc reporte.md -o reporte.pdf --pdf-engine=tectonic
-pandoc presentacion.md -o presentacion.pptx
-pandoc presentacion.md -t beamer -o presentacion.pdf --pdf-engine=tectonic
 ```
+
+La presentación se diseñó aparte con el tipo Slides de claude.ai y se exporta como `.pptx` directamente desde esa herramienta (no se regenera con pandoc).
 
 ## 6. Dependencias
 
@@ -99,5 +99,5 @@ El enunciado exige informar las técnicas o herramientas no cubiertas durante la
 ## 8. Entregables
 
 - Reporte PDF (≤ 6 páginas, Arial 12, carta, una columna): [`entregables/entrega_1/reporte.pdf`](entregables/entrega_1/reporte.pdf).
-- Diapositivas: [`entregables/entrega_1/presentacion.pptx`](entregables/entrega_1/presentacion.pptx) y [`entregables/entrega_1/presentacion.pdf`](entregables/entrega_1/presentacion.pdf).
+- Diapositivas: [`entregables/entrega_1/presentacion.pptx`](entregables/entrega_1/presentacion.pptx) (incluye las notas del orador con el diálogo).
 - Video en YouTube (≤ 6 min, trabajo individual autorizado): <https://youtu.be/NGZdh3TD46E>.

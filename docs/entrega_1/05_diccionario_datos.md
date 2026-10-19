@@ -230,7 +230,7 @@ Panel diario que une `precios_diarios` con la volatilidad hacia atrás y la [eti
 | Campo | Fuente | Tipo | Unidad | Rango válido | Significado del 0 o del vacío | Descripción | Uso (P1–P6) |
 |---|---|---|---|---|---|---|---|
 | `r` | `close` | real | fracción | típico −0,2 a 0,2 | 0: precio sin cambio. Vacío: primera sesión del ticker | `log(close_t ÷ close_{t−1})`. Log-retorno diario | — |
-| `abs_r` | derivado | real | fracción | ≥ 0 | 0: sesión sin movimiento. Vacío: `r` vacío | `abs(r)`. Magnitud del retorno diario. Línea base de magnitud del modelo A (nb04 §5) | P4 |
+| `abs_r` | derivado | real | fracción | ≥ 0 | 0: sesión sin movimiento. Vacío: `r` vacío | `abs(r)`. Magnitud del retorno diario. Entra en el modelo A (regresión logística con las tres variables de magnitud; AUC 0,577 en la prueba) de nb04 §5 | P4 |
 | `sigma20` | `r` | real | fracción | > 0 | Vacío: menos de 20 sesiones previas | Desviación estándar de los últimos 20 retornos diarios (`shift(1)` previo) | — |
 | `sigma252` | `r` | real | fracción | > 0 | Vacío: menos de 252 sesiones previas | **σ252 diaria**. Desviación estándar de los últimos 252 retornos (`shift(1)` previo). Umbral de la etiqueta de entrada | — |
 | `sigma20_sigma252` | derivado | real | adimensional | > 0 | Vacío: alguna σ faltante | `sigma20 ÷ sigma252`. Aceleración o calma relativa | — |
