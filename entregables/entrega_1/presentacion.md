@@ -55,7 +55,7 @@ monofont: "Courier New"
 | P1 | ¿Caídas semanales fuertes > normal? | Panel de riesgo: "frecuencia de caídas fuertes" |
 | P2 | ¿Barato sube P/E norm. > caro a 3 años? | Lectura fundam.: percentil P/E norm. + adv. deterioro |
 | P3 | ¿Barato gana al XLP a 3 años? | Exceso sobre XLP **no entra como señal** |
-| P4 | ¿Indicador técnico mejora la AUC base? | Lectura técnica: SVM solo de magnitud, con línea base |
+| P4 | ¿Indicador técnico mejora, de forma lineal, la AUC del modelo A de magnitud? | Lectura técnica: SVM solo de magnitud; SVM RBF en entrega 2 |
 | P5 | ¿XLP agrega ΔR² al SPY? | Panel de riesgo + simulación acción + XLP |
 | P6 | ¿La turbulencia se agrupa? | Lectura probab.: simulación por bloques, k·σ252 |
 
@@ -88,17 +88,17 @@ monofont: "Courier New"
 
 ![](assets/nb04_p2_descomposicion.png){width=70%}
 
-Barato − caro: **+0,153 anualizado en log** (IC95 por empresa [+0,091; +0,221]). Precio aporta +0,15 (IC excluye 0); EPS promedio −0,15 (IC cruza 0). nb04 §2.7–§2.8.
+Barato − caro: **+0,153 anualizado en log** (IC95 por empresa [+0,091; +0,221]). La **diferencia barato − caro** reparte +0,46 (3 años) en Δlog(precio) +0,014 (IC95 [−0,115; +0,155], cruza 0) y Δlog(EPS prom 3a) −0,444 (IC95 [−0,693; −0,210], excluye 0): **trampa de valor afirmada como asociación**. nb04 §2.7–§2.8.
 
-## 9. P4: ningún indicador supera la línea base por decil de σ
+## 9. P4: ningún indicador aporta, de forma lineal, sobre el modelo de magnitud
 
 ![](assets/nb04_p4_zonas.png){width=65%}
 
-7 IC95 (Bonferroni ≈ 99,3 %) cruzan 0; AUC base **0,591** con N = 60. Consecuencia: `variables_svm = {|r_t|, σ20/σ252, σ252}`. nb04 §5.3.
+ΔAUC frente al modelo A (AUC **0,577** en la submuestra; base del SVM 0,591 sobre todas las filas): 7 IC95 (Bonferroni ≈ 99,3 %) cruzan 0. P4 mide **aporte lineal**; §5.5 sugiere un patrón no lineal en `dist_sma50` y `dist_sma200`. Consecuencia: `variables_svm = {|r_t|, σ20/σ252, σ252}`; la entrega 2 prueba el SVM RBF. nb04 §5.3 y §5.5.
 
 ## 10. Conclusiones y próximos pasos
 
 - **Insights**: niveles en k·σ252, N = 60; simulación por bloques de la acción + XLP; exceso sobre XLP **no entra como señal**; marca "industria no validada" fuera del piloto.
-- **Limitaciones**: una industria piloto; supervivencia; 3 años (no 5–10); P5 confirmatoria; fuga de selección en P4; validación del mockup con un solo inversor, asíncrona, y KPI 1, 2 y 5 sin línea base.
-- **Próximos pasos**: entrenar el SVM con corte cronológico, simulación por bloques, **prototipo navegable con más usuarios** y medición de KPI, segunda industria.
-- Repositorio: <https://github.com/louis97/asistente-financiero>. Video: pendiente de subir.
+- **Limitaciones**: una industria piloto; supervivencia; 3 años (no 5–10); P5 confirmatoria; P4 con fuga de selección y solo mide aporte lineal; validación del mockup con un solo inversor, asíncrona, y KPI 1, 2 y 5 sin línea base.
+- **Próximos pasos**: entrenar el SVM (lineal y RBF para captar aportes no lineales que P4 no detecta) con corte cronológico, simulación por bloques, **prototipo navegable con más usuarios** y medición de KPI, segunda industria.
+- Repositorio: <https://github.com/louis97/asistente-financiero>. Video: https://youtu.be/NGZdh3TD46E.

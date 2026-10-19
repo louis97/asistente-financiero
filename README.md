@@ -23,9 +23,9 @@ El producto se diseña para servir a cualquier industria; la entrega 1 lo desarr
 Detalle y fuentes en [`docs/entrega_1/07_conclusiones.md`](docs/entrega_1/07_conclusiones.md). Las cifras se copian de `data/resultados/nb03.json`, `nb04.json` y `nb04_p4.json`.
 
 1. **Las caídas semanales fuertes no son más frecuentes que las que daría una normal medida igual** (P1): 3,08 % semanal (≈ 1 de cada 32, ≈ 1,6/año), IC95 por bloques de fechas [2,46 %; 3,92 %] (≈ 1,3–2,0/año), umbral 3,83 % (≈ 1 de cada 26, ≈ 2/año); no se rechaza H0, no accionable.
-2. **Las acciones baratas suben su P/E normalizado más que las caras a 3 años** (P2): +0,153 anualizado en log, IC95 por empresa [+0,091; +0,221], umbral 0,03; se rechaza H0 y la decisión es accionable. La descomposición es **compatible con trampa de valor, no la afirma**.
+2. **Las acciones baratas suben su P/E normalizado más que las caras a 3 años** (P2): +0,153 anualizado en log, IC95 por empresa [+0,091; +0,221], umbral 0,03; se rechaza H0 y la decisión es accionable. La descomposición de **la diferencia barato − caro** afirma la **trampa de valor como asociación**: Δlog(precio) +0,014 (IC95 [−0,115; +0,155], cruza 0) y Δlog(EPS prom 3a) −0,444 (IC95 [−0,693; −0,210], excluye 0).
 3. **El quintil barato no gana al XLP a 3 años** dentro del sector (P3): +0,006, IC95 [−0,032; +0,049]; no se rechaza H0.
-4. **Ningún indicador técnico mejora la AUC sobre la línea base por decil de σ** (P4): los 7 ΔAUC tienen IC95 Bonferroni al ≈ 99,3 % que cruzan 0. Consecuencia: `variables_svm = {|r_t|, σ20/σ252, σ252}` (solo magnitud); la línea base da **AUC 0,591** con N = 60.
+4. **No hay evidencia de que algún indicador técnico mejore, de forma lineal, la AUC del modelo de magnitud** (P4): los 7 ΔAUC frente al modelo A (AUC 0,577 en la submuestra) tienen IC95 Bonferroni al ≈ 99,3 % que cruzan 0. Consecuencia: `variables_svm = {|r_t|, σ20/σ252, σ252}` (solo magnitud); la base del SVM (decil de σ, todas las filas) da **AUC 0,591** con N = 60. La entrega 2 prueba el **SVM RBF** para captar aportes no lineales.
 5. **El XLP agrega poder explicativo semanal al SPY** (P5): ΔR² mediano 0,225, IC95 [+0,175; +0,291]; se rechaza H0 (confirmatoria: la industria piloto se eligió viendo este ΔR²).
 6. **La turbulencia se agrupa, pero su magnitud es incierta** (P6): P(T|T) diaria 0,305 (IC95 [0,275; 0,340], umbral 0,30); se rechaza H0, decisión de negocio "efecto real, pero de magnitud incierta". Semanal análogo (0,282).
 7. **Decisiones de diseño que se derivan**: niveles medidos en k·σ252 diaria con N = 60 días hábiles; simulación por remuestreo de **bloques de semanas** de la acción y del XLP al mismo tiempo; el exceso sobre el XLP **no entra como señal**; percentil del P/E normalizado como lectura principal con advertencia descriptiva de posible deterioro de utilidades; fuera del piloto, el panel se marca "industria no validada".
@@ -100,4 +100,4 @@ El enunciado exige informar las técnicas o herramientas no cubiertas durante la
 
 - Reporte PDF (≤ 6 páginas, Arial 12, carta, una columna): [`entregables/entrega_1/reporte.pdf`](entregables/entrega_1/reporte.pdf).
 - Diapositivas: [`entregables/entrega_1/presentacion.pptx`](entregables/entrega_1/presentacion.pptx) y [`entregables/entrega_1/presentacion.pdf`](entregables/entrega_1/presentacion.pdf).
-- Video en YouTube (≤ 6 min, trabajo individual autorizado): **pendiente de subir**; el enlace se agrega aquí y en el reporte cuando esté disponible.
+- Video en YouTube (≤ 6 min, trabajo individual autorizado): <https://youtu.be/NGZdh3TD46E>.

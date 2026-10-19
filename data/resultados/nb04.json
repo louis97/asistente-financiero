@@ -13,7 +13,25 @@
   ],
   "decision_estadistica": "se rechaza H0",
   "decision_negocio": "accionable",
-  "p_boot": 0.000999000999000999
+  "p_boot": 0.000999000999000999,
+  "descomposicion_diferencia": {
+   "dlog_precio": {
+    "estimado": 0.014366123242716022,
+    "ic": [
+     -0.11482865806703936,
+     0.15462368471423676
+    ]
+   },
+   "dlog_eps3a": {
+    "estimado": -0.4437822837404906,
+    "ic": [
+     -0.6926715891002722,
+     -0.20965666789136342
+    ]
+   },
+   "reps": 1000,
+   "semilla": 42
+  }
  },
  "P3": {
   "estimado": 0.006066550726177111,

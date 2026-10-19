@@ -108,7 +108,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **intervalo de confianza (IC)** · Rango de valores plausibles para un parámetro, con un nivel de confianza fijado (95 % en el proyecto). Ejemplo P1: IC = [0,0246; 0,0392] para la tasa de caídas fuertes (nb03.json). "El 95 %" se refiere al procedimiento, no a la probabilidad del parámetro.
 
-**línea base por decil de σ** · Puntaje que ordena las observaciones por su decil de σ252 diaria y toma el decil como predictor. Es la referencia contra la que se compara cada indicador en P4. Ejemplo: su AUC en la prueba es 0,591 (`nb04_p4.json`).
+**línea base por decil de σ** · Puntaje que ordena las observaciones por su decil de σ252 diaria y toma el decil como predictor. Es la **base del SVM** (sobre todas las filas): el SVM de la entrega 2 debe superarla por al menos ΔAUC = 0,03 para ser accionable (`04_enfoque_analitico.md` §4.4). Ejemplo: su AUC en la prueba es 0,591 (`nb04_p4.json`). *Nota.* En P4 cada indicador no se compara contra esta base, sino contra el **modelo A** (regresión logística con `|r_t|`, `σ20/σ252` y `σ252`) sobre la submuestra sin solapamiento (AUC 0,577); P4 mide el aporte **lineal** de cada indicador frente al modelo A.
 
 **log-retorno** · `log(P_t / P_{t−1})`. Es el retorno expresado en logaritmo natural. Se suma a través del tiempo: el log-retorno de dos períodos es la suma de los dos log-retornos. Base de P1, P5 y la volatilidad.
 

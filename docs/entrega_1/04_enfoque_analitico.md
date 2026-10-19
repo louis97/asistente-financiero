@@ -99,7 +99,7 @@ El "barata frente a su historia" se mide con el [**P/E normalizado**](glosario.m
 ### Línea base y SVM (adelanto; se entrena en la entrega 2)
 
 - [**Línea base por decil de σ**](glosario.md): con los datos del entrenamiento (≤ 2018), se ordenan todos los días por su volatilidad del último año (`σ252`) y se parten en 10 grupos iguales; para cada grupo se cuenta la fracción de días que terminó tocando. Para un día nuevo, la "predicción" es la tasa de su grupo. Es el modelo más simple que usa solo la volatilidad; el SVM tiene que superarlo para demostrar que aporta algo más.
-- **SVM lineal (y RBF como comparación):** variables en escala de retornos (la magnitud `|r_t|`, `σ20/σ252` y `σ252`) más los indicadores técnicos que P4 justifique. Umbral: ΔAUC frente a la línea base por decil de σ ≥ 0,03.
+- **SVM lineal (y RBF como comparación):** variables en escala de retornos (la magnitud `|r_t|`, `σ20/σ252` y `σ252`) más los indicadores técnicos que P4 justifique. P4 solo mide aporte **lineal**; el SVM RBF se usa para captar aportes **no lineales** que P4 no detecta (p. ej., `dist_sma50` y `dist_sma200` con patrón descriptivo no monotónico en [nb04 §5.5](../../notebooks/04_eda_multivariado.ipynb)). Umbral: ΔAUC frente a la línea base por decil de σ ≥ 0,03.
 - **H0 del SVM (entrega 2):** AUC del SVM = AUC de la línea base por decil de σ. **H1:** AUC del SVM > AUC de la línea base.
 
 ### Multiplicidad
