@@ -29,7 +29,7 @@ def _caja(ax, x, y, w, h, titulo, lineas, color):
     ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02,rounding_size=0.08",
                                 fc=color, ec=C_BORDE, lw=1.1))
     ax.text(x + w / 2, y + h - 0.16, titulo, ha="center", va="top", fontsize=10.5, fontweight="bold", color=C_TEXTO)
-    ax.text(x + w / 2, y + h - 0.52, "\n".join(lineas), ha="center", va="top", fontsize=8.6,
+    ax.text(x + w / 2, y + h - 0.52, "\n".join(lineas), ha="center", va="top", fontsize=8.2,
             color=C_TEXTO, linespacing=1.35)
     return {"izq": (x, y + h / 2), "der": (x + w, y + h / 2), "arr": (x + w / 2, y + h), "aba": (x + w / 2, y)}
 
@@ -46,47 +46,50 @@ def _flecha(ax, p, q, texto=None):
 
 
 def diagrama_bloques(destino):
-    """Flujo de datos del proyecto: fuentes → limpieza → variables → etiqueta → partición → modelos,
+    """Flujo de datos del proyecto: fuentes → limpieza → variables → etiqueta → partición → estandarización → modelos,
     más las ramas fundamental y de simulación que confluyen en API → dashboard."""
-    fig, ax = plt.subplots(figsize=(12, 6.2))
-    ax.set_xlim(0, 12); ax.set_ylim(0, 6.2); ax.axis("off")
-    ax.text(6, 6.05, "Del dato a la lectura: bloques del proyecto", ha="center", va="top", fontsize=13, fontweight="bold")
+    fig, ax = plt.subplots(figsize=(13, 6))
+    ax.set_xlim(0, 13); ax.set_ylim(0, 6); ax.axis("off")
+    ax.text(6.5, 5.9, "Del dato a la lectura: bloques del proyecto", ha="center", va="top", fontsize=13, fontweight="bold")
 
-    w, h = 1.85, 1.75
+    w, h, paso = 1.72, 1.55, 1.83
     k = ", ".join(f"{v:g}" for v in cm.K_GRID)
-    # Fila superior: las 6 etapas del modelo técnico
-    y1 = 3.55
-    xs = [0.15 + i * 1.97 for i in range(6)]
+    # Fila superior: las 7 etapas del modelo técnico
+    y1 = 3.7
+    xs = [0.15 + i * paso for i in range(7)]
     b1 = _caja(ax, xs[0], y1, w, h, "1. Fuentes", ["yfinance (precios)", "SEC EDGAR (utilidades)", "Damodaran (referencia)", "instantánea fechada"], C_DATOS)
     b2 = _caja(ax, xs[1], y1, w, h, "2. Limpieza", ["9 dimensiones de", "calidad; vacíos y ceros", "verificados", "(notebook 02)"], C_DATOS)
-    b3 = _caja(ax, xs[2], y1, w, h, "3. Variables", ["σ20, σ252, σ20/σ252", "y |r| (solo hacia atrás)", "EPS TTM y múltiplos", "(con fecha de publicación)"], C_PREP)
+    b3 = _caja(ax, xs[2], y1, w, h, "3. Variables", ["σ20, σ252, σ20/σ252", "y |r|, solo hacia atrás", "EPS TTM y múltiplos", "(con fecha de publicación)"], C_PREP)
     b4 = _caja(ax, xs[3], y1, w, h, "4. Etiqueta", [f"N = {cm.N_DIAS} sesiones", f"rejilla de k: {k}", "censura: se aparta", "(mira al futuro)"], C_PREP)
-    b5 = _caja(ax, xs[4], y1, w, h, "5. Partición", ["2009–2014 entrena", "2015–2018 valida", "2019+ prueba", f"brecha de {cm.BRECHA} sesiones"], C_PREP)
-    b6 = _caja(ax, xs[5], y1, w, h, "6. Modelos", ["árbol de decisión", "SVM lineal", "SVM RBF", "+ referencias"], C_MODELO)
-    for a, b in zip((b1, b2, b3, b4, b5), (b2, b3, b4, b5, b6)):
-        _flecha(ax, a["der"], b["izq"])
+    b5 = _caja(ax, xs[4], y1, w, h, "5. Partición", ["entrena 2010–2014", "valida 2015–2018", "prueba 2019+", f"brecha de {cm.BRECHA} sesiones"], C_PREP)
+    b6 = _caja(ax, xs[5], y1, w, h, "6. Estandarización", ["z-score ajustado solo", "con el entrenamiento;", "se reutiliza en", "validación y prueba"], C_PREP)
+    b7 = _caja(ax, xs[6], y1, w, h, "7. Modelos", ["árbol de decisión", "SVM lineal", "SVM RBF", "+ referencias"], C_MODELO)
+    for a_, b_ in zip((b1, b2, b3, b4, b5, b6), (b2, b3, b4, b5, b6, b7)):
+        _flecha(ax, a_["der"], b_["izq"])
+    ax.text(0.15, 0.12, "2009 se usa para calentar σ252 (252 sesiones); la brecha quita las últimas 60 sesiones antes de cada corte, "
+            "así que el entrenamiento efectivo es 2010–2014.", fontsize=8, color=C_BORDE, ha="left", va="bottom")
 
     # Fila inferior: dos ramas que confluyen en la API y el dashboard
-    y2, hr = 0.9, 1.6
-    rf = _caja(ax, 0.3, y2, 2.5, hr, "Rama fundamental", ["múltiplos (P/E, P/B) y", "percentiles frente a la", "historia y la industria"], C_RAMA)
-    rs = _caja(ax, 3.1, y2, 2.5, hr, "Rama de simulación", ["bloques de 12 semanas", "acción + XLP juntos", "probabilidad de salida"], C_RAMA)
-    api = _caja(ax, 6.4, y2, 2.0, hr, "API", ["una lectura por cada", "uno de los 6 niveles"], C_PRODUCTO)
-    dash = _caja(ax, 9.2, y2, 2.0, hr, "Dashboard", ["niveles, lecturas y", "decisiones guardadas"], C_PRODUCTO)
-    # Los datos limpios y las variables alimentan las dos ramas (barra horizontal a y = 3.05)
+    y2, hr = 1.0, 1.35
+    rf = _caja(ax, 0.5, y2, 2.5, hr, "Rama fundamental", ["múltiplos (P/E, P/B) y", "percentiles frente a la", "historia y la industria"], C_RAMA)
+    rs = _caja(ax, 3.4, y2, 2.5, hr, "Rama de simulación", ["bloques de 12 semanas", "acción + XLP juntos", "probabilidad de salida"], C_RAMA)
+    api = _caja(ax, 6.8, y2, 2.1, hr, "API", ["una lectura por cada", "uno de los 6 niveles"], C_PRODUCTO)
+    dash = _caja(ax, 9.7, y2, 2.1, hr, "Dashboard", ["niveles, lecturas y", "decisiones guardadas"], C_PRODUCTO)
+    # Los datos limpios y las variables alimentan las dos ramas (barra horizontal a y = yb)
     yb = 3.05
     _linea(ax, [b2["aba"], (b2["aba"][0], yb)])
     _linea(ax, [b3["aba"], (b3["aba"][0], yb)])
     _linea(ax, [(rf["arr"][0], yb), (b3["aba"][0], yb)])
     _flecha(ax, (rf["arr"][0], yb), rf["arr"])
     _flecha(ax, (rs["arr"][0], yb), rs["arr"])
-    ax.text(3.7, yb + 0.08, "datos limpios y variables", fontsize=8, color=C_BORDE, ha="center", va="bottom")
+    ax.text((b2["aba"][0] + b3["aba"][0]) / 2, yb + 0.08, "datos limpios y variables", fontsize=8, color=C_BORDE, ha="center", va="bottom")
     # Las ramas llegan a la API; los modelos también (técnica de entrada); la API alimenta el dashboard
     _flecha(ax, rs["der"], api["izq"])
-    _linea(ax, [rf["aba"], (rf["aba"][0], 0.45), (api["aba"][0], 0.45)])
-    _flecha(ax, (api["aba"][0], 0.45), api["aba"])
-    _linea(ax, [b6["aba"], (b6["aba"][0], yb), (api["arr"][0], yb)])
+    _linea(ax, [rf["aba"], (rf["aba"][0], 0.65), (api["aba"][0], 0.65)])
+    _flecha(ax, (api["aba"][0], 0.65), api["aba"])
+    _linea(ax, [b7["aba"], (b7["aba"][0], yb), (api["arr"][0], yb)])
     _flecha(ax, (api["arr"][0], yb), api["arr"])
-    ax.text(9.0, yb + 0.08, "técnica de entrada", fontsize=8, color=C_BORDE, ha="center", va="bottom")
+    ax.text((b7["aba"][0] + api["arr"][0]) / 2, yb + 0.08, "técnica de entrada", fontsize=8, color=C_BORDE, ha="center", va="bottom")
     _flecha(ax, api["der"], dash["izq"])
     fig.tight_layout()
     Path(destino).parent.mkdir(parents=True, exist_ok=True)

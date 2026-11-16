@@ -26,6 +26,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **bootstrap por empresa (por grupos / por ticker)** · Remuestreo con reemplazo del listado de empresas (en vez de filas o bloques de tiempo). Se usa cuando una empresa aporta varias filas y lo que varía entre empresas es lo que domina el IC. Ejemplo: P2 (nb04 §2.6) remuestra las 21 empresas (menos las excluidas por falta de EPS); "bootstrap por empresa" y "bootstrap por ticker" son el mismo concepto.
 
+**brecha (entre conjuntos)** · Sesiones que se descartan justo antes de la frontera entre dos conjuntos (entrenamiento, validación, prueba). La etiqueta de una fila mira 60 sesiones hacia adelante; sin la brecha, las últimas filas de un conjunto tendrían una etiqueta que depende de precios del conjunto siguiente. Ejemplo: 60 sesiones antes del 2015-01-01 y antes del 2019-01-01 (notebook 06).
+
 **Brier (puntaje de Brier)** · Error cuadrático medio entre una probabilidad predicha y lo que pasó (1 si ocurrió, 0 si no). Va de 0 (perfecto) a 1; más bajo es mejor. Ejemplo: si el modelo dice 0,6 y el precio sí tocó el nivel, el error de esa observación es (1 − 0,6)² = 0,16. Se usará en la entrega 2 para el SVM y la simulación (punto 4 §4.4).
 
 **BVPS (*book value per share*, valor en libros por acción)** · `patrimonio ÷ acciones`. Es el patrimonio contable que corresponde a cada acción. Ejemplo: KO 2026-04-03 tiene `bvps = 7,80` USD por acción (`ratios_ttm`).
@@ -74,6 +76,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **EPS TTM (de los últimos 12 meses)** · `utilidad_neta_ttm ÷ acciones del último trimestre`. El numerador es la suma de la utilidad neta de los cuatro trimestres más recientes ya publicados; el denominador es el `acciones` del cierre del último trimestre (nb01 §4.3). Ejemplo: KO 2026-04-03 con `eps_ttm = 3,18` USD por acción.
 
+**entrenamiento, validación y prueba (conjuntos)** · Los tres tramos cronológicos de los datos: el modelo se ajusta con el entrenamiento, se elige entre candidatos con la validación y se mide una sola vez con la prueba. Nunca se reparten al azar, porque mezclaría el futuro con el pasado. Ejemplo: 2010–2014, 2015–2018 y 2019 en adelante (notebook 06).
+
 **estacionariedad** · Propiedad de una serie temporal cuyos momentos (media y variabilidad) no cambian con el tiempo. Los precios no son estacionarios (crecen y la variabilidad cambia por épocas); los retornos sí lo son de forma aproximada. Las pruebas aquí aplicadas suponen estacionariedad (ver [punto 4](04_enfoque_analitico.md) §4.0).
 
 **ETF (*exchange-traded fund*)** · Fondo que agrupa muchas acciones y se compra como una sola. Replica una canasta (un índice). En el proyecto se usan dos: el SPY y el XLP.
@@ -87,6 +91,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **filed (fecha de publicación)** · Fecha en que un reporte de EDGAR se hizo público. Es la primera fecha en que un inversor pudo usar esa información. Toda unión con precios se hace por `filed` para evitar look-ahead. Ejemplo: `tabla_trimestral` fila 2023Q1 de KO tiene `filed = 2023-04-26` (26 días después del cierre del trimestre).
 
 **frecuencia diaria y semanal** · Dos resoluciones de precios: `precios_diarios` tiene una fila por día hábil; `precios_semanales` una fila por lunes de la semana. nb03 maneja P1 en semanal y P6 en diaria y semanal.
+
+**fuga (de información)** · Información del conjunto de evaluación que se cuela, sin querer, en el ajuste del modelo (por ejemplo, una etiqueta que mira dentro de la prueba, o una media calculada con datos posteriores). Hace que el resultado parezca mejor de lo que será en la realidad. Ejemplo: sin la brecha de 60 sesiones, 5 040 filas por frontera tendrían fuga (notebook 06 §4).
 
 **fuerza relativa (a 14 días)** · Nombre común del **RSI** (ver más abajo). Mide la fuerza de las variaciones positivas frente a las negativas en las últimas 14 sesiones.
 
@@ -241,6 +247,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **XBRL** · Formato estándar en el que la autoridad de EE.UU. (SEC) obliga a publicar los estados financieros: cada cifra lleva una etiqueta (p. ej. `NetIncomeLoss`) que permite leerla por software y compararla entre empresas y entre reportes. En este proyecto se usa para construir la tabla trimestral y los ratios TTM (nb01 §3).
 
 **XLP** · ETF sectorial de consumo defensivo (Consumer Staples Select Sector SPDR Fund). Representa "la industria" en P3 y P5. nb04 §3 y §6.
+
+**z-score (estandarización)** · Restar la media de una variable y dividir por su desviación estándar, para que todas queden en una escala comparable (media 0, desviación 1). En el modelo la media y la desviación se calculan solo con el entrenamiento y se reutilizan en validación y prueba. Ejemplo: notebook 05 §6.2.
 
 **z (retorno estandarizado)** · `retorno ÷ σ hacia atrás`. Expresa un retorno en "cuántas desviaciones estándar" es, usando una σ calculada solo con información anterior a `t` (para evitar look-ahead). nb03 §4.6.
 

@@ -277,12 +277,12 @@
   {
    "Dimensión": "Completitud",
    "Estado": "verificado aquí",
-   "Evidencia": "calentamiento: 5,292 filas sin σ252 (252 por empresa), descartadas y no imputadas; censura: 5,040 filas sin etiqueta, aparte; huecos de precio: 0"
+   "Evidencia": "calentamiento: 5 292 filas sin σ252 (252 por empresa), descartadas y no imputadas; censura: 5 040 filas sin etiqueta, aparte; huecos de precio: 0"
   },
   {
    "Dimensión": "Consistencia",
    "Estado": "verificado aquí",
-   "Evidencia": "la etiqueta con k = 1 coincide con la del notebook 04 (n = 47,544, tasa 0.1839); la conciliación de filas cuadra (375,816)"
+   "Evidencia": "la etiqueta con k = 1 coincide con la del notebook 04 (n = 47 544, tasa 0.1839); la conciliación de filas cuadra (375 816)"
   },
   {
    "Dimensión": "Conformidad",
