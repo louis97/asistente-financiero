@@ -1,0 +1,323 @@
+{
+ "dimensiones": {
+  "antes": {
+   "filas": 93954,
+   "columnas": [
+    "fecha",
+    "ticker",
+    "close",
+    "volume"
+   ],
+   "tickers": 21,
+   "fecha_min": "2009-01-02",
+   "fecha_max": "2026-10-15"
+  },
+  "filas": 354648,
+  "columnas": 12,
+  "tickers": 21,
+  "fecha_min": "2010-01-04",
+  "fecha_max": "2026-10-15",
+  "filas_utilizables": 339528
+ },
+ "lookahead_ok": true,
+ "lookahead_control_negativo_fechas_distintas": 125,
+ "n_calentamiento": {
+  "total": 5292,
+  "por_ticker": {
+   "ADM": 252,
+   "CAG": 252,
+   "CHD": 252,
+   "CL": 252,
+   "CLX": 252,
+   "COST": 252,
+   "GIS": 252,
+   "HSY": 252,
+   "KMB": 252,
+   "KO": 252,
+   "KR": 252,
+   "MDLZ": 252,
+   "MKC": 252,
+   "MO": 252,
+   "PEP": 252,
+   "PG": 252,
+   "PM": 252,
+   "STZ": 252,
+   "SYY": 252,
+   "TSN": 252,
+   "WMT": 252
+  }
+ },
+ "huecos_de_precio": 0,
+ "etiqueta_consistente_con_nb04": true,
+ "consistencia_nb04": {
+  "n": 47544,
+  "tasa": 0.1839,
+  "n_nb04": 47544,
+  "tasa_nb04": 0.1839
+ },
+ "n_censuradas": {
+  "total": 5040,
+  "por_k": {
+   "0.5": 1260,
+   "1.0": 1260,
+   "1.5": 1260,
+   "2.0": 1260
+  },
+  "por_ticker": {
+   "ADM": 240,
+   "CAG": 240,
+   "CHD": 240,
+   "CL": 240,
+   "CLX": 240,
+   "COST": 240,
+   "GIS": 240,
+   "HSY": 240,
+   "KMB": 240,
+   "KO": 240,
+   "KR": 240,
+   "MDLZ": 240,
+   "MKC": 240,
+   "MO": 240,
+   "PEP": 240,
+   "PG": 240,
+   "PM": 240,
+   "STZ": 240,
+   "SYY": 240,
+   "TSN": 240,
+   "WMT": 240
+  },
+  "fecha_min": "2026-07-23"
+ },
+ "submuestra": {
+  "filas_antes": 100632,
+  "filas_despues": 20160,
+  "paso": 5
+ },
+ "rama_fundamental": {
+  "KO": {
+   "semanas": 928,
+   "trimestres_con_EPS": 66,
+   "trimestres": 67,
+   "semanas_con_PE": 833,
+   "sin_EPS_aun": 95,
+   "EPS_rancio": 0,
+   "EPS_<=0": 0,
+   "ultima_semana_PE": "2026-10-12",
+   "filed_posterior_a_la_semana": 0
+  },
+  "HSY": {
+   "semanas": 928,
+   "trimestres_con_EPS": 25,
+   "trimestres": 69,
+   "semanas_con_PE": 372,
+   "sin_EPS_aun": 71,
+   "EPS_rancio": 485,
+   "EPS_<=0": 0,
+   "ultima_semana_PE": "2017-06-26",
+   "filed_posterior_a_la_semana": 0
+  },
+  "STZ": {
+   "semanas": 928,
+   "trimestres_con_EPS": 0,
+   "trimestres": 65,
+   "semanas_con_PE": 0,
+   "sin_EPS_aun": 928,
+   "EPS_rancio": 0,
+   "EPS_<=0": 0,
+   "ultima_semana_PE": "NaT",
+   "filed_posterior_a_la_semana": 0
+  }
+ },
+ "balance_por_conjunto": {
+  "entrenamiento": {
+   "0.5": {
+    "tasa": 0.38584148183480405,
+    "filas": 25158
+   },
+   "1.0": {
+    "tasa": 0.14035296923443835,
+    "filas": 25158
+   },
+   "1.5": {
+    "tasa": 0.03974878766197631,
+    "filas": 25158
+   },
+   "2.0": {
+    "tasa": 0.008148501470705144,
+    "filas": 25158
+   }
+  },
+  "validacion": {
+   "0.5": {
+    "tasa": 0.47619047619047616,
+    "filas": 19866
+   },
+   "1.0": {
+    "tasa": 0.22364844457867714,
+    "filas": 19866
+   },
+   "1.5": {
+    "tasa": 0.09277156951575556,
+    "filas": 19866
+   },
+   "2.0": {
+    "tasa": 0.03589046612302426,
+    "filas": 19866
+   }
+  },
+  "prueba": {
+   "0.5": {
+    "tasa": 0.45775001254453307,
+    "filas": 39858
+   },
+   "1.0": {
+    "tasa": 0.2057303427166441,
+    "filas": 39858
+   },
+   "1.5": {
+    "tasa": 0.0926037432886748,
+    "filas": 39858
+   },
+   "2.0": {
+    "tasa": 0.04784484921471223,
+    "filas": 39858
+   }
+  }
+ },
+ "conciliacion_filas": {
+  "utilizables": 339528,
+  "brecha": 10080,
+  "censuradas": 5040,
+  "calentamiento": 21168,
+  "total": 375816
+ },
+ "filas_muestra": [
+  {
+   "fecha": "2011-02-01",
+   "ticker": "ADM",
+   "k": 1.0,
+   "abs_r": 0.06028294954799618,
+   "sigma20_sigma252": 1.1278341138888968,
+   "sigma252": 0.015310868640081085,
+   "y": 0.0,
+   "conjunto": "entrenamiento"
+  },
+  {
+   "fecha": "2011-08-18",
+   "ticker": "CHD",
+   "k": 2.0,
+   "abs_r": 0.02298941979089797,
+   "sigma20_sigma252": 2.1724363484980556,
+   "sigma252": 0.013062576447311545,
+   "y": 0.0,
+   "conjunto": "entrenamiento"
+  },
+  {
+   "fecha": "2012-09-13",
+   "ticker": "CL",
+   "k": 2.0,
+   "abs_r": 0.018536696923240115,
+   "sigma20_sigma252": 0.9253926974810116,
+   "sigma252": 0.009985018161765934,
+   "y": 0.0,
+   "conjunto": "entrenamiento"
+  },
+  {
+   "fecha": "2013-03-15",
+   "ticker": "CAG",
+   "k": 2.0,
+   "abs_r": 0.0037103540858614004,
+   "sigma20_sigma252": 0.6784716803068843,
+   "sigma252": 0.008889699635197196,
+   "y": 0.0,
+   "conjunto": "entrenamiento"
+  },
+  {
+   "fecha": "2019-08-21",
+   "ticker": "GIS",
+   "k": 1.0,
+   "abs_r": 0.0016562483133677475,
+   "sigma20_sigma252": 0.7399109534956617,
+   "sigma252": 0.014542682067487753,
+   "y": 0.0,
+   "conjunto": "prueba"
+  },
+  {
+   "fecha": "2021-12-27",
+   "ticker": "COST",
+   "k": 0.5,
+   "abs_r": 0.023523495566178276,
+   "sigma20_sigma252": 1.8769713760373277,
+   "sigma252": 0.011907278309800741,
+   "y": 1.0,
+   "conjunto": "prueba"
+  },
+  {
+   "fecha": "2024-10-10",
+   "ticker": "GIS",
+   "k": 0.5,
+   "abs_r": 0.00238130952110005,
+   "sigma20_sigma252": 0.6494238093193999,
+   "sigma252": 0.011944244973264979,
+   "y": 1.0,
+   "conjunto": "prueba"
+  },
+  {
+   "fecha": "2015-06-02",
+   "ticker": "CLX",
+   "k": 1.0,
+   "abs_r": 0.009497318437361457,
+   "sigma20_sigma252": 0.714756119302959,
+   "sigma252": 0.009426644515729714,
+   "y": 0.0,
+   "conjunto": "validacion"
+  }
+ ],
+ "calidad_9_dimensiones": [
+  {
+   "Dimensión": "Completitud",
+   "Estado": "verificado aquí",
+   "Evidencia": "calentamiento: 5,292 filas sin σ252 (252 por empresa), descartadas y no imputadas; censura: 5,040 filas sin etiqueta, aparte; huecos de precio: 0"
+  },
+  {
+   "Dimensión": "Consistencia",
+   "Estado": "verificado aquí",
+   "Evidencia": "la etiqueta con k = 1 coincide con la del notebook 04 (n = 47,544, tasa 0.1839); la conciliación de filas cuadra (375,816)"
+  },
+  {
+   "Dimensión": "Conformidad",
+   "Estado": "ya en nb02",
+   "Evidencia": "formato de los precios (nb02 §1) y duraciones de los trimestres de EDGAR (nb02 §2b, chequeo 6)"
+  },
+  {
+   "Dimensión": "Relevancia",
+   "Estado": "ya en nb02",
+   "Evidencia": "qué datos sirven a cada pregunta: nb02 §6 y §8; del nb04 quedan solo las variables de magnitud"
+  },
+  {
+   "Dimensión": "Precisión",
+   "Estado": "ya en nb02",
+   "Evidencia": "plausibilidad, escala y verificación manual del EPS: nb02 §2b (chequeos 2, 4 y 9)"
+  },
+  {
+   "Dimensión": "Procesabilidad",
+   "Estado": "verificado aquí",
+   "Evidencia": "sin vacíos en los datos preparados (0); sin variables categóricas; z-score ajustado solo con entrenamiento"
+  },
+  {
+   "Dimensión": "Disponibilidad",
+   "Estado": "ya en nb02",
+   "Evidencia": "instantánea fechada y reproducible en data/snapshots (nb01); sin descargas en los notebooks siguientes"
+  },
+  {
+   "Dimensión": "Temporalidad",
+   "Estado": "verificado aquí",
+   "Evidencia": "ventanas solo hacia atrás (lookahead_ok = True); P/E con el EPS publicado hasta la semana (filed ≤ fecha: 0 violaciones)"
+  },
+  {
+   "Dimensión": "Credibilidad",
+   "Estado": "ya en nb02",
+   "Evidencia": "yfinance, SEC EDGAR y Damodaran, fuentes gratuitas y declaradas; triangulación en nb02 §4"
+  }
+ ]
+}
