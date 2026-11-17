@@ -24,10 +24,10 @@
   ]
  },
  "tiempo_llamada_ms": {
-  "reps_2000_mediana": 0.96,
-  "reps_2000_max": 1.14,
-  "reps_500_mediana": 0.53,
-  "reps_500_max": 0.55,
+  "reps_2000_mediana": 0.95,
+  "reps_2000_max": 1.17,
+  "reps_500_mediana": 0.52,
+  "reps_500_max": 0.54,
   "niveles": 3,
   "semanas_historia": 573
  },
@@ -69,7 +69,8 @@
   "brecha_simulacion_semanas": 52
  },
  "supuestos_ic": {
-  "semanas_solape_entre_bloques": 0,
+  "semanas_cobertura_bloque": 52,
+  "semanas_compartidas_en_borde": 48,
   "fechas": {
    "validacion": 39,
    "prueba": 88
