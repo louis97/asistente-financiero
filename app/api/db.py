@@ -3,8 +3,6 @@
 Toda consulta de Supabase filtra por el alias autenticado (nunca por el cuerpo ni la ruta). Cualquier fallo de red o
 de Supabase se convierte en ErrorBaseDatos (503); la clave no se imprime ni se registra.
 """
-import base64
-import json
 import logging
 import os
 import threading
@@ -68,43 +66,43 @@ class RepositorioSupabase(Repositorio):
     def __init__(self, url: str, key: str):
         from supabase import create_client                       # import perezoso: la memoria no lo necesita
         from supabase.lib.client_options import SyncClientOptions
-        _rechazar_clave_publica(key)
         # timeout de 10 s y sin reintentos: una base caída debe fallar rápido (503), no colgar la API
         self._c = create_client(url, key, options=SyncClientOptions(postgrest_client_timeout=10, postgrest_client_retry=False))
 
-    def _ejecutar(self, consulta):
+    def _ejecutar(self, consulta, procesar):
+        """Ejecuta y procesa la respuesta dentro del mismo try: cualquier falla (red, HTTP, cuerpo inesperado) es ErrorBaseDatos."""
         try:
-            return consulta.execute().data
-        except Exception as e:                                   # red, 4xx/5xx de PostgREST, JSON inesperado
+            return procesar(consulta.execute().data)
+        except Exception as e:
             log.warning("Fallo de Supabase: %s", type(e).__name__)   # solo el tipo: el mensaje podría traer la URL
             raise ErrorBaseDatos from None
 
     def crear_decision(self, alias, ticker, nivel, lectura, nota):
-        filas = self._ejecutar(self._c.table("decisiones").insert(
-            {"alias": alias, "ticker": ticker, "nivel": nivel, "lectura": lectura, "nota": nota}))
-        return _decision(filas[0])
+        return self._ejecutar(self._c.table("decisiones").insert(
+            {"alias": alias, "ticker": ticker, "nivel": nivel, "lectura": lectura, "nota": nota}), lambda filas: _decision(filas[0]))
 
     def listar_decisiones(self, alias):
-        filas = self._ejecutar(self._c.table("decisiones").select("*").eq("alias", alias).order("fecha", desc=True).order("id", desc=True))
-        return [_decision(f) for f in filas]
+        return self._ejecutar(self._c.table("decisiones").select("*").eq("alias", alias).order("fecha", desc=True).order("id", desc=True),
+                              lambda filas: [_decision(f) for f in filas])
 
     def leer_niveles(self, alias, ticker):
-        filas = self._ejecutar(self._c.table("niveles_usuario").select("ticker,entradas,salidas,actualizado")
-                               .eq("alias", alias).eq("ticker", ticker).limit(1))
-        return {k: filas[0][k] for k in ("ticker", "entradas", "salidas", "actualizado")} if filas else None
+        return self._ejecutar(self._c.table("niveles_usuario").select("ticker,entradas,salidas,actualizado")
+                              .eq("alias", alias).eq("ticker", ticker).limit(1),
+                              lambda filas: _niveles(filas[0]) if filas else None)
 
     def guardar_niveles(self, alias, ticker, entradas, salidas):
         fila = {"alias": alias, "ticker": ticker, "entradas": entradas, "salidas": salidas,
                 "actualizado": datetime.now(timezone.utc).isoformat()}
-        filas = self._ejecutar(self._c.table("niveles_usuario").upsert(fila, on_conflict="alias,ticker"))
-        return {k: filas[0][k] for k in ("ticker", "entradas", "salidas", "actualizado")}
+        return self._ejecutar(self._c.table("niveles_usuario").upsert(fila, on_conflict="alias,ticker"), lambda filas: _niveles(filas[0]))
 
     def ping(self):
+        """Consulta SQL real a la tabla `salud` (una fila que solo ve la clave de servicio): sin permisos RLS filtra a [] y da False."""
         try:
-            self._c.table("niveles_usuario").select("alias").limit(1).execute()
-            return True
+            datos = self._c.table("salud").select("id").limit(1).execute().data
+            return isinstance(datos, list) and len(datos) > 0
         except Exception:
             return False
+
 
 
 class RepositorioCaido(Repositorio):
@@ -119,22 +117,13 @@ class RepositorioCaido(Repositorio):
     crear_decision = listar_decisiones = leer_niveles = guardar_niveles = _caido
 
 
+def _niveles(f: dict) -> dict:
+    return {k: f[k] for k in ("ticker", "entradas", "salidas", "actualizado")}
+
+
 def _decision(f: dict) -> dict:
     return {"id": f["id"], "fecha": f["fecha"], "ticker": f["ticker"], "nivel": f["nivel"],
             "lectura": f.get("lectura") or {}, "nota": f.get("nota") or ""}
-
-
-def _rechazar_clave_publica(key: str) -> None:
-    """La clave pública (anon) no lee nada por RLS: se rechaza al construir para que /estado diga supabase_ok: false."""
-    if key.startswith("sb_publishable_"):
-        raise ValueError("clave pública")
-    try:
-        carga = key.split(".")[1]
-        rol = json.loads(base64.urlsafe_b64decode(carga + "=" * (-len(carga) % 4))).get("role")
-    except Exception:
-        return                                                   # no es un JWT (clave nueva del servicio): no hay nada que revisar
-    if rol == "anon":
-        raise ValueError("clave pública")
 
 
 _repo: Repositorio | None = None

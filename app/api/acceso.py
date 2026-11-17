@@ -50,8 +50,11 @@ def avisar_configuracion() -> None:
     """Se llama al arrancar: avisa (sin imprimir contenido) si el acceso quedó sin configurar o abierto."""
     if _acceso_abierto():
         log.warning("ACCESO_ABIERTO=1: la verificación del código está desactivada (solo uso local)")
-    elif not cargar_hashes():
-        log.warning("CODIGOS_HASH falta, está vacío o no es válido: las rutas protegidas responden 401")
+        return
+    if os.environ.get("ACCESO_ABIERTO") == "1":
+        log.warning("ACCESO_ABIERTO=1 se ignora porque CODIGOS_HASH está definido")
+    if not cargar_hashes() and not os.environ.get("CODIGOS_HASH"):
+        log.warning("CODIGOS_HASH falta: las rutas protegidas responden 401")
 
 
 def _no_autorizado() -> HTTPException:

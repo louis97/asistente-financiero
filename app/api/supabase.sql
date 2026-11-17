@@ -25,3 +25,9 @@ create table if not exists niveles_usuario (
 -- la clave del rol de servicio (secreto SUPABASE_KEY de la API) omite RLS.
 alter table decisiones       enable row level security;
 alter table niveles_usuario  enable row level security;
+
+-- Tabla centinela del keep-alive (/estado): una fila que solo ve la clave de servicio.
+-- Con una clave sin permisos, RLS la filtra a vacío y la API informa supabase_ok: false.
+create table if not exists salud (id int primary key);
+insert into salud (id) values (1) on conflict do nothing;
+alter table salud enable row level security;
