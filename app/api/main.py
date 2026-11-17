@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse
 
 from app.api import config, datos, niveles
 from app.api import modelo as md
-from app.api.acceso import usuario_actual
+from app.api.acceso import avisar_configuracion, usuario_actual
 from app.api.db import ErrorBaseDatos, obtener_repositorio
 from app.api.esquemas import (Decision, DecisionGuardada, Estado, NivelesUsuario, PedidoLecturas, Riesgo,
                               RespuestaLecturas, Serie, validar_ticker_ruta)
@@ -23,6 +23,7 @@ _pool_ping = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ping")
 
 @asynccontextmanager
 async def ciclo(app: FastAPI):
+    avisar_configuracion()                                          # avisa si el acceso no está configurado (sin imprimir secretos)
     md.cargar_modelo()                                              # si el modelo no coincide con comunes.py o con scikit-learn, el arranque se detiene
     threading.Thread(target=_calentar, daemon=True).start()         # los parquet se cargan en segundo plano: /estado no los necesita
     yield
