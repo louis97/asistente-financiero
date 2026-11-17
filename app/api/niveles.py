@@ -151,6 +151,8 @@ def calcular_lecturas(datos: dt.DatosTicker, pedido) -> RespuestaLecturas:
         _probabilistica(datos, niveles[3:], adv)
     return RespuestaLecturas(ticker=datos.ticker, precio=P, fecha_dato=datos.fecha_dato.date().isoformat(),
                              fuente_datos=datos.fuente_datos, industria_validada=datos.en_piloto,
+                             pe_actual=_f(P / eps) if eps and eps > 0 else None,
+                             pb_actual=_f(P / bvps) if bvps and bvps > 0 else None,
                              niveles=niveles, advertencias=list(dict.fromkeys(adv)))
 
 
@@ -219,7 +221,13 @@ def calcular_riesgo(datos: dt.DatosTicker) -> dict:
     else:                                         # fuera de la piloto el sector es el SPY: solo R² frente al mercado
         j = pd.concat([r, ref], axis=1, keys=["r", "m"]).dropna()
         r2 = _f(np.corrcoef(j["r"], j["m"])[0, 1] ** 2) if len(j) >= 104 else None
+    caida, serie_caidas = cm.max_drawdown(sem)
+    valle = serie_caidas.idxmin()
+    despues = serie_caidas.loc[valle:].iloc[1:]
+    rec = despues.index[(despues >= 0).to_numpy()]            # primera semana posterior al valle de nuevo en el máximo previo
+    semanas = int(serie_caidas.index.get_loc(rec[0]) - serie_caidas.index.get_loc(valle)) if len(rec) else None
     return {"vol_anual": vol, "p5_semanal": _f(cm.percentil_retorno(r)) if len(r) else None,
-            "caida_maxima": _f(cm.max_drawdown(sem)[0]),
+            "caida_maxima": _f(caida), "caida_maxima_fecha": valle.date().isoformat(),
+            "recuperacion_semanas": semanas, "desde": sem.index[0].date().isoformat(),
             "frec_caidas_fuertes": {"observada": obs, "esperada": _f(esp)},
             "r2_mercado_sector": r2, "delta_r2_sector": delta}

@@ -83,6 +83,8 @@ class RespuestaLecturas(BaseModel):
     precio: float
     fecha_dato: str
     fuente_datos: str
+    pe_actual: float | None = None       # precio actual / EPS TTM publicado (filed ≤ fecha_dato); null si no es positivo
+    pb_actual: float | None = None       # precio actual / BVPS publicado; null si no es positivo
     industria_validada: bool
     niveles: list[LecturaNivel]
     advertencias: list[str]
@@ -97,6 +99,9 @@ class Riesgo(BaseModel):
     vol_anual: float | None
     p5_semanal: float | None
     caida_maxima: float | None
+    caida_maxima_fecha: str | None = None        # fecha del valle de la peor caída
+    recuperacion_semanas: int | None = None      # semanas del valle hasta volver al máximo previo; null si no se recuperó
+    desde: str | None = None                     # primera fecha de la serie semanal usada
     frec_caidas_fuertes: FrecCaidas
     r2_mercado_sector: float | None
     delta_r2_sector: float | None
