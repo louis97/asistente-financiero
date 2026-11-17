@@ -747,9 +747,9 @@ def simular_salidas(r_sem_accion: pd.Series, r_sem_xlp: pd.Series, precio: float
                     semilla: int = SEMILLA) -> pd.DataFrame:
     """Probabilidad de que el cierre semanal alcance cada nivel (>= nivel) en las próximas `semanas` (nb08).
 
-    Remuestreo por BLOQUES MÓVILES de `bloque` semanas seguidas de los log-retornos semanales de la acción; el XLP
-    entra porque las semanas se eligen sobre las fechas comunes de acción y XLP (los mismos índices para ambos: la
-    dependencia acción-sector se conserva por construcción). Solo usa las series recibidas: quien llama las corta en t.
+    Remuestreo por BLOQUES MÓVILES de `bloque` semanas seguidas de los log-retornos semanales de la acción. El XLP
+    solo alinea las fechas: las semanas se eligen sobre las fechas comunes de acción y XLP, pero la probabilidad usa
+    únicamente los retornos de la acción y NO cambia por el XLP. Solo usa las series recibidas: quien llama las corta en t.
     Devuelve una fila por nivel, en el orden recibido, con `nivel, prob, ic_lo, ic_hi, semanas_mediana`.
     `ic_lo`/`ic_hi` = prob ∓ 1,96·sd(prob de N_SUBLOTES_IC sublotes)/√N_SUBLOTES_IC, recortado a [0, 1]: es el ERROR DE
     SIMULACIÓN de la estimación con `reps` réplicas, no incertidumbre del modelo ni del futuro.

@@ -25,9 +25,9 @@
  },
  "tiempo_llamada_ms": {
   "reps_2000_mediana": 0.96,
-  "reps_2000_max": 1.29,
+  "reps_2000_max": 1.14,
   "reps_500_mediana": 0.53,
-  "reps_500_max": 0.56,
+  "reps_500_max": 0.55,
   "niveles": 3,
   "semanas_historia": 573
  },
@@ -67,6 +67,45 @@
   "validación→prueba": 273,
   "brecha_svm_sesiones": 60,
   "brecha_simulacion_semanas": 52
+ },
+ "supuestos_ic": {
+  "semanas_solape_entre_bloques": 0,
+  "fechas": {
+   "validacion": 39,
+   "prueba": 88
+  },
+  "bloques": {
+   "validacion": 3,
+   "prueba": 6
+  },
+  "origenes_por_fecha": {
+   "validacion": 21.0,
+   "prueba": 21.0
+  },
+  "error_calibracion_si_calibrada_pp": {
+   "validacion": {
+    "0.5": 3.142459096459096,
+    "1.0": 4.171935286935287,
+    "1.5": 3.93539010989011
+   },
+   "prueba": {
+    "0.5": 2.477421807359308,
+    "1.0": 2.644718073593074,
+    "1.5": 2.0747297077922076
+   }
+  },
+  "n_por_grupo": {
+   "validacion": {
+    "0.5": 81,
+    "1.0": 81,
+    "1.5": 81
+   },
+   "prueba": {
+    "0.5": 184,
+    "1.0": 184,
+    "1.5": 184
+   }
+  }
  },
  "deriva": {
   "entrenamiento": {
@@ -987,5 +1026,5 @@
    "BSS": 0.2540057324
   }
  ],
- "tiempo_ejecucion_min": 0.4
+ "tiempo_ejecucion_min": 0.5
 }

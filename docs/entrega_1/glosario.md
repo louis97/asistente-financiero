@@ -26,9 +26,11 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **bootstrap por empresa (por grupos / por ticker)** · Remuestreo con reemplazo del listado de empresas (en vez de filas o bloques de tiempo). Se usa cuando una empresa aporta varias filas y lo que varía entre empresas es lo que domina el IC. Ejemplo: P2 (nb04 §2.6) remuestra las 21 empresas (menos las excluidas por falta de EPS); "bootstrap por empresa" y "bootstrap por ticker" son el mismo concepto.
 
-**brecha (entre conjuntos)** · Sesiones que se descartan justo antes de la frontera entre dos conjuntos (entrenamiento, validación, prueba). La etiqueta de una fila mira 60 sesiones hacia adelante; sin la brecha, las últimas filas de un conjunto tendrían una etiqueta que depende de precios del conjunto siguiente. Ejemplo: 60 sesiones antes del 2015-01-01 y antes del 2019-01-01 (notebook 06).
+**brecha (entre conjuntos)** · Sesiones que se descartan justo antes de la frontera entre dos conjuntos (entrenamiento, validación, prueba). La etiqueta de una fila mira 60 sesiones hacia adelante; sin la brecha, las últimas filas de un conjunto tendrían una etiqueta que depende de precios del conjunto siguiente. Ejemplo: 60 sesiones antes del 2015-01-01 y antes del 2019-01-01 (notebook 06). La simulación de salidas (semanal) usa una brecha de 52 semanas, su horizonte (notebook 08).
 
 **Brier (puntaje de Brier)** · Error cuadrático medio entre una probabilidad predicha y lo que pasó (1 si ocurrió, 0 si no). Va de 0 (perfecto) a 1; más bajo es mejor. Ejemplo: si el modelo dice 0,6 y el precio sí tocó el nivel, el error de esa observación es (1 − 0,6)² = 0,16. Se usará en la entrega 2 para el SVM y la simulación (punto 4 §4.4).
+
+**Brier skill score (BSS)** · `1 − Brier(modelo) ÷ Brier(referencia)`. Mide cuánto menos se equivoca una probabilidad que una referencia: positivo si se equivoca menos, 0 si igual, negativo si más. Ejemplo: un BSS de +0,160 frente a una tasa constante significa un Brier 16 % menor que el de esa constante (notebook 08, simulación en la prueba con k = 0,5).
 
 **BVPS (*book value per share*, valor en libros por acción)** · `patrimonio ÷ acciones`. Es el patrimonio contable que corresponde a cada acción. Ejemplo: KO 2026-04-03 tiene `bvps = 7,80` USD por acción (`ratios_ttm`).
 
@@ -84,7 +86,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **ETF sectorial (XLP)** · ETF que agrupa las empresas de consumo defensivo de EE.UU. (Consumer Staples Select Sector SPDR Fund). nb03 y nb04 lo usan como "la industria" para P3 y P5.
 
-**etiqueta de entrada ("toca el nivel")** · Variable binaria del nb04 §4: vale 1 si el precio cae a `close × exp(−k · σ252 · √N)` dentro de los siguientes N días hábiles, y 0 si en esos N días sube a `close × exp(k · σ252 · √N)` o se agota el tiempo. k = 1 y N = 60 en nb04. Las últimas N observaciones quedan censuradas.
+**etiqueta de entrada ("toca el nivel")** · Variable binaria del nb04 §4: vale 1 si el precio cae a `close × exp(−k · σ252 · √N)` dentro de los siguientes N días hábiles, y 0 si en esos N días sube a la barrera superior o se agota el tiempo. En nb04 las dos barreras son simétricas (k = 1: `close × exp(±σ252 · √N)`) con N = 60. En la entrega 2 la barrera superior queda fija en `K_SUP = 1` y solo la inferior varía con k (k = 0,5; 1; 1,5; 2), de modo que coincide con la de la entrega 1 solo cuando k = 1. Las últimas N observaciones quedan censuradas.
 
 **exceso sobre el XLP** · Para P3, retorno logarítmico de la empresa menos retorno logarítmico del XLP sobre el mismo horizonte: `log(P_T/P_0) − log(XLP_T/XLP_0)`. Un exceso positivo significa que la empresa superó al sector; uno negativo, que quedó por debajo.
 
@@ -139,6 +141,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **nivel de salida** · Precio por encima del precio actual que el usuario fijaría como oportunidad de venta. En el producto son 3 niveles de salida por acción, todos por encima del precio actual.
 
 **nulo calibrado por simulación** · Valor de referencia que se calcula simulando retornos normales i.i.d. con la **misma receta** de σ estimada que se aplica a los datos observados. Con σ estimada (no conocida) la tasa de caídas con `z < −2` supera Φ(−2) = 2,275 %; el nulo calibrado da la referencia justa aplicando la misma receta. nb03 §4.1 lo usa para P1 (función `nulo_caidas_fuertes`). Resultado: 2,55 %.
+
+**origen (de la simulación)** · Cada fecha desde la que se simula con datos hasta ese día para comparar después con lo que ocurrió. Se toma una cada 4 semanas por acción; cada origen tiene su propia probabilidad prometida y su resultado real (notebook 08).
 
 **p bilateral equivalente** · Cuando una prueba se reporta por el IC, el p-value se calcula bilateralmente a partir de las réplicas del bootstrap, aunque H1 sea unilateral. Es solo informativo (la decisión viene del IC). nb04 §3.5.
 
@@ -203,6 +207,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **σ20/σ252** · Razón `σ20 diaria ÷ σ252 diaria`. Capta la aceleración o calma relativa de la volatilidad. Es una de las tres variables del modelo A (regresión logística con las tres variables de magnitud; AUC 0,577 en la prueba) de nb04 §5.
 
 **σ252 diaria (volatilidad anualizada)** · Desviación estándar de los retornos diarios de las últimas 252 sesiones (un año bursátil). nb03 §0.3 y nb04 §4.
+
+**simulación de salidas** · Reconstruir muchos futuros posibles de un año repitiendo trozos seguidos de 12 semanas del pasado de la acción, y contar en qué fracción de esos años el cierre semanal llega al nivel de salida. No es un pronóstico: es lo que habría pasado si el futuro repitiera el pasado de esa acción. El XLP solo alinea las fechas; no cambia la probabilidad (notebook 08).
 
 **sobreajuste (*overfitting*)** · Un modelo o un procedimiento aprende el ruido de los datos y no la señal; funciona bien en lo que ya vio y falla en lo nuevo. Se controla con corte cronológico, Bonferroni/Holm y validación en datos distintos a los del ajuste. Ver también **data snooping**.
 

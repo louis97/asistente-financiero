@@ -59,20 +59,20 @@ def diagrama_bloques(destino):
     xs = [0.15 + i * paso for i in range(7)]
     b1 = _caja(ax, xs[0], y1, w, h, "1. Fuentes", ["yfinance (precios)", "SEC EDGAR (utilidades)", "Damodaran (referencia)", "instantánea fechada"], C_DATOS)
     b2 = _caja(ax, xs[1], y1, w, h, "2. Limpieza", ["9 dimensiones de", "calidad; vacíos y ceros", "verificados", "(notebook 02)"], C_DATOS)
-    b3 = _caja(ax, xs[2], y1, w, h, "3. Variables", ["σ20, σ252, σ20/σ252", "y |r|, solo hacia atrás", "EPS TTM y múltiplos", "(con fecha de publicación)"], C_PREP)
+    b3 = _caja(ax, xs[2], y1, w, h, "3. Variables", ["σ20, σ252, σ20/σ252", "y |r|, solo hacia atrás", "descarta el calentamiento", "(no se imputa)"], C_PREP)
     b4 = _caja(ax, xs[3], y1, w, h, "4. Etiqueta", [f"N = {cm.N_DIAS} sesiones", f"rejilla de k: {k}", "censura: se aparta", "(mira al futuro)"], C_PREP)
     b5 = _caja(ax, xs[4], y1, w, h, "5. Partición", ["entrena 2010–2014", "valida 2015–2018", "prueba 2019+", f"brecha de {cm.BRECHA} sesiones"], C_PREP)
-    b6 = _caja(ax, xs[5], y1, w, h, "6. Estandarización", ["z-score ajustado solo", "con el entrenamiento;", "se reutiliza en", "validación y prueba"], C_PREP)
+    b6 = _caja(ax, xs[5], y1, w, h, "6. Estandarización", ["z-score solo con el", "entrenamiento (pipeline", "del 07); submuestra", "de 1 de cada 5 filas"], C_PREP)
     b7 = _caja(ax, xs[6], y1, w, h, "7. Modelos", ["árbol de decisión", "SVM lineal", "SVM RBF", "+ referencias"], C_MODELO)
     for a_, b_ in zip((b1, b2, b3, b4, b5, b6), (b2, b3, b4, b5, b6, b7)):
         _flecha(ax, a_["der"], b_["izq"])
     ax.text(0.15, 0.12, "2009 se usa para calentar σ252 (252 sesiones); la brecha quita las últimas 60 sesiones antes de cada corte, "
-            "así que el entrenamiento efectivo es 2010–2014.", fontsize=8, color=C_BORDE, ha="left", va="bottom")
+            "así que el entrenamiento efectivo es 2010–2014. No aplican la codificación (no hay categóricas) ni la imputación (se descartan filas).", fontsize=8, color=C_BORDE, ha="left", va="bottom")
 
     # Fila inferior: dos ramas que confluyen en la API y el dashboard
     y2, hr = 1.0, 1.35
     rf = _caja(ax, 0.5, y2, 2.5, hr, "Rama fundamental", ["múltiplos (P/E, P/B) y", "percentiles frente a la", "historia y la industria"], C_RAMA)
-    rs = _caja(ax, 3.4, y2, 2.5, hr, "Rama de simulación", ["bloques de 12 semanas", "acción + XLP juntos", "probabilidad de salida"], C_RAMA)
+    rs = _caja(ax, 3.4, y2, 2.5, hr, "Rama de simulación", ["bloques de 12 semanas", "de la acción; el XLP", "solo alinea las fechas"], C_RAMA)
     api = _caja(ax, 6.8, y2, 2.1, hr, "API", ["una lectura por cada", "uno de los 6 niveles"], C_PRODUCTO)
     dash = _caja(ax, 9.7, y2, 2.1, hr, "Dashboard", ["niveles, lecturas y", "decisiones guardadas"], C_PRODUCTO)
     # Los datos limpios y las variables alimentan las dos ramas (barra horizontal a y = yb)
