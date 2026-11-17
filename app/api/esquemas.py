@@ -31,7 +31,7 @@ class NivelesUsuario(BaseModel):
 
 
 class PedidoLecturas(_ConTicker):
-    ticker: str = Field(pattern=TICKER_RE)
+    ticker: str = Field(pattern=TICKER_RE)   # se normaliza (mayúsculas, sin espacios) antes de validar
     entradas: list[Nivel] = Field(min_length=3, max_length=3)
     salidas: list[Nivel] = Field(min_length=3, max_length=3)
 
@@ -100,6 +100,7 @@ class Riesgo(BaseModel):
     frec_caidas_fuertes: FrecCaidas
     r2_mercado_sector: float | None
     delta_r2_sector: float | None
+    fuente_datos: str
 
 
 class Estado(BaseModel):

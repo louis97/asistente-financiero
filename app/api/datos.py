@@ -7,7 +7,6 @@ import threading
 import time
 from dataclasses import dataclass, field
 
-import numpy as np
 import pandas as pd
 
 from app.api import config
@@ -16,6 +15,7 @@ import comunes as cm   # noqa: E402
 ARCHIVOS_REQUERIDOS = ["precios_diarios", "precios_semanales", "ratios_ttm"]
 PILOTO = cm.tickers()
 INICIO_LUNES = (pd.Timestamp(cm.INICIO) + pd.offsets.Week(weekday=0)).strftime("%Y-%m-%d")   # como nb01: barras semanales de lunes, alineadas con SPY y XLP
+MAX_CACHE = 50                                   # tickers a demanda en memoria
 REFERENCIAS = [cm.BENCHMARK, cm.ETF_SECTOR["consumo_defensivo"]]       # SPY y XLP: no son piloto aunque estén en los parquet
 
 
@@ -241,6 +241,8 @@ def cargar_ticker(ticker: str) -> DatosTicker:
                 copia.advertencias.append(f"datos del {previo.fecha_dato.date()}: la actualización falló")
                 return copia
             raise
+        if len(_cache_demanda) >= MAX_CACHE and ticker not in _cache_demanda:     # tope: sale el más antiguo
+            del _cache_demanda[min(_cache_demanda, key=lambda k: _cache_demanda[k].descargado_en)]
         _cache_demanda[ticker] = nuevo
         return nuevo
 

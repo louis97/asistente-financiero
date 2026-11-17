@@ -27,7 +27,7 @@ def _fmt(x: float) -> str:
     return f"{x:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
 
 
-def a_precio(nivel: Nivel, eps_ttm: float | None, precio_actual: float) -> float:
+def a_precio(nivel: Nivel, eps_ttm: float | None) -> float:
     """Unidad `precio` → el valor; unidad `pe` → valor × EPS TTM publicado más reciente (422 si no hay EPS positivo)."""
     if nivel.unidad == "precio":
         return float(nivel.valor)
@@ -100,7 +100,7 @@ def _texto_trampa(p: float) -> str:
             "asociación con una caída posterior de la utilidad promedio.")
 
 
-def _fundamental(datos, precio, eps, bvps, eps3a, adv) -> dict:
+def _fundamental(datos, precio, eps, bvps) -> dict:
     out = {"pe_implicito": None, "pb_implicito": None, "percentil_historia": None, "percentil_industria": None}
     if eps and eps > 0:
         out["pe_implicito"] = precio / eps
@@ -118,8 +118,8 @@ def calcular_lecturas(datos: dt.DatosTicker, pedido) -> RespuestaLecturas:
     eps = _valor_a_fecha(datos, "eps_ttm", datos.fecha_dato)
     bvps = _valor_a_fecha(datos, "bvps", datos.fecha_dato)
     eps3a = _valor_a_fecha(datos, "eps_prom_3a", datos.fecha_dato)
-    p_ent = [a_precio(n, eps, P) for n in pedido.entradas]
-    p_sal = [a_precio(n, eps, P) for n in pedido.salidas]
+    p_ent = [a_precio(n, eps) for n in pedido.entradas]
+    p_sal = [a_precio(n, eps) for n in pedido.salidas]
     validar_coherencia(p_ent, p_sal, P)
     if eps is None or eps <= 0:
         msg = MSG_PE
@@ -131,7 +131,7 @@ def calcular_lecturas(datos: dt.DatosTicker, pedido) -> RespuestaLecturas:
         for nombre, p in zip(nombres, precios):
             fund = {}
             try:
-                fund = _fundamental(datos, p, eps, bvps, eps3a, adv)
+                fund = _fundamental(datos, p, eps, bvps)
             except Exception:
                 adv.append(f"No se pudo calcular la lectura fundamental de «{nombre}»")
                 fund = {}
@@ -194,8 +194,9 @@ def _probabilistica(datos, salidas: list[LecturaNivel], adv: list[str]):
 _nulos: dict[int, float] = {}
 
 
-def _nulo_caidas(n: int, reps: int = 200) -> float:
-    """Tasa de caídas fuertes que daría la misma receta con retornos normales i.i.d. (nulo calibrado de nb03; σ se estima, no se conoce)."""
+def _nulo_caidas(n: int, reps: int = 2000) -> float:
+    """Replica `nulo_caidas_fuertes` de nb03 (2000 réplicas, semilla 42); se calcula una vez por n y se guarda.
+    Tasa de caídas fuertes que daría la misma receta con retornos normales i.i.d. (nulo calibrado de nb03; σ se estima, no se conoce)."""
     if n not in _nulos:
         rng = np.random.default_rng(cm.SEMILLA)
         _nulos[n] = float(np.mean([cm.tasa_caidas_fuertes(pd.Series(rng.standard_normal(n))) for _ in range(reps)]))

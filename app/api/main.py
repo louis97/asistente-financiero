@@ -108,7 +108,8 @@ def post_lecturas(pedido: PedidoLecturas):
 
 @app.get("/riesgo/{ticker}", response_model=Riesgo)
 def get_riesgo(ticker: str):
-    return niveles.calcular_riesgo(datos.cargar_ticker(validar_ticker_ruta(ticker)))
+    d = datos.cargar_ticker(validar_ticker_ruta(ticker))
+    return {**niveles.calcular_riesgo(d), "fuente_datos": d.fuente_datos}
 
 
 @app.get("/modelo")
@@ -137,6 +138,6 @@ def put_niveles(ticker: str, n: NivelesUsuario, alias: str = Depends(usuario_act
     t = validar_ticker_ruta(ticker)
     d = datos.cargar_ticker(t)
     eps = niveles._valor_a_fecha(d, "eps_ttm", d.fecha_dato)
-    niveles.validar_coherencia([niveles.a_precio(x, eps, d.precio) for x in n.entradas],
-                               [niveles.a_precio(x, eps, d.precio) for x in n.salidas], d.precio)
+    niveles.validar_coherencia([niveles.a_precio(x, eps) for x in n.entradas],
+                               [niveles.a_precio(x, eps) for x in n.salidas], d.precio)
     return obtener_repositorio().guardar_niveles(alias, t, [x.model_dump() for x in n.entradas], [x.model_dump() for x in n.salidas])
