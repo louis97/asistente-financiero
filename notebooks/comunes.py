@@ -168,6 +168,8 @@ SIM_BLOQUE_SEMANAS = 12              # bloque de la simulación: un trimestre, c
 SIM_REPS = 2000                      # réplicas de la simulación de salidas
 SIM_REPS_RF11 = 500                  # réplicas de la simulación en el flujo de baja latencia (RF11)
 SIM_HORIZONTE_SEMANAS = 52           # horizonte fijo de la simulación: un año
+MIN_HIST_SEM_SIM = 104               # semanas de historia mínima para simular (2 años; convención del proyecto): con menos, prob = nan
+N_SUBLOTES_IC = 20                   # sublotes de réplicas con los que se estima el error de simulación de `simular_salidas`
 
 # --- Constantes que antes vivían en los notebooks y que usan las funciones movidas (mismos valores) ---
 HIST_MIN_PERCENTIL = 52              # semanas mínimas para el percentil expansivo (un año bursátil)
@@ -738,3 +740,47 @@ def dependencia_sector(r_sem_accion: pd.Series, r_sem_spy: pd.Series, r_sem_xlp:
     m1 = smf.ols("r ~ r_spy", data=d).fit()               # solo mercado
     m2 = smf.ols("r ~ r_spy + r_xlp", data=d).fit()       # mercado + sector
     return {"r2_mercado_sector": float(m2.rsquared), "delta_r2_sector": float(m2.rsquared - m1.rsquared)}
+
+
+def simular_salidas(r_sem_accion: pd.Series, r_sem_xlp: pd.Series, precio: float, niveles: list[float],
+                    semanas: int = SIM_HORIZONTE_SEMANAS, bloque: int = SIM_BLOQUE_SEMANAS, reps: int = SIM_REPS,
+                    semilla: int = SEMILLA) -> pd.DataFrame:
+    """Probabilidad de que el cierre semanal alcance cada nivel (>= nivel) en las próximas `semanas` (nb08).
+
+    Remuestreo por BLOQUES MÓVILES de `bloque` semanas seguidas de los log-retornos semanales de la acción; el XLP
+    entra porque las semanas se eligen sobre las fechas comunes de acción y XLP (los mismos índices para ambos: la
+    dependencia acción-sector se conserva por construcción). Solo usa las series recibidas: quien llama las corta en t.
+    Devuelve una fila por nivel, en el orden recibido, con `nivel, prob, ic_lo, ic_hi, semanas_mediana`.
+    `ic_lo`/`ic_hi` = prob ∓ 1,96·sd(prob de N_SUBLOTES_IC sublotes)/√N_SUBLOTES_IC, recortado a [0, 1]: es el ERROR DE
+    SIMULACIÓN de la estimación con `reps` réplicas, no incertidumbre del modelo ni del futuro.
+    `semanas_mediana` = mediana de la semana del primer cruce, solo entre las trayectorias que cruzan (nan si ninguna).
+    Un nivel <= precio devuelve prob = 1 y semanas_mediana = 1 ("ya alcanzado"). Con menos de MIN_HIST_SEM_SIM semanas
+    comunes devuelve prob = nan (sin error). Vectorizada: una matriz reps × semanas, sin bucles por réplica.
+    """
+    niveles = [float(n) for n in niveles]
+    columnas = ["nivel", "prob", "ic_lo", "ic_hi", "semanas_mediana"]
+    datos = pd.concat([r_sem_accion, r_sem_xlp], axis=1, keys=["accion", "xlp"]).dropna()   # fechas comunes
+    n = len(datos)
+    if n < MIN_HIST_SEM_SIM or n < bloque:
+        filas = [[nv, np.nan, np.nan, np.nan, np.nan] for nv in niveles]
+        return pd.DataFrame(filas, columns=columnas)
+    rng = np.random.default_rng(semilla)
+    nbl = int(np.ceil(semanas / bloque))
+    inicios = rng.integers(0, n - bloque + 1, size=(reps, nbl))                  # el mismo índice para acción y XLP
+    idx = (inicios[:, :, None] + np.arange(bloque)).reshape(reps, -1)[:, :semanas]
+    r = datos["accion"].to_numpy()[idx]                                           # reps × semanas de log-retornos
+    maximo = np.maximum.accumulate(np.cumsum(r, axis=1), axis=1)                  # máximo corrido del log-precio relativo
+    filas = []
+    for nv in niveles:
+        if nv <= precio:                                                          # ya alcanzado (la API lo valida antes)
+            filas.append([nv, 1.0, 1.0, 1.0, 1.0])
+            continue
+        toca = maximo >= np.log(nv / precio)                                      # reps × semanas, creciente en semanas
+        cruza = toca[:, -1]
+        prob = float(cruza.mean())
+        sublotes = np.array([s.mean() for s in np.array_split(cruza, N_SUBLOTES_IC)])
+        err = 1.96 * sublotes.std(ddof=1) / np.sqrt(N_SUBLOTES_IC)
+        semana_cruce = (~toca).sum(axis=1)[cruza] + 1                             # primera semana con cierre >= nivel
+        med = float(np.median(semana_cruce)) if cruza.any() else np.nan
+        filas.append([nv, prob, max(0.0, prob - err), min(1.0, prob + err), med])
+    return pd.DataFrame(filas, columns=columnas)
