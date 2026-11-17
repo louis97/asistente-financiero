@@ -7,6 +7,7 @@ LEYENDA_ASESORIA = ("El contenido de la presente comunicación o mensaje no cons
                     "normas que lo modifiquen, sustituyan o complementen")
 SUBTITULO_BANNER = "Herramienta de apoyo: muestra probabilidades con su incertidumbre y deja la decisión al usuario."
 
+NOMBRES_NIVEL = ["deep value", "value", "valoración histórica", "negativo", "base", "positivo"]
 ALGORITMOS = {"arbol": "árbol de decisión", "svm_lineal": "SVM lineal", "svm_rbf": "SVM con núcleo RBF"}
 PERIODO_PRUEBA = "2019 en adelante"
 
@@ -51,4 +52,11 @@ TOOLTIPS = {
     "caída máxima": "La mayor pérdida acumulada desde un máximo hasta el mínimo siguiente en los datos.",
     "caídas semanales fuertes": "Fracción de semanas con una caída mayor que 2 veces la volatilidad reciente, frente a la que daría un mercado normal sin rachas.",
     "nivel": "Precio que fijaste: tres de entrada (por debajo del precio actual) y tres de salida (por encima).",
+    "nivel: deep value": "Deep value (entrada): el precio al que, según tú, la empresa estaría muy barata; el más lejano por debajo del precio actual.",
+    "nivel: value": "Value (entrada): el precio al que, según tú, la empresa estaría barata; intermedio entre los tres de entrada.",
+    "nivel: valoración histórica": "Valoración histórica (entrada): un precio coherente con el múltiplo habitual de la empresa; el más cercano al precio actual.",
+    "nivel: negativo": "Negativo (salida): el precio objetivo en un escenario negativo; la salida más cercana por encima del precio actual.",
+    "nivel: base": "Base (salida): el precio objetivo en el escenario que consideras más probable.",
+    "nivel: positivo": "Positivo (salida): el precio objetivo en un escenario positivo; la salida más lejana por encima del precio actual.",
+    "fuera del rango entrenado": "El nivel está más lejos o más cerca del precio de lo que el modelo vio al entrenarse; se evalúa con la distancia más cercana que sí conoce.",
 }

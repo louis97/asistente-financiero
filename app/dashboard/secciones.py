@@ -8,13 +8,13 @@ import pandas as pd
 import streamlit as st
 
 from app.dashboard.cliente import ErrorAcceso, ErrorServicio, ErrorValidacion
-from app.dashboard.textos import (ALGORITMOS, DISCLAIMER, GLOSARIO_BOLSILLO, LEYENDA_ASESORIA, PERIODO_PRUEBA,
+from app.dashboard.textos import (ALGORITMOS, NOMBRES_NIVEL, DISCLAIMER, GLOSARIO_BOLSILLO, LEYENDA_ASESORIA, PERIODO_PRUEBA,
                                   SUBTITULO_BANNER, TOOLTIPS)
 
 # Paleta del mockup (validada con el validador de dataviz: azul y naranja separables con visión normal y con daltonismo)
 AZUL, NARANJA = "#1f6aa5", "#c2571a"
 FONDO_AZUL, FONDO_NARANJA, TINTA = "#e6f0f9", "#fbece2", "#1b2a38"
-VERDE, ROJO, GRIS = "#2e7d32", "#b00020", "#555555"
+VERDE, ROJO = "#2e7d32", "#b00020"
 SIN_DATO = "no disponible"
 
 
@@ -56,19 +56,8 @@ def _nombre(n):
 
 # ------------------------------------------------------------------ banner, encabezado y avisos
 def banner():
-    st.markdown(f"<div style='color:{ROJO};font-weight:700;font-size:1.05rem'>{DISCLAIMER} {SUBTITULO_BANNER}</div>"
-                f"<div style='color:{GRIS};font-size:0.8rem;margin-bottom:0.5rem'>{LEYENDA_ASESORIA}</div>",
-                unsafe_allow_html=True)
-
-
-def _multiplos_actuales(lec):
-    """P/E y P/B al precio actual: se reescalan los del primer nivel con múltiplo (precio_actual ÷ precio_nivel)."""
-    for n in lec["niveles"]:
-        if n["pe_implicito"] is not None or n["pb_implicito"] is not None:
-            f = lec["precio"] / n["precio"]
-            return (n["pe_implicito"] * f if n["pe_implicito"] is not None else None,
-                    n["pb_implicito"] * f if n["pb_implicito"] is not None else None)
-    return None, None
+    st.markdown(f":red[**{DISCLAIMER}** {SUBTITULO_BANNER}]")     # el color :red[] se adapta al tema claro u oscuro
+    st.caption(LEYENDA_ASESORIA)
 
 
 def _instantanea(fuente):
@@ -77,7 +66,7 @@ def _instantanea(fuente):
 
 def encabezado(res):
     lec = res["lecturas"]
-    pe, pb = _multiplos_actuales(lec)
+    pe, pb = lec["pe_actual"], lec["pb_actual"]
     izq, der = st.columns([4, 1.3])
     izq.markdown(f"### {lec['ticker']}  |  Precio: {usd(lec['precio'])}  |  P/E (TTM): "
                  f"{num(pe, 1, 'x')}  |  P/B: {num(pb, 1, 'x')}", help=TOOLTIPS["P/E"] + " " + TOOLTIPS["P/B"])
@@ -101,6 +90,8 @@ def avisos(res):
         st.error("Credenciales inválidas")
     for a in lec["advertencias"]:
         st.warning(a)
+    if any("fuera del rango entrenado" in a for a in lec["advertencias"]):
+        st.caption("Fuera del rango entrenado: " + TOOLTIPS["fuera del rango entrenado"])
     for a in res.get("avisos", []):
         st.warning(a)
     if not lec["industria_validada"]:
@@ -149,9 +140,9 @@ def _fila(i, n, adv, industria_validada):
     return {"Nivel": f"{_nombre(n)} ({n['tipo']})", "Precio": usd(n["precio"]),
             "% vs. precio actual": ("+" if n["pct_vs_actual"] > 0 else "") + pct(n["pct_vs_actual"], 0),
             "P/E (TTM)": num(n["pe_implicito"], 1, "x"), "P/B": num(n["pb_implicito"], 1, "x"),
-            "Fundamental (percentil P/E: historia · industria)": fund,
-            "Probabilidad de tocar el nivel en 60 días (modelo técnico, solo entradas)": tec,
-            "Probabilidad de alcanzar la salida (simulación, horizonte 52 semanas, solo salidas)": prob}
+            "Fundamental (percentiles)": fund,
+            "Prob. de tocar en 60 días (técnica)": tec,
+            "Prob. de alcanzar la salida (simulación)": prob}
 
 
 def tabla_niveles(res):
@@ -166,10 +157,10 @@ def tabla_niveles(res):
         return [f"background-color: {fondo}; color: {TINTA}"] * len(fila)
 
     cols = list(df.columns)
-    ayudas = {cols[0]: TOOLTIPS["nivel"], cols[2]: TOOLTIPS["% vs. precio actual"], cols[3]: TOOLTIPS["P/E"],
-              cols[4]: TOOLTIPS["P/B"], cols[5]: TOOLTIPS["percentil"] + " " + TOOLTIPS["P/E normalizado"],
-              cols[6]: TOOLTIPS["lectura técnica"] + " Entre paréntesis: la línea base y el " + TOOLTIPS["rango de la calibración histórica"],
-              cols[7]: TOOLTIPS["lectura probabilística"] + " " + TOOLTIPS["error de simulación"] + " " + TOOLTIPS["horizonte 52 semanas"]}
+    ayudas = {cols[0]: TOOLTIPS["nivel"] + " " + " ".join(TOOLTIPS["nivel: " + n] for n in NOMBRES_NIVEL), cols[2]: TOOLTIPS["% vs. precio actual"], cols[3]: TOOLTIPS["P/E"],
+              cols[4]: TOOLTIPS["P/B"], cols[5]: "Percentil del P/E del nivel en la historia de la empresa y frente a la industria, solo si hay P/E. " + TOOLTIPS["percentil"] + " " + TOOLTIPS["P/E normalizado"],
+              cols[6]: "Probabilidad de tocar el nivel en 60 días hábiles, solo entradas. " + TOOLTIPS["modelo técnico"] + " Entre paréntesis: la línea base y el " + TOOLTIPS["rango de la calibración histórica"],
+              cols[7]: "Probabilidad de alcanzar la salida en 52 semanas, solo salidas. " + TOOLTIPS["lectura probabilística"] + " " + TOOLTIPS["error de simulación"] + " " + TOOLTIPS["horizonte 52 semanas"]}
     cfg = {c: st.column_config.TextColumn(c, help=ayudas.get(c), width="large" if i >= 5 else "medium") for i, c in enumerate(cols)}
     st.dataframe(df.style.apply(colorear, axis=1), column_config=cfg, hide_index=True, width="stretch")
     st.caption("Horizonte 52 semanas (fijo) en la simulación; «error de simulación» mide la precisión del cálculo, "
@@ -193,6 +184,17 @@ def notas_fundamental(res):
 
 
 # ------------------------------------------------------------------ panel de riesgo
+def _txt_caida(rg):
+    fondo = f"el fondo fue el {rg['caida_maxima_fecha']}; " if rg.get("caida_maxima_fecha") else ""
+    if rg.get("recuperacion_semanas") is not None:
+        rec = f"tardó {rg['recuperacion_semanas']} semanas en recuperarse"
+    elif rg.get("caida_maxima_fecha"):
+        rec = "aún no se recupera"
+    else:
+        rec = "sin dato de recuperación"
+    return f"mayor caída acumulada desde un máximo en la historia semanal; {fondo}{rec}."
+
+
 def panel_riesgo(rg):
     st.markdown("**Panel de riesgo** (descriptivo, con datos pasados)")
     fc = rg["frec_caidas_fuertes"]
@@ -203,8 +205,8 @@ def panel_riesgo(rg):
          "percentil 5 del retorno semanal."),
         ("Caídas semanales fuertes: observadas vs esperadas", f"{pct(fc['observada'])} vs {pct(fc['esperada'])}",
          TOOLTIPS["caídas semanales fuertes"], "fracción de semanas con caída fuerte, observada frente a la esperada en un mercado sin rachas."),
-        ("Peor caída desde un pico", pct(rg["caida_maxima"]), TOOLTIPS["caída máxima"],
-         "mayor caída acumulada observada en los datos."),
+        (f"Peor caída desde un pico (desde {(rg.get('desde') or '')[:4] or 'el inicio de los datos'})", pct(rg["caida_maxima"]),
+         TOOLTIPS["caída máxima"], _txt_caida(rg)),
         ("Cuánto se mueve con el sector (R² · ΔR²)",
          f"R² {num(rg['r2_mercado_sector'])} · ΔR² {num(rg['delta_r2_sector'])}", TOOLTIPS["R² y ΔR²"],
          "R²: parte del movimiento explicada por mercado y sector; ΔR²: lo que el sector añade al mercado."),
@@ -212,7 +214,7 @@ def panel_riesgo(rg):
     for etiqueta, valor, ayuda, expl in filas:
         c1, c2 = st.columns([3, 1.4])
         c1.markdown(f"**{etiqueta}**", help=ayuda)
-        c2.markdown(f"<div style='text-align:right;font-weight:700;color:{AZUL}'>{valor}</div>", unsafe_allow_html=True)
+        c2.markdown(f"<div style='text-align:right;font-weight:700'>{valor}</div>", unsafe_allow_html=True)
         st.caption(expl)
 
 
@@ -329,8 +331,7 @@ def recuadro_desempeno(modelo):
         st.caption(f"Período de prueba: {PERIODO_PRUEBA}, datos que el modelo no vio al entrenarse. "
                    "Se incluye para leer la probabilidad con contexto, errores incluidos.")
         st.info(_veredicto(m) + " Úsalo como referencia informativa junto a la línea base: el modelo ordena sobre todo "
-                "por qué tan lejos queda el nivel, y la línea base (volatilidad y distancia) hace casi lo mismo. "
-                f"Decisión del análisis: {m['decision_negocio']}; lectura: {m['lectura']}.")
+                "por qué tan lejos queda el nivel, y la línea base (volatilidad y distancia) hace casi lo mismo.")
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("AUC del modelo", num(m["auc"], 3), help=TOOLTIPS["AUC"])
         c1.caption(f"IC95 [{num(m['auc_ic95'][0], 3)}; {num(m['auc_ic95'][1], 3)}]")
@@ -342,7 +343,9 @@ def recuadro_desempeno(modelo):
                    f"{num(m['bss_ic95'][1], 3)}]). Frente a la línea base: {num(m['bss_vs_linea_base'], 3)} "
                    f"(IC95 [{num(m['bss_vs_linea_base_ic95'][0], 3)}; {num(m['bss_vs_linea_base_ic95'][1], 3)}]).")
         tramos = modelo["calibracion_prueba"]
-        coh = sum(1 for t in tramos if t["ic_hi"] >= t["tramo_lo"] and t["ic_lo"] <= t["tramo_hi"])
+        arriba = sum(1 for t in tramos if t["ic_lo"] > t["tramo_hi"])
+        abajo = sum(1 for t in tramos if t["ic_hi"] < t["tramo_lo"])
+        coh = len(tramos) - arriba - abajo
         st.markdown("**Diagrama de calibración**", help=TOOLTIPS["calibración"])
         g, t = st.columns([1, 1])
         fig = figura_calibracion(modelo)
@@ -350,7 +353,7 @@ def recuadro_desempeno(modelo):
         plt.close(fig)
         t.markdown(f"Cada tramo agrupa lecturas por la probabilidad que dio el modelo (franja horizontal). El modelo está "
                    f"calibrado donde la franja cruza la diagonal. En {coh} de {len(tramos)} tramos la frecuencia real es "
-                   f"compatible con lo prometido; en los demás quedó por encima.")
+                   f"compatible con lo prometido; {arriba} quedó por encima y {abajo} por debajo.")
         t.dataframe(pd.DataFrame([{"Tramo del modelo": f"{pct(x['tramo_lo'])} a {pct(x['tramo_hi'])}",
                                    "Frecuencia real": pct(x["tasa_obs"]), "IC95": rango(x["ic_lo"], x["ic_hi"]),
                                    "Lecturas": f"{x['n']:,}".replace(",", ".")} for x in tramos]),
@@ -427,7 +430,8 @@ def edicion_niveles(res, cliente_fn):
                     for j, nombre in enumerate(rot):
                         i = ini + j
                         a, b = st.columns([2, 1])
-                        a.number_input(nombre.capitalize(), min_value=0.01, step=0.5, format="%.2f", key=f"nv_valor_{i}")
+                        a.number_input(nombre.capitalize(), min_value=0.01, step=0.5, format="%.2f", key=f"nv_valor_{i}",
+                                       help=TOOLTIPS["nivel: " + nombre])
                         b.selectbox("Unidad", ["precio", "pe"], key=f"nv_unidad_{i}",
                                     help="precio: dólares por acción; pe: múltiplo P/E (TTM). " + TOOLTIPS["P/E"])
             slots["general"] = st.empty()
@@ -455,7 +459,8 @@ def registro_decisiones(res, cliente_fn):
         etiquetas = {f"{_nombre(n)} ({n['tipo']}) · {usd(n['precio'])} · {pct(n['pct_vs_actual'], 0)} vs. precio actual": n
                      for n in lec["niveles"]}
         with st.form("form_registro", clear_on_submit=True):
-            sel = st.selectbox("Nivel", list(etiquetas), key="reg_nivel", help=TOOLTIPS["nivel"])
+            sel = st.selectbox("Nivel", list(etiquetas), key="reg_nivel",
+                               help=TOOLTIPS["nivel"] + " " + " ".join(TOOLTIPS["nivel: " + n] for n in NOMBRES_NIVEL))
             lectura = st.selectbox("Lectura que más pesó", LECTURAS, key="reg_lectura",
                                    help="Fundamental: percentiles y múltiplos. Técnica: " + TOOLTIPS["lectura técnica"])
             decision = st.text_input("Decisión", key="reg_decision", max_chars=120)
@@ -499,8 +504,8 @@ def _fecha_hora(iso):
 def pie(res, estado):
     lec = res["lecturas"] if res else None
     st.divider()
-    st.markdown(f"<span style='color:{VERDE};font-weight:700'>Industria piloto: consumo defensivo (21 empresas, referentes SPY y XLP). "
-                f"En otras industrias la pantalla avisa que el análisis no se ha probado.</span>", unsafe_allow_html=True)
+    st.markdown(":green[**Industria piloto: consumo defensivo (21 empresas, referentes SPY y XLP). "
+                "En otras industrias la pantalla avisa que el análisis no se ha probado.**]")
     st.caption("Línea base por volatilidad: frecuencia histórica con la que el precio tocó niveles a la misma distancia en días de "
                "volatilidad parecida. Si el modelo no la supera, no aporta.", help=TOOLTIPS["línea base"])
     fuente = _instantanea(estado["fuente_datos"])
