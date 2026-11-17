@@ -25,9 +25,9 @@
  },
  "tiempo_llamada_ms": {
   "reps_2000_mediana": 0.96,
-  "reps_2000_max": 1.48,
-  "reps_500_mediana": 0.54,
-  "reps_500_max": 0.9,
+  "reps_2000_max": 1.29,
+  "reps_500_mediana": 0.53,
+  "reps_500_max": 0.56,
   "niveles": 3,
   "semanas_historia": 573
  },
@@ -67,6 +67,71 @@
   "validación→prueba": 273,
   "brecha_svm_sesiones": 60,
   "brecha_simulacion_semanas": 52
+ },
+ "deriva": {
+  "entrenamiento": {
+   "conjunto": "entrenamiento",
+   "n_origenes": 840,
+   "retorno_historia_anual": 0.15952258323664376,
+   "retorno_posterior_anual": 0.17689124048815513,
+   "k0.5": {
+    "prob_media": 0.8614744047619047,
+    "prob_media_sin_media": 0.5909107142857143,
+    "tasa_obs": 0.8761904761904762
+   },
+   "k1.0": {
+    "prob_media": 0.6570934523809523,
+    "prob_media_sin_media": 0.2900285714285714,
+    "tasa_obs": 0.6309523809523809
+   },
+   "k1.5": {
+    "prob_media": 0.43018690476190474,
+    "prob_media_sin_media": 0.11842440476190476,
+    "tasa_obs": 0.3273809523809524
+   }
+  },
+  "validacion": {
+   "conjunto": "validacion",
+   "n_origenes": 819,
+   "retorno_historia_anual": 0.15508061857229455,
+   "retorno_posterior_anual": 0.07164320233921147,
+   "k0.5": {
+    "prob_media": 0.8368089133089134,
+    "prob_media_sin_media": 0.5458962148962149,
+    "tasa_obs": 0.7472527472527473
+   },
+   "k1.0": {
+    "prob_media": 0.6015244200244201,
+    "prob_media_sin_media": 0.24592612942612943,
+    "tasa_obs": 0.4188034188034188
+   },
+   "k1.5": {
+    "prob_media": 0.3591214896214896,
+    "prob_media_sin_media": 0.09179242979242978,
+    "tasa_obs": 0.16971916971916973
+   }
+  },
+  "prueba": {
+   "conjunto": "prueba",
+   "n_origenes": 1848,
+   "retorno_historia_anual": 0.1240038477556731,
+   "retorno_posterior_anual": 0.06103454262826167,
+   "k0.5": {
+    "prob_media": 0.7191945346320346,
+    "prob_media_sin_media": 0.4793252164502164,
+    "tasa_obs": 0.6369047619047619
+   },
+   "k1.0": {
+    "prob_media": 0.4117280844155844,
+    "prob_media_sin_media": 0.19054816017316017,
+    "tasa_obs": 0.29274891774891776
+   },
+   "k1.5": {
+    "prob_media": 0.19260443722943724,
+    "prob_media_sin_media": 0.06558712121212121,
+    "tasa_obs": 0.12283549783549784
+   }
+  }
  },
  "constantes": {
   "K_EVAL": [
