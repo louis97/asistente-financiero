@@ -10,6 +10,18 @@ Describe las [instantáneas](glosario.md) de `data/snapshots/` que se descargan 
 
 **Regla de temporalidad (fecha de publicación).** Toda columna `filed_<campo>` guarda la primera fecha en que ese dato fue público; una fila de ratios solo se puede usar en una decisión en `t` si `filed ≤ t`. Esta regla se audita en nb02 §3 y evita el look-ahead en todas las uniones de precios con fundamentales.
 
+**Calidad en cifras.** Resumen de la auditoría de [`notebooks/02_calidad.ipynb`](../../notebooks/02_calidad.ipynb); cada fila cita la sección del notebook donde está la celda que produce la cifra, y los detalles y las decisiones (qué se conserva y por qué) están ahí.
+
+| Dimensión | Qué se midió | Resultado | Celda (nb02) |
+|---|---|---|---|
+| Completitud de los precios | Fechas faltantes, nulos y precios ≤ 0 en las dos instantáneas de precios (23 tickers desde 2009-01-05) | 0 faltantes, 0 nulos y 0 precios ≤ 0 en las 21.344 filas semanales y las 102.902 diarias | §1 |
+| Completitud de los fundamentales | Trimestres con utilidad por acción de los últimos 12 meses (EPS TTM) calculable | 1.308 de 1.434 (91,2 %); las faltas se concentran en STZ (0 %) y HSY (36,2 %), por limitaciones de la fuente; se dejan vacías y no se rellenan | §2b, chequeo 1 |
+| Duplicados | Filas repetidas de ticker y fecha en precios; años fiscales con dos cierres en EDGAR | 0 duplicados en precios; en EDGAR, años con dos cierres en ADM (2012 y 2018) y TSN (2009–2010), explicados por cambios del calendario fiscal | §1 y §2 |
+| Atípicos | Retornos con \|z\| > 3 (más de 3 desviaciones estándar) | 272 semanales (1,28 %) y 1.455 diarios (1,41 %), frente al 0,27 % que daría una normal; se conservan porque coinciden con episodios de todo el mercado (7,11 % de las semanas de 2020) y aparecen igual en las dos instantáneas | §1 |
+| Consistencia entre tablas | Retorno semanal de la instantánea semanal frente al de la diaria remuestreada | En 21.321 semanas-ticker coinciden el 100 % (diferencia < 0,1 pp; máxima 0,0002 pp) | §1.1 |
+| Consistencia de los fundamentales | Suma de los cuatro trimestres reportados frente al EPS anual | 7 de 199 cierres fiscales difieren más de 2 %; se conservan: son la primera publicación de cada trimestre o el uso declarado de las acciones del último trimestre | §2b, chequeo 8 |
+| Un cero que no es cero | Volumen igual a 0 | 1 caso (CHD, 2019-12-31): un faltante que el proveedor rellenó; se conserva y se declara porque el volumen no entra en ninguna hipótesis | §1 |
+
 **Índice.** 1. Precios semanales · 2. Precios semanales sin ajuste por dividendos · 3. Precios diarios · 4. Splits · 5. Foto de identidad de yfinance · 6. Hechos EDGAR crudos · 7. Tabla anual · 8. Ratios anuales · 9. Tabla trimestral · 10. Ratios TTM · 11. Múltiplo semanal (derivado) · 12. Indicadores diarios (derivados) · 13. Variables de magnitud y etiqueta diaria · 14. Tabla por industria Damodaran.
 
 ---

@@ -74,7 +74,7 @@ El "barata frente a su historia" se mide con el [**P/E normalizado**](glosario.m
 
 - **Paso 0 (umbral):** [**ΔAUC**](glosario.md) **≥ 0,01** por [indicador](glosario.md). Debajo de ese valor, agregar la variable al modelo técnico no justifica el ruido (en la exploración previa, variables sin señal **bajaron** la [AUC](glosario.md) total).
 - **H0 (por indicador):** `ΔAUC = AUC(volatilidad + indicador) − AUC(solo volatilidad) = 0`. **H1:** `ΔAUC > 0`.
-- **Prueba:** regresión logística con la magnitud de los retornos (`|r_t|`, [`σ20/σ252`](glosario.md) y [`σ252`](glosario.md)) como línea base de magnitud, y el mismo modelo más el indicador. Se evalúa en orden cronológico con corte 2018 (ajuste 2009–2018; prueba 2019+) y espacio de `N` días hábiles. **IC95 por bloques de fechas al nivel [Bonferroni](glosario.md) `1 − 0,05/7 ≈ 99,3 %`** (percentiles 0,36 y 99,64; 5000 réplicas), con una [submuestra sin solapamiento](glosario.md) (una fila cada `N` días hábiles por ticker; todas las filas solo como sensibilidad).
+- **Prueba:** regresión logística con la magnitud de los retornos (`|r_t|`, [`σ20/σ252`](glosario.md) y [`σ252`](glosario.md)) como **modelo A** (el modelo de magnitud, que usa solo el tamaño de los movimientos), y el mismo modelo más el indicador. Se evalúa en orden cronológico con corte 2018 (ajuste 2009–2018; prueba 2019+) y espacio de `N` días hábiles. **IC95 por bloques de fechas al nivel [Bonferroni](glosario.md) `1 − 0,05/7 ≈ 99,3 %`** (percentiles 0,36 y 99,64; 5000 réplicas), con una [submuestra sin solapamiento](glosario.md) (una fila cada `N` días hábiles por ticker; todas las filas solo como sensibilidad).
 - **Elección de N (fijada antes):** candidatos `N ∈ {20, 40, 60}` días hábiles. Se eligen **solo con 2009–2018**: se descartan los `N` cuya [tasa de toque](glosario.md) quede fuera del 10–40 % en entrenamiento; entre los que quedan, gana el `N` con mayor AUC del **modelo A** (regresión logística con `|r_t|`, `σ20/σ252` y `σ252`) en una validación interna (ajuste 2009–2015; validación desde 2016 + N hasta 2018-12-31 − N). La prueba (2019+) **no se usa para elegir**. [**N = 60**](glosario.md) fue el ganador; los tres `N` se reportan como sensibilidad.
 - **Supuestos verificados** (matriz completa en [nb04 §5.1](../../notebooks/04_eda_multivariado.ipynb)): independencia (etiquetas de días consecutivos se solapan; se mitiga con submuestra sin solapamiento cada N días + bootstrap por bloques de fechas; sensibilidad con todas las filas); dependencia residual con bloque = 1 fecha (σ252 y las medias móviles comparten historia entre filas vecinas; sensibilidad a 1/2/4 fechas); look-ahead (celda demostrativa comprueba `rsi14` recalculado con la serie truncada); multiplicidad (Bonferroni al nivel 1 − 0,05/7 ≈ 99,3 %); estabilidad por subperíodo; escalado (StandardScaler ajustado solo con el entrenamiento); censura (últimas N sesiones excluidas).
 - **Decisiones (por indicador):** IC Bonferroni frente a 0 (estadística) y su límite inferior frente a 0,01 (negocio). *Resultado en [04 §5](../../notebooks/04_eda_multivariado.ipynb) y en [07 §7.2](07_conclusiones.md).*
@@ -106,7 +106,22 @@ El "barata frente a su historia" se mide con el [**P/E normalizado**](glosario.m
 
 Las 15 pruebas se reportan **sin corrección global**, salvo P4, que ya se corrige con Bonferroni al construir sus IC. **Como sensibilidad**, se aplica **Holm al 0,05 sobre las 13 pruebas con decisión de negocio** y se marca cuáles siguen rechazando H0. Para que Holm reciba un p-value comparable al IC bilateral, los **p bootstrap unilaterales se llevan a escala bilateral** multiplicando por 2 (`p_bilateral = 2 · p_unilateral`, truncado a 1); así la ordenación coincide con la del IC95 bilateral.
 
-## §4.2 Matriz pregunta × técnica × sección del notebook
+## §4.2 De la pregunta a la decisión
+
+Cada pregunta de negocio tiene una hipótesis, una técnica y una decisión sobre una pieza concreta de la herramienta. Los umbrales, los supuestos y las decisiones estadística y de negocio de cada una están en §4.1.
+
+| Pregunta | Hipótesis (H1) | Técnica | Qué decide en la herramienta | Notebook |
+|---|---|---|---|---|
+| P1. ¿Cuánto me puede doler? | Las caídas semanales fuertes son más frecuentes que en retornos normales medidos de la misma forma | Proporción con IC95 por bloques de 12 semanas frente a un nulo calibrado por simulación | La frecuencia de caídas fuertes que muestra el panel de riesgo | [03 §4](../../notebooks/03_eda_univariado.ipynb) |
+| P2. ¿El "barata frente a su historia" es temporal? | El quintil barato sube su P/E normalizado más que el caro en los 3 años siguientes | Welch con IC95 por empresa; descomposición en log | La lectura principal de "barata frente a su historia" y el aviso de posible deterioro de utilidades | [04 §2](../../notebooks/04_eda_multivariado.ipynb) |
+| P3. Si compro barata, ¿me va mejor después? | El quintil barato rinde más que el caro, en exceso sobre el XLP, a 3 años | Welch con IC95 por empresa; retorno total = XLP + exceso | Si el exceso sobre el XLP entra como señal o solo como contexto | [04 §3](../../notebooks/04_eda_multivariado.ipynb) |
+| P4. ¿Compro ya o espero? | Agregar un indicador técnico aumenta la AUC del modelo A (ΔAUC > 0) | ΔAUC con IC95 por bloques de fechas al nivel Bonferroni (7 indicadores) | Qué variables entran al modelo técnico | [04 §4 y §5](../../notebooks/04_eda_multivariado.ipynb) |
+| P5. ¿Cuánto del movimiento viene del sector? | El XLP agrega poder explicativo al SPY (ΔR² > 0) | Regresión múltiple por ticker; ΔR² mediano con IC95 por empresa | La cifra de dependencia del sector del panel de riesgo | [04 §6](../../notebooks/04_eda_multivariado.ipynb) |
+| P6. ¿Vienen juntas las sesiones turbulentas? | Tras una sesión turbulenta es más probable otra (P(T\|T) > P(T\|calma)) | Tablas 2×2 con IC95 por bloques de la diferencia; V de Cramér | Que la simulación remuestree bloques de semanas y no semanas sueltas | [03 §5](../../notebooks/03_eda_univariado.ipynb) |
+
+**Diseño experimental en pocas líneas.** Toda hipótesis se prueba dentro de la industria piloto, con datos disponibles en la fecha de decisión, un umbral práctico fijado antes, un IC95 por bootstrap que respeta la dependencia (por bloques de fechas o por empresa) y las dos decisiones de §4.1. El diseño de la etiqueta y de la partición de los datos para el modelo técnico está en §4.3.
+
+### Detalle de técnicas, visualizaciones y modelos por pregunta
 
 | Pregunta | Técnica estadística | Visualización | Simulación / ML | Sección del notebook |
 |---|---|---|---|---|
@@ -120,6 +135,14 @@ Las 15 pruebas se reportan **sin corrección global**, salvo P4, que ya se corri
 Ninguna técnica queda suelta: toda técnica listada responde a una pregunta de negocio.
 
 ## §4.3 Diseño experimental
+
+**En cinco líneas** (el detalle sigue abajo):
+
+1. **Qué se predice:** si el precio toca el nivel de entrada antes de escaparse hacia arriba, dentro de `N = 60` días hábiles (etiqueta de 0 o 1).
+2. **Con qué:** solo variables de tamaño de los movimientos (retornos y volatilidades), calculadas con datos disponibles hasta el día de la decisión.
+3. **Cómo se separan los datos:** se ajusta con el pasado (hasta 2018) y se prueba con lo posterior (2019 en adelante), con un espacio entre ambos para que ninguna etiqueta mire a la prueba.
+4. **Con qué se compara:** con una regla simple que solo mira la volatilidad (la tasa de toque por decil de σ252); el modelo debe superarla para justificar su complejidad.
+5. **Cómo se decide:** con el IC95 por bootstrap por bloques de fechas, las dos decisiones de §4.1 y la nota de §4.3 sobre la fuga de selección de P4.
 
 **Etiqueta diaria (P4 y SVM).** La [etiqueta de entrada](glosario.md) vale 1 si el precio toca el nivel inferior antes del superior y dentro del horizonte de `N` días hábiles; vale 0 si primero toca el superior o se agota el tiempo. El nivel inferior está a `k = 1` volatilidad diaria por `√N` por debajo del precio actual; el superior, simétrico hacia arriba. La volatilidad diaria es `σ_t`, estimada con la ventana hacia atrás; `√N` lleva esa volatilidad al horizonte. Las últimas `N` sesiones de cada ticker no tienen etiqueta resuelta (censura) y se excluyen.
 
@@ -137,11 +160,19 @@ Ninguna técnica queda suelta: toda técnica listada responde a una pregunta de 
 
 ## §4.4 Métricas del modelo
 
-**SVM (entrega 2):**
+**Modelo técnico (entrega 2; el algoritmo se elige con la regla de abajo):**
 - **ROC-AUC:** probabilidad de que el modelo ordene correctamente un par (día que sí tocó, día que no tocó).
 - **[Brier](glosario.md):** error cuadrático medio entre la probabilidad predicha y la realidad.
 - **[Diagrama de calibración](glosario.md):** curva que compara la probabilidad predicha con la frecuencia observada por tramos. "De las veces que el modelo dijo 60 %, ¿cuántas sí tocaron?".
-- **Comparación con la tasa de toque por decil de σ252** (línea base por decil de σ): regla ΔAUC = AUC(SVM) − AUC(línea base). **Dos decisiones:** se rechaza H0 (ΔAUC = 0) si el IC95 bilateral por bootstrap por bloques no incluye 0; el SVM es **accionable** si el límite inferior del IC supera 0,03. Métricas por subperíodo (2009–2012, 2013–2019, 2020–2021, 2022+).
+- **Comparación con la tasa de toque por decil de σ252** (línea base por decil de σ): regla ΔAUC = AUC(modelo) − AUC(línea base). **Dos decisiones:** se rechaza H0 (ΔAUC = 0) si el IC95 bilateral por bootstrap por bloques no incluye 0; el modelo es **accionable** si el límite inferior del IC supera 0,03. Métricas por subperíodo (2009–2012, 2013–2019, 2020–2021, 2022+).
+
+**Regla de selección del modelo técnico (fijada antes de entrenar).** Se comparan tres algoritmos del curso (SVM lineal, SVM con núcleo RBF y un árbol de decisión poco profundo), cada uno con su grilla de hiperparámetros, y dos referencias que se ajustan con el entrenamiento: la **tasa de toque constante** y la **tasa por decil de σ252**. Los datos se parten en entrenamiento 2009–2014, validación 2015–2018 (cuatro años) y prueba desde 2019, con el espacio de §4.3 entre conjuntos. La selección usa solo la validación:
+
+1. Para cada combinación se calcula el **Brier skill score (BSS)** = 1 − Brier(modelo) ÷ Brier(referencia), con la tasa de toque constante del entrenamiento como referencia. Es positivo si el modelo se equivoca menos que la referencia, y se promedia sobre los cuatro años de validación.
+2. Se llaman **empatadas** las combinaciones a menos de **0,005** del mejor BSS; esa constante se fija antes de mirar la validación.
+3. Entre las empatadas gana la **más simple**, en este orden: árbol poco profundo, SVM lineal, SVM RBF; dentro de un algoritmo, la configuración más sencilla (árbol menos profundo, o menor C).
+4. Si quedan dos iguales en simplicidad, desempata el **AUC**.
+5. El ganador se reentrena y en la prueba se reportan los tres algoritmos con su configuración ya elegida, con AUC, Brier, BSS, calibración e IC95 por bloques de fechas (§4.1, plantilla de inferencia).
 
 **Lectura probabilística (simulación de salidas; entrega 2):**
 - **Calibración de `P(alcanzar el nivel)`:** se compara, en orden cronológico y solo con información ≤ `t`, la probabilidad prometida con la frecuencia histórica con la que el precio sí llegó. Gráfico de calibración (idealmente sobre la diagonal) y **Brier**, frente a la tasa histórica de alcance como línea base.
@@ -185,7 +216,7 @@ La tabla explica cada constante del análisis: qué significa, por qué ese valo
 | P3: resultado medido | log-retorno a 3 años de la acción − el del XLP en la misma ventana | Lo que rindió la acción por encima de su industria | Dentro de una industria, todas las empresas comparten el choque del año; restarlo evita que la diferencia dependa de en qué año se compró | no |
 | P2 y P3: grupos | [Quintiles por fecha](glosario.md) trimestral calendario, balanceados (`k = round(0,2 · n)`) | En cada fecha, las empresas se ordenan por su percentil propio del P/E normalizado | Grupos balanceados en cada fecha y sin mirar al futuro ([percentil expansivo](glosario.md) y orden con solo esa fecha) | **sí** |
 | P4: umbral | ΔAUC = 0,01 por indicador | Mejora mínima para que un indicador entre al SVM | Un punto de AUC es la mejora mínima que justifica agregar una variable (en la exploración, variables sin señal bajaron la AUC total) | **sí** |
-| P5: umbral | ΔR² mediano = 0,05 | El sector explica al menos 5 % más de la varianza que el mercado solo | Por debajo de eso, el sector casi no cambia la simulación | no |
+| P5: umbral | ΔR² mediano = 0,05 | El sector explica al menos 5 % más de la varianza que el mercado solo | Por debajo de eso, el sector casi no cambia la lectura del riesgo de la acción | no |
 | P6: "turbulenta" | `|r|` en el 20 % superior de su historia | Una de cada 5 sesiones más agitadas de cada acción | Quintil superior: regla simple y comparable entre acciones | no |
 | P6: umbral | 30 % (frente al 20 % base) | Probabilidad de otra sesión turbulenta tras una turbulenta | Un aumento de 10 pp (50 % relativo) cambiaría la decisión de esperar | no |
 | SVM: umbral | ΔAUC = 0,03 | Mejora mínima sobre la línea base por decil de σ | Mejoras de 0,02–0,04 sobre una buena línea base ya son valiosas | no |

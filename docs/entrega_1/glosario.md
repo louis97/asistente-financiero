@@ -58,7 +58,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **decisión estadística ("se rechaza H0" / "no se rechaza H0")** · Convención del proyecto: solo se usan estas dos frases. Nunca "se acepta H0" ni "la hipótesis queda apoyada". La decisión sale del IC frente al valor del nulo (α = 0,05).
 
-**ΔAUC** · Diferencia entre el AUC de un modelo que agrega un indicador y el AUC de la línea base (sin ese indicador). Mide cuánto aporta el indicador. P4 fija el umbral en 0,01. Ejemplo: `rsi14` tiene ΔAUC = −0,008 (no accionable; nb04_p4.json).
+**ΔAUC** · Diferencia entre el AUC de un modelo que agrega un indicador y el AUC del **modelo A** (el modelo de magnitud, sin ese indicador). Mide cuánto aporta el indicador. P4 fija el umbral en 0,01. Ejemplo: `rsi14` tiene ΔAUC = −0,008 (no accionable; nb04_p4.json).
 
 **Δlog(P/E normalizado)** · Cambio del logaritmo del P/E normalizado en un horizonte (3 años). Se descompone en `Δlog(precio) − Δlog(EPS promedio)`: separa cuánto del cambio vino del precio y cuánto de las utilidades. La suma es exacta porque el log convierte el cociente en una resta.
 
@@ -72,7 +72,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **drawdown** · Ver "caída máxima".
 
-**enfoque value** · Estrategia de compra que busca empresas cuyo precio en bolsa queda por debajo de una valoración razonable (por su historia o por su industria), con horizonte largo. Es el enfoque del usuario del producto; se contrapone al enfoque de crecimiento, que paga múltiplos altos a cambio de utilidades que se esperan mayores en el futuro.
+**enfoque value** · El inversor value compra acciones que considera baratas frente a lo que gana la empresa: paga poco por cada dólar de utilidad. Es la estrategia de compra que busca empresas cuyo precio en bolsa queda por debajo de una valoración razonable (por su historia o por su industria), con horizonte largo. Es el enfoque del usuario del producto; se contrapone al enfoque de crecimiento, que paga múltiplos altos a cambio de utilidades que se esperan mayores en el futuro.
 
 **EPS (*earnings per share*, utilidad por acción)** · `utilidad neta ÷ acciones diluidas`. Es la utilidad que corresponde a cada acción. Ejemplo: KO 2026-04-03, `eps_ttm = 3,18` USD por acción (`ratios_ttm`).
 
@@ -116,7 +116,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **intervalo de confianza (IC)** · Rango de valores plausibles para un parámetro, con un nivel de confianza fijado (95 % en el proyecto). Ejemplo P1: IC = [0,0246; 0,0392] para la tasa de caídas fuertes (nb03.json). "El 95 %" se refiere al procedimiento, no a la probabilidad del parámetro.
 
-**línea base por decil de σ** · Puntaje que ordena las observaciones por su decil de σ252 diaria y toma el decil como predictor. Es la **base del SVM** (sobre todas las filas): el SVM de la entrega 2 debe superarla por al menos ΔAUC = 0,03 para ser accionable (`04_enfoque_analitico.md` §4.4). Ejemplo: su AUC en la prueba es 0,591 (`nb04_p4.json`). *Nota.* En P4 cada indicador no se compara contra esta base, sino contra el **modelo A** (regresión logística con `|r_t|`, `σ20/σ252` y `σ252`) sobre la submuestra sin solapamiento (AUC 0,577); P4 mide el aporte **lineal** de cada indicador frente al modelo A.
+**línea base por decil de σ** · Puntaje que ordena las observaciones por su decil de σ252 diaria y toma el decil como predictor. Es la **base del modelo técnico** (sobre todas las filas): el modelo de la entrega 2 debe superarla por al menos ΔAUC = 0,03 para ser accionable (`04_enfoque_analitico.md` §4.4). En la entrega 2 se afina: es la tasa de toque del entrenamiento por decil de σ252 y por la distancia del nivel (k). Ejemplo: su AUC en la prueba es 0,591 (`nb04_p4.json`). *Nota.* En P4 cada indicador no se compara contra esta base, sino contra el **modelo A** (regresión logística con `|r_t|`, `σ20/σ252` y `σ252`) sobre la submuestra sin solapamiento (AUC 0,577); P4 mide el aporte **lineal** de cada indicador frente al modelo A.
 
 **log-retorno** · `log(P_t / P_{t−1})`. Es el retorno expresado en logaritmo natural. Se suma a través del tiempo: el log-retorno de dos períodos es la suma de los dos log-retornos. Base de P1, P5 y la volatilidad.
 

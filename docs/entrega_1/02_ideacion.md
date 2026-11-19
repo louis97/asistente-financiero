@@ -10,11 +10,11 @@ El producto se diseña para servir a cualquier industria y en esta entrega se **
 
 ## 2.2 Usuarios
 
-El usuario principal es un inversor intermedio colombiano que compra acciones de EE.UU. [al contado](glosario.md), solo en [posición larga](glosario.md) y con [enfoque value](glosario.md). A lo largo de este documento se le llama Andrés, un nombre ficticio que resume lo observado en la entrevista y en el formulario. Andrés conoce los [múltiplos](glosario.md) ([P/E](glosario.md), [P/B](glosario.md), [ROE](glosario.md), [margen operativo](glosario.md), [deuda/patrimonio](glosario.md)) y el análisis técnico básico ([fuerza relativa a 14 días (RSI)](glosario.md), [medias móviles](glosario.md), [canales de rango máximo-mínimo](glosario.md), volumen). Escoge empresas "a bajo precio" con un [screener](glosario.md), según patrimonio, utilidad y deuda, y exige que el modelo de negocio le guste. Compara los [ratios](glosario.md) de la empresa con su industria y con su propia historia, y busca el punto de entrada con gráficos mensuales de 15 años o semanales de 5 años.
+Los usuarios son los dos integrantes del grupo de inversión descrito en [01_negocio.md §1.1](01_negocio.md): el colega inversor (el stakeholder, participante 1) y el autor (participante 2). Ambos son inversores intermedios colombianos que compran acciones de EE.UU. [al contado](glosario.md), solo en [posición larga](glosario.md) y con [enfoque value](glosario.md), es decir, compran acciones que consideran baratas frente a lo que gana la empresa (pagan poco por cada dólar de utilidad). A lo largo de este documento se le llama Andrés, un nombre ficticio que resume lo observado en la entrevista y en el formulario. Andrés conoce los [múltiplos](glosario.md) ([P/E](glosario.md), [P/B](glosario.md), [ROE](glosario.md), [margen operativo](glosario.md), [deuda/patrimonio](glosario.md)) y el análisis técnico básico ([fuerza relativa a 14 días (RSI)](glosario.md), [medias móviles](glosario.md), [canales de rango máximo-mínimo](glosario.md), volumen). Escoge empresas "a bajo precio" con un [screener](glosario.md), según patrimonio, utilidad y deuda, y exige que el modelo de negocio le guste. Compara los [ratios](glosario.md) de la empresa con su industria y con su propia historia, y busca el punto de entrada con gráficos mensuales de 15 años o semanales de 5 años.
 
 Su rutina es de fin de semana. Hace el análisis, deja un límite de compra o de venta en el bróker y confía en él durante la semana. Su meta es comprar buenas empresas a un precio razonable y salir cuando el precio refleje su escenario. Su frustración es que el trabajo se rehace con cada reporte trimestral: procesar los reportes nuevos le toma de 2 a 3 horas, a veces deja pasar días y la tarea se complica cuando muchos reportes salen seguidos. No tiene un lugar donde anotar lo que concluye, hace la comparación entre fundamentales y gráfico "mentalmente" y resuelve el riesgo con una alarma en el bróker. Dijo que le gustaría tener un lugar donde ver ambos análisis, un ranking por industria de los ratios principales y una lectura técnica de las posiciones bien ubicadas.
 
-El usuario secundario es el propio autor, con un proceso más corto (dos cambios de pantalla como mínimo ideal) y el mismo vacío de registro. Pidió ratios clave, nivel de riesgo y una propuesta de valor resumida en una frase. Ambos coincidieron en que el análisis debe ejecutarse a demanda o con la frecuencia que dicte el usuario, no en continuo, y en que habría que evitar mantener un límite de compra si un reporte cambia el precio de forma negativa.
+El segundo usuario es el propio autor, que además diseña el producto (sesgo declarado en [01_negocio.md §1.1](01_negocio.md)), con un proceso más corto (dos cambios de pantalla como mínimo ideal) y el mismo vacío de registro. Pidió ratios clave, nivel de riesgo y una propuesta de valor resumida en una frase. Ambos coincidieron en que el análisis debe ejecutarse a demanda o con la frecuencia que dicte el usuario, no en continuo, y en que habría que evitar mantener un límite de compra si un reporte cambia el precio de forma negativa.
 
 ## 2.3 Proceso actual y dolores
 
@@ -29,16 +29,18 @@ La tabla reconstruye el proceso a partir de las respuestas del participante y de
 | 5. Actualizar el análisis tras un reporte trimestral | Inversor | Las mismas herramientas | 2 a 3 horas, a veces con días de retraso (formulario) | Niveles posiblemente desactualizados |
 | 6. Fijar el límite de compra o venta y vigilarlo | Inversor | Alarma o límite en el bróker | No declarado | Orden o alarma, sin cuantificar el riesgo |
 
-La conclusión del diagnóstico es que el inversor actúa como enrutador manual de datos entre herramientas que no se comunican. Los pasos 4 y 5 concentran el costo en tiempo, y los pasos 2 y 6 concentran el riesgo de decidir con información vieja o con una medida de riesgo a ojo. Los dolores, ordenados por el costo que declaró el usuario y por su efecto sobre la decisión, se conectan con la funcionalidad que los atiende y con el KPI del [punto 1](01_negocio.md) que permite verificarlos.
+La conclusión del diagnóstico es que el inversor actúa como enrutador manual de datos entre herramientas que no se comunican. Los pasos 4 y 5 concentran el costo en tiempo, y los pasos 2 y 6 concentran el riesgo de decidir con información vieja o con una medida de riesgo a ojo.
 
-| Prioridad | Dolor (evidencia) | Funcionalidad | KPI |
-|---|---|---|---|
-| 1 | Latencia tras cada reporte: 2 a 3 horas, a veces días, y los niveles por múltiplo quedan desactualizados | Recálculo automático de los niveles definidos por múltiplo cuando se publica un reporte, diseñado para reportes anuales y trimestrales (precio = múltiplo × utilidad por acción de los últimos 12 meses, según la fecha publicada; el pipeline ya ingiere ambos tipos de reporte en esta entrega) | KPI 3 (latencia ≤ 1 día) y KPI 1 (tiempo) |
-| 2 | Fragmentación: 2 a 15 cambios de pantalla y comparación "mental" | Vista única con los 6 niveles, las 3 lecturas y el panel de riesgo descriptivo | KPI 2 (cambios de pantalla) y KPI 1 |
-| 3 | Riesgo medido a ojo o con una alarma | Panel de riesgo descriptivo por activo ([volatilidad](glosario.md), [percentil 5](glosario.md), [caída máxima](glosario.md), frecuencia de caídas fuertes y dependencia del sector: [R²](glosario.md) y [ΔR²](glosario.md)) | KPI 5 (confianza) |
-| 4 | No hay dónde anotar lo que se concluye | Registro de decisiones con fecha, nivel, lectura y nota | KPI 4 (decisiones documentadas) |
-| 5 | No se sabe si el nivel es razonable frente a la historia y la industria | Lectura fundamental comparativa ([percentiles](glosario.md) frente a la historia y la industria, incluyendo el [P/E normalizado](glosario.md)) | KPI 1 y KPI 5 |
-| 6 | Timing de entrada solo con gráficos y patrones básicos | Lectura técnica: probabilidad del modelo técnico frente a la [línea base por decil de σ](glosario.md) | KPI 5 (la calidad de la probabilidad del modelo técnico se evalúa con las métricas del [punto 4](04_enfoque_analitico.md), sección 4.4) |
+Los dolores, ordenados por el costo que declaró el usuario y por su efecto sobre la decisión, se conectan con el requerimiento de la sección 2.4 que los atiende, con el componente de la sección 2.5 que lo implementa y con el KPI del [punto 1](01_negocio.md) que permite verificarlos.
+
+| Prioridad | Dolor (evidencia) | Requerimiento (§2.4) | Componente (§2.5) | KPI |
+|---|---|---|---|---|
+| 1 | Latencia tras cada reporte: 2 a 3 horas, a veces días, y los niveles por múltiplo quedan desactualizados | RF5: recalcular los niveles por múltiplo al publicarse un reporte (precio = múltiplo × utilidad por acción de los últimos 12 meses) | Capa de datos y API | KPI 3 y KPI 1 |
+| 2 | Fragmentación: 2 a 15 cambios de pantalla y comparación "mental" | RF1 a RF4: los 6 niveles y las 3 lecturas en una vista única | Dashboard, que consume la API | KPI 2 y KPI 1 |
+| 3 | Riesgo medido a ojo o con una alarma | RF6: panel de riesgo descriptivo ([volatilidad](glosario.md), [percentil 5](glosario.md), [caída máxima](glosario.md), caídas fuertes y dependencia del sector con [R²](glosario.md) y [ΔR²](glosario.md)) | Módulo analítico del panel de riesgo | KPI 5 |
+| 4 | No hay dónde anotar lo que se concluye | RF8: registro de decisiones con fecha, nivel, lectura y nota | API y dashboard | KPI 4 |
+| 5 | No se sabe si el nivel es razonable frente a la historia y la industria | RF2: lectura fundamental comparativa ([percentiles](glosario.md) frente a la historia y la industria, con el [P/E normalizado](glosario.md)) | Módulo analítico de percentiles | KPI 1 y KPI 5 |
+| 6 | Timing de entrada solo con gráficos y patrones básicos | RF3 y RN1: probabilidad del modelo técnico frente a la [línea base por decil de σ](glosario.md) | Modelo de aprendizaje de máquina (ML) | KPI 5 |
 
 ## 2.4 Requerimientos
 
@@ -49,7 +51,7 @@ Los requerimientos se priorizan con MoSCoW (Must, Should, Could, Won't para esta
 | RF1 | Mostrar 3 niveles de entrada (deep value, value, valoración histórica) y 3 de salida (negativo, base, positivo), definidos en precio y en múltiplo en paralelo | Must | Para un ticker, aparecen los 6 niveles con ambas definiciones |
 | RF2 | Lectura fundamental comparativa por nivel: múltiplo implícito, percentil frente a la historia propia (P/E sobre la [utilidad por acción de los últimos 12 meses (EPS TTM)](glosario.md)) y percentil frente a su industria, más el percentil del P/E normalizado (precio ÷ promedio de 3 años de utilidad por acción) como lectura principal del "barata frente a su historia"; cuando aplique, lectura de [trampa de valor](glosario.md) según la descomposición de la pregunta P2 (precio frente a utilidades promedio); ROE, margen y deuda como contexto de calidad | Must | Cada fila muestra ambos percentiles con datos ≤ t, incluyendo el P/E normalizado |
 | RF3 | Lectura técnica diaria por nivel de entrada: probabilidad del modelo técnico (SVM) frente a la línea base por decil de volatilidad y su incertidumbre | Must | La probabilidad se muestra junto a la línea base y al desempeño histórico del modelo |
-| RF4 | Lectura probabilística semanal por nivel de salida: probabilidad y tiempo estimado de alcance mediante simulación por **remuestreo de bloques de semanas históricas** de la acción y su ETF sectorial al mismo tiempo | Must | Cada nivel muestra la probabilidad con su rango de incertidumbre y la fecha de los datos usados |
+| RF4 | Lectura probabilística semanal por nivel de salida: probabilidad y tiempo estimado de alcance mediante simulación por **remuestreo de bloques de semanas históricas** de la acción (el XLP solo alinea las fechas del remuestreo y no cambia la probabilidad de alcance) | Must | Cada nivel muestra la probabilidad con su rango de incertidumbre y la fecha de los datos usados |
 | RF5 | Recalcular los niveles por múltiplo al aparecer un reporte nuevo (trimestral o anual); esta entrega ya ingiere ambos y construye la utilidad por acción de los últimos 12 meses | Must | La fecha de recálculo menos la fecha del reporte publicado es ≤ 1 día (KPI 3; medición operativa en la entrega 2) |
 | RF6 | Panel de riesgo descriptivo con cinco cifras: volatilidad anualizada, percentil 5 del retorno semanal, caída máxima (drawdown), frecuencia de caídas fuertes (semanas con pérdida mayor que dos veces la volatilidad reciente) y dependencia del sector (R² del modelo mercado + sector y ΔR² del sector, calculados como en nb04 §6.3) | Must | Las cinco cifras aparecen para cada ticker del universo piloto |
 | RF7 | Permitir que el usuario ajuste sus niveles y umbrales | Should | El usuario edita un nivel y la pantalla se recalcula |
@@ -58,7 +60,21 @@ Los requerimientos se priorizan con MoSCoW (Must, Should, Could, Won't para esta
 | RF10 | Alertas automáticas, conexión al bróker, gestión de portafolio, screening de todo el mercado, calcular el valor intrínseco o sugerir niveles | Won't | Fuera del alcance (entrega 2 en adelante) |
 | RF11 | Para un ticker de una industria no validada, marcar visiblemente "industria no validada" y advertir que las probabilidades no están validadas en esa industria | Must | Un ticker fuera del universo piloto muestra la marca y las probabilidades con advertencia; la lectura fundamental y el panel de riesgo descriptivo sí se muestran |
 
-Los nombres de los seis niveles de RF1 describen el papel que cada precio juega para el usuario: en las entradas, **deep value** es el precio al que, según el usuario, la empresa está muy barata; **value**, barata; **valoración histórica**, un precio coherente con el múltiplo habitual de la empresa; en las salidas, los tres precios objetivo del usuario en un escenario **negativo**, **base** y **positivo**. La herramienta no estima el valor intrínseco ni propone niveles: los fija el usuario con su propia valoración y la herramienta solo los lee (ver RF10 y el hallazgo H3 de §2.9, en el que el participante los pensaba como % de ganancia).
+**Los seis niveles, en llano.** Cada nivel es un precio que **fija el usuario** con su propia valoración (la herramienta no estima el valor intrínseco ni propone niveles; ver RF10, RN1 y el hallazgo H3 de §2.9, en el que el participante los pensaba como % de ganancia). Cada precio se expresa también como múltiplo, es decir, cuántas veces la utilidad por acción (precio = múltiplo × utilidad por acción). Las tres entradas quedan por debajo del precio actual y las tres salidas, por encima.
+
+El ejemplo es **ilustrativo** y es el mismo del mockup: una acción a 70,00 USD con utilidad por acción de 2,80 USD (múltiplo actual: 25 veces).
+
+| Entrada (compra) | Qué significa | Ejemplo ilustrativo |
+|---|---|---|
+| Deep value | El precio al que el usuario considera que la empresa está muy barata | 56,00 USD (20 veces la utilidad por acción) |
+| Value | El precio al que el usuario considera que está barata | 61,60 USD (22 veces) |
+| Valoración histórica | Un precio coherente con el múltiplo habitual de la empresa | 67,20 USD (24 veces) |
+
+| Salida (venta) | Qué significa | Ejemplo ilustrativo |
+|---|---|---|
+| Negativo | El precio de venta del usuario si el escenario es adverso | 75,60 USD (27 veces) |
+| Base | El precio de venta del usuario en su escenario esperado | 81,20 USD (29 veces) |
+| Positivo | El precio de venta del usuario si el escenario es favorable | 89,60 USD (32 veces) |
 
 | ID | Requerimiento no funcional | MoSCoW | Verificación |
 |---|---|---|---|
@@ -79,15 +95,15 @@ El producto se compone de cuatro módulos analíticos y tres tecnológicos. Cada
 |---|---|---|---|---|
 | Analítico (ML) | SVM lineal (coeficientes legibles) y SVM RBF como comparación, con la magnitud de retornos (`\|r_t\|`, [volatilidades de 20 y 252 sesiones](glosario.md)) y los [indicadores técnicos](glosario.md) que la pregunta P4 justifique; solo usa información de precios | Estima la probabilidad diaria de que el precio toque el nivel de entrada en N [días hábiles](glosario.md) antes de escaparse hacia arriba | El SVM lineal permite explicar la contribución de cada variable; el RBF mide si la no linealidad aporta (P4 solo detecta el aporte lineal) | RF3, RN1 |
 | Analítico | Percentiles sobre historia propia e industria, incluido el **P/E normalizado** (precio ÷ promedio de 3 años de utilidad por acción) y la descomposición del cambio del P/E normalizado en precio y utilidades promedio | Ubica cada nivel frente a la historia y la industria y marca "trampa de valor" cuando el "barata" se explica por la caída de la utilidad promedio y no por el precio | Responde "¿es razonable este nivel?" y "¿el 'barata' es temporal?" (P2 y P3 del [punto 4](04_enfoque_analitico.md)) | RF2 |
-| Analítico | Simulación por **remuestreo de bloques de semanas** de la acción y su ETF sectorial al mismo tiempo | Probabilidad y tiempo estimados de alcanzar cada nivel de salida | Conserva la relación con el sector y el agrupamiento de la turbulencia sin suponer una forma paramétrica de los retornos | RF4, RF9 |
+| Analítico | Simulación por **remuestreo de bloques de semanas** de la acción; el XLP solo alinea las fechas | Probabilidad y tiempo estimados de alcanzar cada nivel de salida | Conserva el agrupamiento de la turbulencia sin suponer una forma paramétrica de los retornos; el XLP no cambia la probabilidad (ver el notebook 08, §1, de la entrega 2) | RF4, RF9 |
 | Analítico | Panel de riesgo descriptivo (5 cifras directas) | Cuantifica el riesgo que hoy se mide a ojo con medidas interpretables | Volatilidad anualizada, percentil 5, caída máxima, frecuencia de caídas fuertes y dependencia del sector (R² del modelo mercado + sector y ΔR² del sector; cálculo en nb04 §6.3) | RF6 |
 | Tecnológico | Capa de datos: yfinance, autoridad de EE.UU. (SEC EDGAR) y Damodaran, en pandas en memoria | Lee las fuentes y reconstruye el panel con la fecha publicada de cada reporte | No es un proyecto de ingeniería de datos; solo se guarda una instantánea con fecha para reproducir el análisis | RN2, RN4 |
 | Tecnológico | API REST (FastAPI) | Endpoints de niveles, análisis fundamental, probabilidad y riesgo | Separa el cálculo de la presentación y permite probar cada módulo | RF1 a RF6, RF8, RF11 |
 | Tecnológico | Dashboard (Streamlit) | Muestra la vista única y consume la API | Es rápido de construir y suficiente para la validación con el usuario | RF1 a RF8, RF11 |
 
-### Un nivel en dólares expresado en "k volatilidades" (ejemplo numérico)
+### Un nivel expresado en "volatilidades" (ejemplo numérico)
 
-Para que el modelo técnico pueda comparar un nivel entre acciones distintas, el nivel se traduce a cuántas volatilidades diarias por debajo del precio actual queda, en N días hábiles. La fórmula es `k = ln(P_t / nivel) / (σ_diaria · √N)`, donde `P_t` es el precio hoy, `σ_diaria` es la volatilidad diaria reciente de la acción y `√N` lleva esa volatilidad al horizonte de N días. **Ejemplo numérico (ilustrativo).** Supongamos `P_t = 100`, nivel objetivo de entrada `92` (una caída deseada del 8 %), `σ_diaria = 1,5 %` y `N = 60` días hábiles. Entonces `k = ln(100/92) / (0,015 · √60) ≈ 0,0834 / 0,1162 ≈ 0,72`. Es decir, ese nivel está a ≈ 0,72 volatilidades diarias (escaladas al horizonte de 60 días) bajo el precio. Si para otra empresa el mismo precio en dólares equivaliera a 2 volatilidades, el modelo entiende que es un nivel "mucho más lejano" aunque la distancia porcentual sea similar.
+Para que el modelo técnico compare un nivel entre acciones distintas, lo traduce a cuántas volatilidades diarias (qué tanto se mueve la acción en un día típico) por debajo del precio actual queda, en N días hábiles: `k = ln(P_t / nivel) / (σ_diaria · √N)`. **Ejemplo (ilustrativo):** con el precio en 100, el nivel de entrada en 92 (una caída deseada de 8 %), una volatilidad diaria de 1,5 % y N = 60 días hábiles, k ≈ 0,72; un k mayor es un nivel más lejano para esa acción.
 
 El flujo de datos se resume así:
 
@@ -98,7 +114,7 @@ flowchart LR
     A3[Damodaran: múltiplos por industria] --> D
     D --> M1[Indicadores técnicos y etiqueta de entrada diaria]
     D --> M2[Ratios TTM, percentiles y P/E normalizado]
-    D --> M3[Remuestreo por bloques: acción + ETF sectorial]
+    D --> M3[Remuestreo por bloques de la acción, fechas alineadas al XLP]
     D --> M4[Panel de riesgo descriptivo: 5 cifras]
     M1 --> S[SVM lineal y RBF]
     S --> API[API REST FastAPI]
@@ -121,7 +137,15 @@ El recálculo por reporte nuevo entra por la rama de la autoridad de EE.UU.: cam
 
 ## 2.7 Mockup
 
-El wireframe muestra, para un ticker, el encabezado (ticker, precio y fecha del último reporte publicado); una **franja "Cómo leer esta pantalla"** con 8 definiciones de una línea (P/E, P/B, percentil, industria piloto, SVM, lectura técnica, lectura probabilística y línea base); la tabla de los seis niveles con el precio, el **% vs. precio actual**, el P/E (TTM) y el P/B en columnas separadas, el **percentil del P/E en la historia y en la industria** y, al lado, las dos lecturas: la **técnica** con la probabilidad del SVM, su rango de incertidumbre y la línea base por decil de volatilidad, marcada "se entrena en la entrega 2", y la **probabilística** con la probabilidad de alcanzar la salida y su rango por simulación. Un **recuadro de notas** aparte guarda la lectura "¿suele ser temporal?" de las entradas baratas. El recuadro de desempeño histórico del modelo ([AUC](glosario.md), [Brier](glosario.md) y [calibración](glosario.md)) queda marcado "se calcula en la entrega 2". El panel de riesgo descriptivo trae las cinco cifras (incluidos [R²](glosario.md) y [ΔR²](glosario.md) del ticker de ejemplo con las cifras reales de nb04 §6.3) y el gráfico de precio con los seis niveles marca el precio actual con una **frase descriptiva** ("entre Valoración histórica $67.20 y Salida negativo $75.60"), sin veredicto. La etiqueta de entrada usa N = 60 días hábiles. Los valores de niveles y probabilidades son ilustrativos y están marcados como tales en la imagen; las cifras del panel de riesgo del ticker de ejemplo salen de las [instantáneas](glosario.md) de `data/snapshots/`. Se genera con `scripts/mockup.py`.
+**Leyenda breve (cómo leer la imagen).**
+
+- Azul: las tres entradas (compra), por debajo del precio actual. Naranja: las tres salidas (venta), por encima. Los seis precios los fija el usuario (§2.4).
+- Cada fila trae el precio, el múltiplo y la lectura que le corresponde: en las entradas, la probabilidad del modelo técnico junto a su línea base; en las salidas, la probabilidad por simulación con su rango.
+- Todos los valores son ilustrativos (la acción de ejemplo está a 70,00 USD); la tabla de §2.4 repite los seis precios.
+
+El wireframe muestra, para un ticker, el encabezado (ticker, precio y fecha del último reporte publicado); una **franja "Cómo leer esta pantalla"** con 8 definiciones de una línea (P/E, P/B, percentil, industria piloto, SVM, lectura técnica, lectura probabilística y línea base); la tabla de los seis niveles con el precio, el **% vs. precio actual**, el P/E (TTM) y el P/B en columnas separadas, el **percentil del P/E en la historia y en la industria** y, al lado, las dos lecturas: la **técnica** con la probabilidad del SVM, su rango de incertidumbre y la línea base por decil de volatilidad, marcada "se entrena en la entrega 2", y la **probabilística** con la probabilidad de alcanzar la salida y su rango por simulación. Un **recuadro de notas** aparte guarda la lectura "¿suele ser temporal?" de las entradas baratas. El recuadro de desempeño histórico del modelo ([AUC](glosario.md), [Brier](glosario.md) y [calibración](glosario.md)) queda marcado "se calcula en la entrega 2". 
+
+El panel de riesgo descriptivo trae las cinco cifras (incluidos [R²](glosario.md) y [ΔR²](glosario.md) del ticker de ejemplo con las cifras reales de nb04 §6.3) y el gráfico de precio con los seis niveles marca el precio actual con una **frase descriptiva** ("entre Valoración histórica $67.20 y Salida negativo $75.60"), sin veredicto. La etiqueta de entrada usa N = 60 días hábiles. Los valores de niveles y probabilidades son ilustrativos y están marcados como tales en la imagen; las cifras del panel de riesgo del ticker de ejemplo salen de las [instantáneas](glosario.md) de `data/snapshots/`. Se genera con `scripts/mockup.py`.
 
 ![Mockup del dashboard (v2, valores ilustrativos). La franja "Cómo leer esta pantalla" define los 8 términos clave (incluye SVM) en una línea; la tabla separa P/E y P/B, agrega la columna "% vs. precio actual" y rotula la columna técnica "modelo SVM, se entrena en la entrega 2"; las notas 1 a 3 bajo la tabla llevan la lectura "¿suele ser temporal?" de la fundamental para las tres entradas; el panel de riesgo descriptivo tiene 5 filas espaciadas con una línea de ayuda cada una; la marca del precio actual sobre el gráfico lleva una frase descriptiva ("entre Valoración histórica $67.20 y Salida negativo $75.60"), sin veredicto. La versión que vio el stakeholder (v1) se conserva en `assets/mockup_v1.png`.](../../entregables/entrega_1/assets/mockup.png)
 
@@ -134,7 +158,7 @@ La tabla relaciona cada elemento del mockup con los requerimientos de la secció
 | Columnas de percentil histórico y de la industria (incluido el P/E normalizado) | RF2 |
 | Columna del SVM con intervalo y línea base por decil de volatilidad al lado | RF3, RN1 |
 | Recuadro "Desempeño histórico" (AUC, Brier y calibración) | RF3, RN1 |
-| Columna de probabilidad por simulación (bloques de semanas de la acción y el ETF) | RF4 |
+| Columna de probabilidad por simulación (bloques de semanas de la acción) | RF4 |
 | Panel de riesgo descriptivo (5 cifras) | RF6 |
 | Gráfico de precio con los 6 niveles | RF1 |
 | Botón "Editar nivel" | RF7 |
