@@ -96,11 +96,11 @@ El "barata frente a su historia" se mide con el [**P/E normalizado**](glosario.m
 - **Supuestos verificados** (matriz completa en [nb03 §5.4](../../notebooks/03_eda_univariado.ipynb)): independencia entre filas del chi-cuadrado (semanas vecinas comparten información; decide el IC por bloques, no el p-value); tamaño del bloque (sensibilidad a varios tamaños, §5.6); frecuencia del percentil 80 expansivo (shift(1), 504 días o 104 semanas de historia mínima); estabilidad por subperíodo; controles de dirección sin decisión de negocio.
 - **Decisiones (frecuencia principal diaria y la secundaria semanal):** IC95 bilateral de la diferencia frente a 0 (estadística) y límite inferior del IC95 de `P(T|T)` frente a 30 % (negocio). *Resultado en [03 §5](../../notebooks/03_eda_univariado.ipynb) y en [07 §7.2](07_conclusiones.md).*
 
-### Línea base y SVM (adelanto; se entrena en la entrega 2)
+### Línea base y modelo técnico (adelanto; se entrena en la entrega 2)
 
 - [**Línea base por decil de σ**](glosario.md): con los datos del entrenamiento (≤ 2018), se ordenan todos los días por su volatilidad del último año (`σ252`) y se parten en 10 grupos iguales; para cada grupo se cuenta la fracción de días que terminó tocando. Para un día nuevo, la "predicción" es la tasa de su grupo. Es el modelo más simple que usa solo la volatilidad; el SVM tiene que superarlo para demostrar que aporta algo más.
-- **SVM lineal (y RBF como comparación):** variables en escala de retornos (la magnitud `|r_t|`, `σ20/σ252` y `σ252`) más los indicadores técnicos que P4 justifique. P4 solo mide aporte **lineal**; el SVM RBF se usa para captar aportes **no lineales** que P4 no detecta (p. ej., `dist_sma50` y `dist_sma200` con patrón descriptivo no monotónico en [nb04 §5.5](../../notebooks/04_eda_multivariado.ipynb)). Umbral: ΔAUC frente a la línea base por decil de σ ≥ 0,03.
-- **H0 del SVM (entrega 2):** AUC del SVM = AUC de la línea base por decil de σ. **H1:** AUC del SVM > AUC de la línea base.
+- **Modelo técnico explicable (árbol de decisión o SVM, según la selección de §4.4):** variables en escala de retornos (la magnitud `|r_t|`, `σ20/σ252` y `σ252`) más los indicadores técnicos que P4 justifique. P4 solo mide aporte **lineal**; la selección incluye opciones no lineales (árbol, SVM RBF) para captar aportes **no lineales** que P4 no detecta (p. ej., `dist_sma50` y `dist_sma200` con patrón descriptivo no monotónico en [nb04 §5.5](../../notebooks/04_eda_multivariado.ipynb)). Umbral: ΔAUC frente a la línea base por decil de σ ≥ 0,03.
+- **H0 del modelo técnico (entrega 2):** AUC del modelo elegido = AUC de la línea base por decil de σ. **H1:** AUC del modelo > AUC de la línea base.
 
 ### Multiplicidad
 
@@ -140,11 +140,11 @@ Ninguna técnica queda suelta: toda técnica listada responde a una pregunta de 
 
 1. **Qué se predice:** si el precio toca el nivel de entrada antes de escaparse hacia arriba, dentro de `N = 60` días hábiles (etiqueta de 0 o 1).
 2. **Con qué:** solo variables de tamaño de los movimientos (retornos y volatilidades), calculadas con datos disponibles hasta el día de la decisión.
-3. **Cómo se separan los datos:** se ajusta con el pasado (hasta 2018) y se prueba con lo posterior (2019 en adelante), con un espacio entre ambos para que ninguna etiqueta mire a la prueba.
+3. **Cómo se separan los datos:** se ajusta con el pasado (entrenamiento 2009–2014 y validación 2015–2018, que elige el algoritmo) y se prueba con lo posterior (2019 en adelante), con un espacio entre ambos para que ninguna etiqueta mire a la prueba.
 4. **Con qué se compara:** con una regla simple que solo mira la volatilidad (la tasa de toque por decil de σ252); el modelo debe superarla para justificar su complejidad.
 5. **Cómo se decide:** con el IC95 por bootstrap por bloques de fechas, las dos decisiones de §4.1 y la nota de §4.3 sobre la fuga de selección de P4.
 
-**Etiqueta diaria (P4 y SVM).** La [etiqueta de entrada](glosario.md) vale 1 si el precio toca el nivel inferior antes del superior y dentro del horizonte de `N` días hábiles; vale 0 si primero toca el superior o se agota el tiempo. El nivel inferior está a `k = 1` volatilidad diaria por `√N` por debajo del precio actual; el superior, simétrico hacia arriba. La volatilidad diaria es `σ_t`, estimada con la ventana hacia atrás; `√N` lleva esa volatilidad al horizonte. Las últimas `N` sesiones de cada ticker no tienen etiqueta resuelta (censura) y se excluyen.
+**Etiqueta diaria (P4 y modelo técnico).** La [etiqueta de entrada](glosario.md) vale 1 si el precio toca el nivel inferior antes del superior y dentro del horizonte de `N` días hábiles; vale 0 si primero toca el superior o se agota el tiempo. El nivel inferior está a `k = 1` volatilidad diaria por `√N` por debajo del precio actual; el superior, simétrico hacia arriba. La volatilidad diaria es `σ_t`, estimada con la ventana hacia atrás; `√N` lleva esa volatilidad al horizonte. Las últimas `N` sesiones de cada ticker no tienen etiqueta resuelta (censura) y se excluyen.
 
 **Elección de `k` y `N` fijada de antemano.** `k = 1` (criterio del autor: una caída típica en el horizonte). **`N` se elige solo con el entrenamiento (≤ 2018)** con la regla descrita en P4; el ganador fue `N = 60`. La prueba (2019+) no se usa para elegir.
 
@@ -152,9 +152,9 @@ Ninguna técnica queda suelta: toda técnica listada responde a una pregunta de 
 
 **Corte cronológico con espacio.** El entrenamiento (≤ 2018) y la prueba (2019+) se separan por un espacio de **≥ `N` días hábiles** para que ninguna etiqueta del entrenamiento mire a la prueba.
 
-**Variables del SVM en escala de retornos** (incluida la magnitud). Nunca niveles de precio, para que la lectura técnica y la fundamental sean independientes.
+**Variables del modelo técnico en escala de retornos** (incluida la magnitud). Nunca niveles de precio, para que la lectura técnica y la fundamental sean independientes.
 
-**Fuga de selección de P4 y cómo la mitiga la entrega 2.** P4 elige las variables del SVM con el tramo 2019+ (la prueba). Esto se declara como fuga; en la entrega 2, el SVM se evaluará en un tramo posterior a los datos de esta entrega o con validación cronológica sobre ≤ 2018, para que la selección y la evaluación no compartan datos.
+**Fuga de selección de P4 y cómo la mitiga la entrega 2.** P4 elige las variables del modelo técnico con el tramo 2019+ (la prueba). Esto se declara como fuga; en la entrega 2, el modelo se evaluará en un tramo posterior a los datos de esta entrega o con validación cronológica sobre ≤ 2018, para que la selección y la evaluación no compartan datos.
 
 **Sin look-ahead.** Toda variable en `t` usa datos ≤ `t` (ventana expansiva, `shift(1)` donde haga falta, cortes de deciles con las σ disponibles hasta `t`). Los ratios usan la fecha publicada del reporte, no la de cierre del período. Los percentiles del P/E normalizado son expansivos.
 
@@ -166,7 +166,7 @@ Ninguna técnica queda suelta: toda técnica listada responde a una pregunta de 
 - **[Diagrama de calibración](glosario.md):** curva que compara la probabilidad predicha con la frecuencia observada por tramos. "De las veces que el modelo dijo 60 %, ¿cuántas sí tocaron?".
 - **Comparación con la tasa de toque por decil de σ252** (línea base por decil de σ): regla ΔAUC = AUC(modelo) − AUC(línea base). **Dos decisiones:** se rechaza H0 (ΔAUC = 0) si el IC95 bilateral por bootstrap por bloques no incluye 0; el modelo es **accionable** si el límite inferior del IC supera 0,03. Métricas por subperíodo (2009–2012, 2013–2019, 2020–2021, 2022+).
 
-**Regla de selección del modelo técnico (fijada antes de entrenar).** Se comparan tres algoritmos del curso (SVM lineal, SVM con núcleo RBF y un árbol de decisión poco profundo), cada uno con su grilla de hiperparámetros, y dos referencias que se ajustan con el entrenamiento: la **tasa de toque constante** y la **tasa por decil de σ252**. Los datos se parten en entrenamiento 2009–2014, validación 2015–2018 (cuatro años) y prueba desde 2019, con el espacio de §4.3 entre conjuntos. La selección usa solo la validación:
+**Regla de selección del modelo técnico (fijada antes de entrenar).** Son dos preguntas distintas: la regla de abajo (el BSS medio de validación) **elige el algoritmo** (árbol, SVM lineal o SVM RBF); la decisión de negocio ΔAUC ≥ 0,03 frente a la línea base por decil de σ252 y distancia del nivel (k) se evalúa después, **una sola vez, sobre el modelo elegido y en la prueba (2019 en adelante)**. Se comparan tres algoritmos del curso (SVM lineal, SVM con núcleo RBF y un árbol de decisión poco profundo), cada uno con su grilla de hiperparámetros, y dos referencias que se ajustan con el entrenamiento: la **tasa de toque constante** y la **tasa por decil de σ252**. Los datos se parten en entrenamiento 2009–2014, validación 2015–2018 (cuatro años) y prueba desde 2019, con el espacio de §4.3 entre conjuntos. La selección usa solo la validación:
 
 1. Para cada combinación se calcula el **Brier skill score (BSS)** = 1 − Brier(modelo) ÷ Brier(referencia), con la tasa de toque constante del entrenamiento como referencia. Es positivo si el modelo se equivoca menos que la referencia, y se promedia sobre los cuatro años de validación.
 2. Se llaman **empatadas** las combinaciones a menos de **0,005** del mejor BSS; esa constante se fija antes de mirar la validación.
@@ -215,11 +215,11 @@ La tabla explica cada constante del análisis: qué significa, por qué ese valo
 | P3: umbral | 0,05 anualizado en log | Ventaja mínima del quintil barato en el retorno en exceso sobre el XLP | La prima histórica por comprar barato ronda 3–5 pp por año; se exige el extremo alto | no |
 | P3: resultado medido | log-retorno a 3 años de la acción − el del XLP en la misma ventana | Lo que rindió la acción por encima de su industria | Dentro de una industria, todas las empresas comparten el choque del año; restarlo evita que la diferencia dependa de en qué año se compró | no |
 | P2 y P3: grupos | [Quintiles por fecha](glosario.md) trimestral calendario, balanceados (`k = round(0,2 · n)`) | En cada fecha, las empresas se ordenan por su percentil propio del P/E normalizado | Grupos balanceados en cada fecha y sin mirar al futuro ([percentil expansivo](glosario.md) y orden con solo esa fecha) | **sí** |
-| P4: umbral | ΔAUC = 0,01 por indicador | Mejora mínima para que un indicador entre al SVM | Un punto de AUC es la mejora mínima que justifica agregar una variable (en la exploración, variables sin señal bajaron la AUC total) | **sí** |
+| P4: umbral | ΔAUC = 0,01 por indicador | Mejora mínima para que un indicador entre al modelo técnico | Un punto de AUC es la mejora mínima que justifica agregar una variable (en la exploración, variables sin señal bajaron la AUC total) | **sí** |
 | P5: umbral | ΔR² mediano = 0,05 | El sector explica al menos 5 % más de la varianza que el mercado solo | Por debajo de eso, el sector casi no cambia la lectura del riesgo de la acción | no |
 | P6: "turbulenta" | `|r|` en el 20 % superior de su historia | Una de cada 5 sesiones más agitadas de cada acción | Quintil superior: regla simple y comparable entre acciones | no |
 | P6: umbral | 30 % (frente al 20 % base) | Probabilidad de otra sesión turbulenta tras una turbulenta | Un aumento de 10 pp (50 % relativo) cambiaría la decisión de esperar | no |
-| SVM: umbral | ΔAUC = 0,03 | Mejora mínima sobre la línea base por decil de σ | Mejoras de 0,02–0,04 sobre una buena línea base ya son valiosas | no |
+| Modelo técnico: umbral | ΔAUC = 0,03 | Mejora mínima sobre la línea base por decil de σ | Mejoras de 0,02–0,04 sobre una buena línea base ya son valiosas | no |
 
 **Etiqueta de la rama técnica**
 
@@ -227,7 +227,7 @@ La tabla explica cada constante del análisis: qué significa, por qué ese valo
 |---|---|---|---|---|
 | k | 1 | El nivel de entrada está a 1 volatilidad diaria por `√N` bajo el precio actual | Una caída "típica" en el horizonte; da una tasa de toque que no es ni trivial ni rarísima | no |
 | N (candidatos) | 20, 40, 60 días hábiles | Horizonte de espera (1, 2 o 3 meses) | El usuario pidió "1 mes o más" | no |
-| N (elegido, solo con 2009–2018) | 60 | Horizonte que entra al SVM | Ganador por mayor AUC del modelo A en la validación interna; su tasa de toque está dentro del 10–40 % | no (procedimiento fijado antes; el valor se eligió solo con el entrenamiento) |
+| N (elegido, solo con 2009–2018) | 60 | Horizonte que entra al modelo técnico | Ganador por mayor AUC del modelo A en la validación interna; su tasa de toque está dentro del 10–40 % | no (procedimiento fijado antes; el valor se eligió solo con el entrenamiento) |
 | Balance aceptable | 10–40 % de toques | Filtro para descartar horizontes | Con < 10 % hay muy pocos casos positivos; con > 40 % el nivel se toca casi siempre | no |
 | Deciles de σ | 10 grupos | Grupos de la línea base por decil de σ252 | Cada decil conserva miles de observaciones y separa bien la tasa | no |
 

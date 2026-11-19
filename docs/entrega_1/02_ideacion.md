@@ -50,13 +50,13 @@ Los requerimientos se priorizan con MoSCoW (Must, Should, Could, Won't para esta
 |---|---|---|---|
 | RF1 | Mostrar 3 niveles de entrada (deep value, value, valoración histórica) y 3 de salida (negativo, base, positivo), definidos en precio y en múltiplo en paralelo | Must | Para un ticker, aparecen los 6 niveles con ambas definiciones |
 | RF2 | Lectura fundamental comparativa por nivel: múltiplo implícito, percentil frente a la historia propia (P/E sobre la [utilidad por acción de los últimos 12 meses (EPS TTM)](glosario.md)) y percentil frente a su industria, más el percentil del P/E normalizado (precio ÷ promedio de 3 años de utilidad por acción) como lectura principal del "barata frente a su historia"; cuando aplique, lectura de [trampa de valor](glosario.md) según la descomposición de la pregunta P2 (precio frente a utilidades promedio); ROE, margen y deuda como contexto de calidad | Must | Cada fila muestra ambos percentiles con datos ≤ t, incluyendo el P/E normalizado |
-| RF3 | Lectura técnica diaria por nivel de entrada: probabilidad del modelo técnico (SVM) frente a la línea base por decil de volatilidad y su incertidumbre | Must | La probabilidad se muestra junto a la línea base y al desempeño histórico del modelo |
+| RF3 | Lectura técnica diaria por nivel de entrada: probabilidad del modelo técnico explicable (árbol de decisión o SVM, según la selección de la entrega 2) frente a la línea base por decil de volatilidad y su incertidumbre | Must | La probabilidad se muestra junto a la línea base y al desempeño histórico del modelo |
 | RF4 | Lectura probabilística semanal por nivel de salida: probabilidad y tiempo estimado de alcance mediante simulación por **remuestreo de bloques de semanas históricas** de la acción (el XLP solo alinea las fechas del remuestreo y no cambia la probabilidad de alcance) | Must | Cada nivel muestra la probabilidad con su rango de incertidumbre y la fecha de los datos usados |
 | RF5 | Recalcular los niveles por múltiplo al aparecer un reporte nuevo (trimestral o anual); esta entrega ya ingiere ambos y construye la utilidad por acción de los últimos 12 meses | Must | La fecha de recálculo menos la fecha del reporte publicado es ≤ 1 día (KPI 3; medición operativa en la entrega 2) |
 | RF6 | Panel de riesgo descriptivo con cinco cifras: volatilidad anualizada, percentil 5 del retorno semanal, caída máxima (drawdown), frecuencia de caídas fuertes (semanas con pérdida mayor que dos veces la volatilidad reciente) y dependencia del sector (R² del modelo mercado + sector y ΔR² del sector, calculados como en nb04 §6.3) | Must | Las cinco cifras aparecen para cada ticker del universo piloto |
 | RF7 | Permitir que el usuario ajuste sus niveles y umbrales | Should | El usuario edita un nivel y la pantalla se recalcula |
 | RF8 | Registro de decisiones con fecha, nivel y nota | Should | Hay una entrada por decisión (KPI 4) |
-| RF9 | Escenarios del sector en la simulación (por ejemplo, filtrar bloques de semanas con el ETF a la baja) | Could | El usuario cambia el supuesto del ETF y ve el efecto |
+| RF9 | Extensión futura: escenarios del sector en la simulación (hoy el XLP solo alinea las fechas y no cambia la probabilidad; por ejemplo, filtrar bloques de semanas con el ETF a la baja, que sí la cambiaría) | Could | El usuario cambia el supuesto del ETF y ve el efecto |
 | RF10 | Alertas automáticas, conexión al bróker, gestión de portafolio, screening de todo el mercado, calcular el valor intrínseco o sugerir niveles | Won't | Fuera del alcance (entrega 2 en adelante) |
 | RF11 | Para un ticker de una industria no validada, marcar visiblemente "industria no validada" y advertir que las probabilidades no están validadas en esa industria | Must | Un ticker fuera del universo piloto muestra la marca y las probabilidades con advertencia; la lectura fundamental y el panel de riesgo descriptivo sí se muestran |
 
@@ -78,7 +78,7 @@ El ejemplo es **ilustrativo** y es el mismo del mockup: una acción a 70,00 USD 
 
 | ID | Requerimiento no funcional | MoSCoW | Verificación |
 |---|---|---|---|
-| RN1 | Explicabilidad: el modelo técnico es un SVM lineal cuyos coeficientes son legibles; la probabilidad del modelo técnico se presenta como tal, nunca como "compra" o "vende" | Must | Cada probabilidad viene con su rango de incertidumbre, línea base y errores históricos |
+| RN1 | Explicabilidad: el modelo técnico es explicable (árbol de decisión o SVM, según la selección de la entrega 2), de modo que se pueda leer qué pesa en cada probabilidad; la probabilidad del modelo técnico se presenta como tal, nunca como "compra" o "vende" | Must | Cada probabilidad viene con su rango de incertidumbre, línea base y errores históricos |
 | RN2 | Sin look-ahead: toda lectura en t usa solo datos ≤ t y la fecha publicada del reporte | Must | Reglas del [punto 4](04_enfoque_analitico.md), sección 4.3 |
 | RN3 | Latencia de actualización ≤ 1 día tras un reporte | Must | KPI 3 |
 | RN4 | Datos gratuitos (yfinance, autoridad de EE.UU. y Damodaran) y reproducibles mediante instantáneas con fecha | Must | Todo corre sin claves de pago |
@@ -93,7 +93,7 @@ El producto se compone de cuatro módulos analíticos y tres tecnológicos. Cada
 
 | Tipo | Componente | Función | Justificación | Requerimientos |
 |---|---|---|---|---|
-| Analítico (ML) | SVM lineal (coeficientes legibles) y SVM RBF como comparación, con la magnitud de retornos (`\|r_t\|`, [volatilidades de 20 y 252 sesiones](glosario.md)) y los [indicadores técnicos](glosario.md) que la pregunta P4 justifique; solo usa información de precios | Estima la probabilidad diaria de que el precio toque el nivel de entrada en N [días hábiles](glosario.md) antes de escaparse hacia arriba | El SVM lineal permite explicar la contribución de cada variable; el RBF mide si la no linealidad aporta (P4 solo detecta el aporte lineal) | RF3, RN1 |
+| Analítico (ML) | Modelo técnico explicable (árbol de decisión o SVM, según la selección de la entrega 2), con la magnitud de retornos (`\|r_t\|`, [volatilidades de 20 y 252 sesiones](glosario.md)) y los [indicadores técnicos](glosario.md) que la pregunta P4 justifique; solo usa información de precios | Estima la probabilidad diaria de que el precio toque el nivel de entrada en N [días hábiles](glosario.md) antes de escaparse hacia arriba | Un modelo explicable permite leer la contribución de cada variable, y la selección de la entrega 2 mide si la no linealidad aporta (P4 solo detecta el aporte lineal) | RF3, RN1 |
 | Analítico | Percentiles sobre historia propia e industria, incluido el **P/E normalizado** (precio ÷ promedio de 3 años de utilidad por acción) y la descomposición del cambio del P/E normalizado en precio y utilidades promedio | Ubica cada nivel frente a la historia y la industria y marca "trampa de valor" cuando el "barata" se explica por la caída de la utilidad promedio y no por el precio | Responde "¿es razonable este nivel?" y "¿el 'barata' es temporal?" (P2 y P3 del [punto 4](04_enfoque_analitico.md)) | RF2 |
 | Analítico | Simulación por **remuestreo de bloques de semanas** de la acción; el XLP solo alinea las fechas | Probabilidad y tiempo estimados de alcanzar cada nivel de salida | Conserva el agrupamiento de la turbulencia sin suponer una forma paramétrica de los retornos; el XLP no cambia la probabilidad (ver el notebook 08, §1, de la entrega 2) | RF4, RF9 |
 | Analítico | Panel de riesgo descriptivo (5 cifras directas) | Cuantifica el riesgo que hoy se mide a ojo con medidas interpretables | Volatilidad anualizada, percentil 5, caída máxima, frecuencia de caídas fuertes y dependencia del sector (R² del modelo mercado + sector y ΔR² del sector; cálculo en nb04 §6.3) | RF6 |
@@ -116,7 +116,7 @@ flowchart LR
     D --> M2[Ratios TTM, percentiles y P/E normalizado]
     D --> M3[Remuestreo por bloques de la acción, fechas alineadas al XLP]
     D --> M4[Panel de riesgo descriptivo: 5 cifras]
-    M1 --> S[SVM lineal y RBF]
+    M1 --> S[Modelo técnico explicable]
     S --> API[API REST FastAPI]
     M2 --> API
     M3 --> API
@@ -131,7 +131,7 @@ El recálculo por reporte nuevo entra por la rama de la autoridad de EE.UU.: cam
 
 ## 2.6 Cadencia de cada lectura
 
-- **Técnica (SVM):** se actualiza **cada día**, porque la volatilidad y los indicadores técnicos cambian a diario.
+- **Técnica (modelo técnico):** se actualiza **cada día**, porque la volatilidad y los indicadores técnicos cambian a diario.
 - **Fundamental:** se actualiza **con cada reporte nuevo** (trimestral o anual) de la autoridad de EE.UU., porque los ratios cambian solo cuando se publica una nueva cifra.
 - **Probabilística (simulación) y panel de riesgo:** se actualizan **cada semana**, porque el horizonte del inversor y la frecuencia natural de los retornos para esta rama son semanales.
 
@@ -142,8 +142,6 @@ El recálculo por reporte nuevo entra por la rama de la autoridad de EE.UU.: cam
 - Azul: las tres entradas (compra), por debajo del precio actual. Naranja: las tres salidas (venta), por encima. Los seis precios los fija el usuario (§2.4).
 - Cada fila trae el precio, el múltiplo y la lectura que le corresponde: en las entradas, la probabilidad del modelo técnico junto a su línea base; en las salidas, la probabilidad por simulación con su rango.
 - Todos los valores son ilustrativos (la acción de ejemplo está a 70,00 USD); la tabla de §2.4 repite los seis precios.
-
-El wireframe muestra, para un ticker, el encabezado (ticker, precio y fecha del último reporte publicado); una **franja "Cómo leer esta pantalla"** con 8 definiciones de una línea (P/E, P/B, percentil, industria piloto, SVM, lectura técnica, lectura probabilística y línea base); la tabla de los seis niveles con el precio, el **% vs. precio actual**, el P/E (TTM) y el P/B en columnas separadas, el **percentil del P/E en la historia y en la industria** y, al lado, las dos lecturas: la **técnica** con la probabilidad del SVM, su rango de incertidumbre y la línea base por decil de volatilidad, marcada "se entrena en la entrega 2", y la **probabilística** con la probabilidad de alcanzar la salida y su rango por simulación. Un **recuadro de notas** aparte guarda la lectura "¿suele ser temporal?" de las entradas baratas. El recuadro de desempeño histórico del modelo ([AUC](glosario.md), [Brier](glosario.md) y [calibración](glosario.md)) queda marcado "se calcula en la entrega 2". 
 
 El panel de riesgo descriptivo trae las cinco cifras (incluidos [R²](glosario.md) y [ΔR²](glosario.md) del ticker de ejemplo con las cifras reales de nb04 §6.3) y el gráfico de precio con los seis niveles marca el precio actual con una **frase descriptiva** ("entre Valoración histórica $67.20 y Salida negativo $75.60"), sin veredicto. La etiqueta de entrada usa N = 60 días hábiles. Los valores de niveles y probabilidades son ilustrativos y están marcados como tales en la imagen; las cifras del panel de riesgo del ticker de ejemplo salen de las [instantáneas](glosario.md) de `data/snapshots/`. Se genera con `scripts/mockup.py`.
 
@@ -156,7 +154,7 @@ La tabla relaciona cada elemento del mockup con los requerimientos de la secció
 | Encabezado con ticker, precio y fecha publicada del último reporte | RF5, RN2, RN3 |
 | Filas de los 6 niveles con precio y múltiplo implícito, y marcador de divergencia precio frente a múltiplo | RF1 |
 | Columnas de percentil histórico y de la industria (incluido el P/E normalizado) | RF2 |
-| Columna del SVM con intervalo y línea base por decil de volatilidad al lado | RF3, RN1 |
+| Columna del modelo técnico con intervalo y línea base por decil de volatilidad al lado | RF3, RN1 |
 | Recuadro "Desempeño histórico" (AUC, Brier y calibración) | RF3, RN1 |
 | Columna de probabilidad por simulación (bloques de semanas de la acción) | RF4 |
 | Panel de riesgo descriptivo (5 cifras) | RF6 |

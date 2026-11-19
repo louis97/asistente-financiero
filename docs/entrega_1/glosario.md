@@ -28,7 +28,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **brecha (entre conjuntos)** · Sesiones que se descartan justo antes de la frontera entre dos conjuntos (entrenamiento, validación, prueba). La etiqueta de una fila mira 60 sesiones hacia adelante; sin la brecha, las últimas filas de un conjunto tendrían una etiqueta que depende de precios del conjunto siguiente. Ejemplo: 60 sesiones antes del 2015-01-01 y antes del 2019-01-01 (notebook 06). La simulación de salidas (semanal) usa una brecha de 52 semanas, su horizonte (notebook 08).
 
-**Brier (puntaje de Brier)** · Error cuadrático medio entre una probabilidad predicha y lo que pasó (1 si ocurrió, 0 si no). Va de 0 (perfecto) a 1; más bajo es mejor. Ejemplo: si el modelo dice 0,6 y el precio sí tocó el nivel, el error de esa observación es (1 − 0,6)² = 0,16. Se usará en la entrega 2 para el SVM y la simulación (punto 4 §4.4).
+**Brier (puntaje de Brier)** · Error cuadrático medio entre una probabilidad predicha y lo que pasó (1 si ocurrió, 0 si no). Va de 0 (perfecto) a 1; más bajo es mejor. Ejemplo: si el modelo dice 0,6 y el precio sí tocó el nivel, el error de esa observación es (1 − 0,6)² = 0,16. Se usará en la entrega 2 para el modelo técnico y la simulación (punto 4 §4.4).
 
 **Brier skill score (BSS)** · `1 − Brier(modelo) ÷ Brier(referencia)`. Mide cuánto menos se equivoca una probabilidad que una referencia: positivo si se equivoca menos, 0 si igual, negativo si más. Ejemplo: un BSS de +0,160 frente a una tasa constante significa un Brier 16 % menor que el de esa constante (notebook 08, simulación en la prueba con k = 0,5).
 
