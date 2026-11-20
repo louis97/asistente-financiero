@@ -846,6 +846,53 @@
    "BSS medio": 0.1667530859656181
   }
  ],
+ "sensibilidad_signo": {
+  "arbol": {
+   "hiperparametros": {
+    "max_depth": 2,
+    "min_samples_leaf": 2000
+   },
+   "bss_medio_sin_r": 0.16739558052362022,
+   "bss_medio_con_r": 0.16739558052362022,
+   "auc_sin_r": 0.77147618552624,
+   "auc_con_r": 0.77147618552624,
+   "delta_bss_medio": 0.0,
+   "delta_bss_ic95": [
+    0.0,
+    0.0
+   ],
+   "delta_auc": 0.0,
+   "delta_auc_ic95": [
+    0.0,
+    0.0
+   ],
+   "mejora_candidata": false
+  },
+  "lineal": {
+   "hiperparametros": {
+    "C": 0.01
+   },
+   "bss_medio_sin_r": 0.16699749850399961,
+   "bss_medio_con_r": 0.1669954475109285,
+   "auc_sin_r": 0.7860221206804197,
+   "auc_con_r": 0.7819241815395834,
+   "delta_bss_medio": -2.050993071101015e-06,
+   "delta_bss_ic95": [
+    -3.526052348625658e-06,
+    2.0161890018528797e-06
+   ],
+   "delta_auc": -0.0040979391408362265,
+   "delta_auc_ic95": [
+    -0.013803408565247338,
+    0.00488008504838457
+   ],
+   "mejora_candidata": false
+  },
+  "importancia_r_en_arbol": 0.0,
+  "regla": "mejora candidata si ΔBSS medio >= 0.005",
+  "decision_arbol": "no se registra",
+  "decision_lineal": "no se registra"
+ },
  "prueba": {
   "arbol": {
    "tasa_toque": 0.20098223694114106,
@@ -7105,5 +7152,5 @@
   "version_sklearn": "1.9.1",
   "recarga_coincide": true
  },
- "tiempo_ejecucion_min": 15.1
+ "tiempo_ejecucion_min": 16.8
 }
