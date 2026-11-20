@@ -1,0 +1,26 @@
+# Blueprint de Render: un servicio web gratuito con la API (FastAPI).
+# Los cuatro secretos NO tienen valor aquí: se cargan en el panel de Render al aplicar el blueprint.
+# Python: sin PYTHON_VERSION, Render usa el archivo .python-version de la raíz (3.12).
+# ACCESO_ABIERTO no se define nunca en Render (desactivaría el acceso por código).
+services:
+  - type: web
+    name: asistente-api
+    runtime: python
+    plan: free
+    region: oregon
+    branch: entrega-2
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /estado
+    envVars:
+      - key: DATA_DIR
+        value: data/produccion
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: CODIGOS_HASH
+        sync: false
+      - key: SEC_USER_AGENT     # sin él la API funciona y solo omite la descarga de EDGAR a demanda (con advertencia)
+        sync: false

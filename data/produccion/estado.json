@@ -1,0 +1,9 @@
+{
+  "ultimo_dato": "2026-10-15",
+  "ultimo_recalculo": "2026-11-20T00:27:31Z",
+  "fuentes_ok": {
+    "yfinance": true,
+    "edgar": true
+  },
+  "primera_ejecucion": "2026-11-20"
+}
