@@ -16,7 +16,7 @@ PREGUNTAS = {
     "tabla": "**Fundamental:** ¿es razonable este precio para esta empresa? **Técnica** (entradas): ¿compro ya o espero? "
              "Es la probabilidad de que el precio baje hasta la entrada en 60 días hábiles. **Simulación** (salidas): "
              "¿qué tan probable es vender a ese precio en el próximo año?",
-        "grafico": "¿Dónde queda el precio de hoy frente a mis niveles?",
+    "grafico": "¿Dónde queda el precio de hoy frente a mis niveles?",
     "riesgo": "¿Cuánto me puede doler mientras espero?",
     "desempeno": "¿Cuánto confiar en la probabilidad técnica?",
     "edicion": "¿Qué cambia si muevo mis niveles?",
@@ -52,7 +52,7 @@ TOOLTIPS = {
     "ΔAUC": "AUC del modelo menos AUC de la línea base: si es positivo, el modelo ordena mejor que la línea base.",
     "Brier": "Error cuadrático medio de las probabilidades frente a lo que pasó: va de 0 a 1 y menos es mejor.",
     "calibración": "Compara lo que el modelo dijo con lo que pasó: si dice 20 % y calibra bien, toca el nivel unas 2 de cada 10 veces.",
-    "rango probable": "IC95: rango en el que, con 95 % de confianza, cae lo que pasó de verdad.",
+    "rango probable": "IC95: con 95 % de confianza, la frecuencia real de ese tramo está en este rango.",
     "línea base": GLOSARIO_BOLSILLO["línea base"],
     "percentil": GLOSARIO_BOLSILLO["percentil"],
     "σ (volatilidad)": "Cuánto se mueve el precio: la desviación típica de los retornos diarios del último año, expresada en términos anuales.",
