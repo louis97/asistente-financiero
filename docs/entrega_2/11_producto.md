@@ -30,7 +30,7 @@ Esta guía conecta el repositorio con las cuentas gratuitas que usa el producto:
 1. Entra a supabase.com con tu cuenta de GitHub y pulsa "New project". Plan gratuito, la región más cercana. Anota la contraseña de la base de datos en un lugar privado (no se usa en el producto).
 2. Abre "SQL Editor" → "New query", pega **todo** el contenido de `app/api/supabase.sql` y pulsa "Run". Crea tres tablas: `decisiones`, `niveles_usuario` y `salud`.
 3. En "Table Editor" comprueba que las tres tablas muestran RLS activado.
-4. En "Project Settings" → "API" copia "Project URL" (será `SUPABASE_URL`) y la clave de servicio `service_role` (será `SUPABASE_KEY`). Esa clave solo se pega en Render: nunca en el dashboard, en GitHub ni en archivos.
+4. En "Project Settings" → "API" copia "Project URL" (será `SUPABASE_URL`) y la clave de servicio: "service_role" o, en el panel nuevo, "Secret key" (empieza por `sb_secret_`); será `SUPABASE_KEY`. **No** uses la clave "anon" ni la "Publishable" (`sb_publishable_`): con ella la API no puede leer ni escribir y `/estado` dirá `supabase_ok: false`. Esa clave solo se pega en Render: nunca en el dashboard, en GitHub ni en archivos.
 5. `SEC_USER_AGENT` es tu nombre y correo (por ejemplo, "Nombre Apellido correo@dominio.com"); la SEC lo exige para identificar quién consulta.
 
 ### 3. Códigos de acceso
@@ -61,7 +61,7 @@ Esta guía conecta el repositorio con las cuentas gratuitas que usa el producto:
 1. En el repositorio: Settings → Secrets and variables → Actions → "New repository secret". Crea `SEC_USER_AGENT` (tu nombre y correo) y `API_URL` (la dirección de Render).
 2. Settings → Actions → General → "Workflow permissions": marca "Read and write permissions" y "Save".
 3. (Según la decisión sobre la rama por defecto.) GitHub solo ejecuta el cron diario (`schedule`) desde la rama por defecto del repositorio. Mientras esa rama sea `main` (entrega 1, sin el workflow), el cron no corre y solo funciona la ejecución manual sobre `entrega-2`. Para tener la actualización diaria hay que poner `entrega-2` como rama por defecto (Settings → Branches → "Default branch") o llevar el workflow a la rama por defecto. El workflow hace commit y push a la misma rama en la que corre.
-4. La primera ejecución de la tarea diaria solo siembra `data/produccion/` desde la instantánea (la siembra ya viene hecha y versionada en el repositorio); desde la siguiente descarga, precios, ratios y la latencia de los reportes nuevos se actualizan solos.
+4. La primera ejecución de la tarea diaria solo siembra `data/produccion/` desde la instantánea (la siembra ya viene hecha y versionada en el repositorio); desde la siguiente descarga, precios, ratios y la latencia de los reportes nuevos se actualizan solos. Casi todos los días habrá un commit de datos: el ajuste por dividendos reescribe el histórico de precios y la barra semanal en curso cambia; es lo esperado.
 5. Segunda ejecución con descarga real (la hace Actions o tú en la terminal): `SEC_USER_AGENT="<tu nombre y correo>" uv run python scripts/actualizar_datos.py; echo "codigo=$?"; wc -l data/produccion/latencia.csv`. Esperado: `codigo=0` y `latencia.csv` sin filas con `filed` anterior a la fecha de `primera_ejecucion` (1 línea si no hubo reportes nuevos).
 
 ### 7. Comprobar que todo funciona
@@ -71,7 +71,7 @@ Esta guía conecta el repositorio con las cuentas gratuitas que usa el producto:
 3. Dashboard: `curl -s -o /dev/null -w "%{http_code}\n" --max-time 60 "$URL_DASHBOARD"`. Esperado: `200`.
 4. Lecturas públicas: `curl -s -X POST "$API_URL/lecturas" -H 'Content-Type: application/json' -d '{"ticker":"KO","entradas":[],"salidas":[]}' | head -c 300`. Esperado: una respuesta de la API (un 422 por niveles vacíos es aceptable); nunca 500 ni 401.
 5. Supabase en vivo (con la clave real; las variables se exportan en la terminal, no en archivos):
-   1. En "Table Editor" ambas tablas con RLS activado.
+   1. En "Table Editor" las tres tablas (`decisiones`, `niveles_usuario`, `salud`) con RLS activado.
    2. `export SUPABASE_URL=... SUPABASE_KEY=... CODIGOS_HASH='{"ana":"<huella1>","beto":"<huella2>"}'` y `uv run uvicorn app.api.main:app --port 8000`. Si el cliente rechazara una clave `sb_secret_`, usa la clave `service_role` clásica.
    3. `curl -s localhost:8000/estado` debe dar `supabase_ok: true`. Sin encabezados `X-Alias` y `X-Codigo`, `/decisiones` y `/niveles/KO` dan 401; con alias o código errado, el mismo 401 sin más detalle (por diseño).
    4. Con el código correcto de cada alias: un POST a `/decisiones` de `ana` deja una fila con `alias = 'ana'` y ninguna de `beto`; un PUT a `/niveles/KO` de cada uno con valores distintos deja una fila por `(alias, 'KO')` y cada uno lee solo la suya.
