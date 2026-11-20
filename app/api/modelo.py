@@ -38,6 +38,12 @@ def cargar_modelo() -> tuple:
         return _cache
 
 
+def n_hojas(pipe) -> int | None:
+    """Hojas del árbol de decisión del pipeline; None si el algoritmo ganador no es un árbol."""
+    paso = pipe.steps[-1][1]
+    return int(paso.get_n_leaves()) if hasattr(paso, "get_n_leaves") else None
+
+
 def k_rejilla(k: float, meta: dict) -> float:
     """El k de la rejilla de entrenamiento más cercano."""
     grilla = np.array(meta["k_grid"], dtype=float)

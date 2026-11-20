@@ -94,8 +94,8 @@ def _texto_trampa(p: float) -> str:
     """Solo lo propio del nivel; la explicación de la evidencia es común y la muestra el dashboard una vez."""
     pc = f"{p * 100:.0f} %"
     if p <= QUINTIL:
-        return f"Percentil {pc} de su historia: queda en el 20 % más barato."
-    return f"Percentil {pc} de su historia: queda fuera del 20 % más barato."
+        return f"P/E normalizado en el percentil {pc[:-2].strip()} de su historia: queda en el 20 % más barato."
+    return f"P/E normalizado en el percentil {pc[:-2].strip()} de su historia: queda fuera del 20 % más barato."
 
 
 def _coma(x: float, dec: int) -> str:
@@ -106,8 +106,7 @@ def _aviso_rango(nombre: str, k: float, vol60: float, lejos: bool) -> str:
     """Una frase: distancia del nivel en volatilidades, qué es 1 volatilidad y hacia dónde puede estar sesgada la probabilidad."""
     sesgo = ("más lejos de lo que el modelo conoce; la probabilidad real probablemente es menor que la mostrada" if lejos else
              "más cerca de lo que el modelo conoce; la probabilidad real probablemente es mayor que la mostrada")
-    return (f"«{nombre}» queda a {_coma(k, 2 if k < 1 else 1)} volatilidades del precio (1 volatilidad = {_coma(vol60 * 100, 1)} %, "
-            f"lo que esta acción se mueve típicamente en 60 días hábiles), {sesgo}.")
+    return (f"«{nombre}» queda a {_coma(k, 2 if k < 1 else 1)} volatilidades del precio (1 volatilidad = {_coma(vol60 * 100, 1)} %), {sesgo}.")
 
 
 def _fundamental(datos, precio, eps, bvps) -> dict:

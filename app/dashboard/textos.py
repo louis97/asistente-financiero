@@ -16,8 +16,7 @@ PREGUNTAS = {
     "tabla": "**Fundamental:** ¿es razonable este precio para esta empresa? **Técnica** (entradas): ¿compro ya o espero? "
              "Es la probabilidad de que el precio baje hasta la entrada en 60 días hábiles. **Simulación** (salidas): "
              "¿qué tan probable es vender a ese precio en el próximo año?",
-    "fundamental": "¿Es razonable este precio para esta empresa?",
-    "grafico": "¿Dónde queda el precio de hoy frente a mis niveles?",
+        "grafico": "¿Dónde queda el precio de hoy frente a mis niveles?",
     "riesgo": "¿Cuánto me puede doler mientras espero?",
     "desempeno": "¿Cuánto confiar en la probabilidad técnica?",
     "edicion": "¿Qué cambia si muevo mis niveles?",
@@ -26,9 +25,9 @@ PREGUNTAS = {
 
 # Explicación común de las notas de la columna Fundamental (una sola vez; cada nivel solo agrega su dato)
 NOTA_FUNDAMENTAL = ("El percentil dice dónde queda el P/E normalizado del nivel frente a la historia de la empresa (bajo = barato). "
-                    "Qué se midió: en las 21 empresas de consumo defensivo, de 2013 a 2023, las que estaban entre el 20 % más barato "
-                    "de su propia historia tuvieron, 3 años después, una utilidad promedio cerca de 36 % peor que las más caras, "
-                    "mientras el precio subió casi igual en los dos grupos. Es una asociación histórica: no anticipa lo que pasará "
+                    "Qué se midió: en las 21 empresas de consumo defensivo, con datos de finales de 2012 a 2023, las que estaban entre el 20 % más barato "
+                    "de su propia historia vieron crecer su utilidad promedio de 3 años cerca de 36 % menos que las más caras en los 3 años siguientes "
+                    "(rango probable: 19 % a 50 %), y el precio no se distinguió entre los dos grupos. Es una asociación histórica: no anticipa lo que pasará "
                     "con esta empresa.")
 
 GLOSARIO_BOLSILLO = {
@@ -52,7 +51,7 @@ TOOLTIPS = {
     "AUC": "Qué tan bien el modelo separa los casos en que el precio sí tocó el nivel de los que no: 0,5 es azar y 1 es separación perfecta.",
     "ΔAUC": "AUC del modelo menos AUC de la línea base: si es positivo, el modelo ordena mejor que la línea base.",
     "Brier": "Error cuadrático medio de las probabilidades frente a lo que pasó: va de 0 a 1 y menos es mejor.",
-    "calibración": "Compara lo que el modelo dijo con lo que pasó: si dice 20 % y está bien calibrado, el precio toca el nivel cerca de 2 de cada 10 veces.",
+    "calibración": "Compara lo que el modelo dijo con lo que pasó: si dice 20 % y calibra bien, toca el nivel unas 2 de cada 10 veces.",
     "rango probable": "IC95: rango en el que, con 95 % de confianza, cae lo que pasó de verdad.",
     "línea base": GLOSARIO_BOLSILLO["línea base"],
     "percentil": GLOSARIO_BOLSILLO["percentil"],
@@ -82,6 +81,6 @@ TOOLTIPS = {
     "nivel: negativo": "Negativo (salida): el precio objetivo en un escenario negativo; la salida más cercana por encima del precio actual.",
     "nivel: base": "Base (salida): el precio objetivo en el escenario que consideras más probable.",
     "nivel: positivo": "Positivo (salida): el precio objetivo en un escenario positivo; la salida más lejana por encima del precio actual.",
-    "fuera del rango entrenado": "El modelo se entrenó con niveles de entre 0,5 y 2 volatilidades del precio. Fuera de ese rango lo evalúa en el borde más cercano, "
+    "fuera del rango entrenado": "1 volatilidad es lo que la acción se mueve típicamente en 60 días hábiles. El modelo se entrenó con niveles de entre 0,5 y 2. Fuera de ese rango lo evalúa en el borde más cercano, "
                                  "por eso su probabilidad se marca «como máximo» (nivel más lejos) o «al menos» (más cerca).",
 }

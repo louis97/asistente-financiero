@@ -130,8 +130,8 @@ def _fila(i, n, adv, industria_validada):
     if es_ent:
         t = n["tecnica"]
         pref = {"lejos": "como máximo ", "cerca": "al menos "}.get(t.get("fuera_rango") if t else None, "")
-        tec = (f"{pref}{pct(t['prob'])} · línea base {pct(t['linea_base'])} · rango de la calibración histórica "
-               f"{rango(t['ic_lo'], t['ic_hi'])}" if t and t["prob"] is not None else
+        cal = "" if pref else f" · rango de la calibración histórica {rango(t['ic_lo'], t['ic_hi'])}" if t else ""
+        tec = (f"{pref}{pct(t['prob'])} · línea base {pct(t['linea_base'])}{cal}" if t and t["prob"] is not None else
                f"{SIN_DATO}: " + _motivo(adv, "técnica", "historia", defecto="sin lectura técnica para este nivel"))
     else:
         p = n["probabilistica"]
@@ -172,7 +172,6 @@ def notas_fundamental(res):
     lec = res["lecturas"]
     with st.container(border=True):
         st.markdown("**Notas de la columna Fundamental** (solo entradas)")
-        st.caption(PREGUNTAS["fundamental"])
         if any(n["lectura_trampa"] for n in lec["niveles"][:3]):
             st.markdown(NOTA_FUNDAMENTAL)
         for i, n in enumerate(lec["niveles"][:3]):
@@ -325,14 +324,15 @@ def _ic(lo, hi):
 
 def _explicacion(modelo, m):
     """Por qué la línea base rinde igual o mejor, con cifras y conteos leídos del modelo."""
-    deciles, dist, hojas = len(modelo["cortes_decil_sigma"]) + 1, len(modelo["k_grid"]), len(modelo["calibracion_prueba"])
+    deciles, dist, hojas = len(modelo["cortes_decil_sigma"]) + 1, len(modelo["k_grid"]), modelo.get("n_hojas")
     lo, hi = m["delta_auc_ic95"]
     orden = ("ordena un poco peor" if hi < 0 else "ordena un poco mejor" if lo > 0 else "ordena igual")
+    simple = (f"El árbol es más simple: solo da {hojas} probabilidades distintas, por eso {orden}" if
+              modelo.get("algoritmo") == "arbol" and hojas else f"El modelo elegido {orden}")
     blo, bhi = m["bss_vs_linea_base_ic95"]
     exacto = "empatan" if blo <= 0 <= bhi else ("el modelo es más exacto" if blo > 0 else "la línea base es más exacta")
     return (f"Que el precio toque un nivel depende casi solo de qué tan lejos está, medido en volatilidades, y la línea base ya usa "
-            f"eso: una tabla de {deciles} grupos de volatilidad × {dist} distancias = {deciles * dist} casillas. El árbol es más simple: "
-            f"solo da {hojas} probabilidades distintas, por eso {orden} (ΔAUC {num(m['delta_auc'], 3)}, {_ic(lo, hi)}). En exactitud "
+            f"eso: una tabla de {deciles} grupos de volatilidad × {dist} distancias = {deciles * dist} casillas. {simple} (ΔAUC {num(m['delta_auc'], 3)}, {_ic(lo, hi)}). En exactitud "
             f"de la probabilidad {exacto} ({num(m['bss_vs_linea_base'], 3)}, {_ic(blo, bhi)}"
             f"{', incluye el 0' if blo <= 0 <= bhi else ''}). Úsalo como referencia junto a la línea base.")
 
@@ -365,9 +365,9 @@ def recuadro_desempeno(modelo):
         fig = figura_calibracion(modelo)
         g.pyplot(fig, width="stretch")
         plt.close(fig)
-        t.markdown(f"Cuando el modelo dijo x %, ¿pasó x % de las veces? La barra azul muestra lo que pasó de verdad; si toca "
-                   f"la diagonal, acertó. Acertó en {coh} de {len(tramos)} tramos; en {arriba} pasó más de lo que dijo (el modelo "
-                   f"se quedó corto) y en {abajo}, menos.")
+        t.markdown(f"Cuando el modelo dijo x %, ¿pasó x % de las veces? La barra azul es lo que pasó; si toca la "
+                   f"diagonal, acertó. Acertó en {coh} de {len(tramos)} tramos; en {arriba} pasó más de lo dicho (se quedó "
+                   f"corto), en {abajo} pasó menos.")
         t.dataframe(pd.DataFrame([{"El modelo dijo": f"{pct(x['tramo_lo'])} a {pct(x['tramo_hi'])}",
                                    "Pasó de verdad": pct(x["tasa_obs"]), "Rango probable": rango(x["ic_lo"], x["ic_hi"]),
                                    "Lecturas": f"{x['n']:,}".replace(",", ".")} for x in tramos]),

@@ -115,7 +115,8 @@ def get_riesgo(ticker: str):
 
 @app.get("/modelo")
 def get_modelo():
-    return md.cargar_modelo()[1]
+    pipe, meta = md.cargar_modelo()
+    return {**meta, "n_hojas": md.n_hojas(pipe)}
 
 
 # ------------------------------------------------------------------ rutas protegidas
