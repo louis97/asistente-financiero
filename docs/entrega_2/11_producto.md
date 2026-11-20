@@ -28,9 +28,9 @@ Esta guía conecta el repositorio con las cuentas gratuitas que usa el producto:
 ### 2. Supabase
 
 1. Entra a supabase.com con tu cuenta de GitHub y pulsa "New project". Plan gratuito, la región más cercana. Anota la contraseña de la base de datos en un lugar privado (no se usa en el producto).
-2. Abre "SQL Editor" → "New query", pega **todo** el contenido de `app/api/supabase.sql` y pulsa "Run". Crea tres tablas: `decisiones`, `niveles_usuario` y `salud`.
+2. Abre "SQL Editor" → "New query", pega **todo** el contenido de `app/api/supabase.sql` y pulsa "Run". Crea tres tablas (`decisiones`, `niveles_usuario` y `salud`) y da a la clave de servicio los permisos mínimos sobre ellas. Es idempotente: si cambias el script, se vuelve a ejecutar completo sin perder datos.
 3. En "Table Editor" comprueba que las tres tablas muestran RLS activado.
-4. En "Project Settings" → "API" copia "Project URL" (será `SUPABASE_URL`) y la clave de servicio: "service_role" o, en el panel nuevo, "Secret key" (empieza por `sb_secret_`); será `SUPABASE_KEY`. **No** uses la clave "anon" ni la "Publishable" (`sb_publishable_`): con ella la API no puede leer ni escribir y `/estado` dirá `supabase_ok: false`. Esa clave solo se pega en Render: nunca en el dashboard, en GitHub ni en archivos.
+4. En "Project Settings" → "API" copia "Project URL" (será `SUPABASE_URL`; exactamente `https://<ref>.supabase.co`, sin `/` final ni `/rest/v1`, que la API agrega sola) y la clave de servicio: "service_role" o, en el panel nuevo, "Secret key" (empieza por `sb_secret_`); será `SUPABASE_KEY`. **No** uses la clave "anon" ni la "Publishable" (`sb_publishable_`): con ella la API no puede leer ni escribir y `/estado` dirá `supabase_ok: false`. Esa clave solo se pega en Render: nunca en el dashboard, en GitHub ni en archivos.
 5. `SEC_USER_AGENT` es tu nombre y correo (por ejemplo, "Nombre Apellido correo@dominio.com"); la SEC lo exige para identificar quién consulta.
 
 ### 3. Códigos de acceso

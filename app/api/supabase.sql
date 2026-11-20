@@ -31,3 +31,11 @@ alter table niveles_usuario  enable row level security;
 create table if not exists salud (id int primary key);
 insert into salud (id) values (1) on conflict do nothing;
 alter table salud enable row level security;
+
+-- Permisos mínimos para la clave de servicio: los proyectos nuevos de Supabase no los conceden por defecto
+-- (sin ellos, cada consulta responde 42501 "permission denied"). anon y authenticated no reciben ninguno.
+grant usage on schema public to service_role;
+grant select, insert         on decisiones      to service_role;
+grant usage, select          on sequence decisiones_id_seq to service_role;
+grant select, insert, update on niveles_usuario to service_role;
+grant select                 on salud           to service_role;
