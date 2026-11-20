@@ -8,8 +8,8 @@ import pandas as pd
 import streamlit as st
 
 from app.dashboard.cliente import ErrorAcceso, ErrorServicio, ErrorValidacion
-from app.dashboard.textos import (ALGORITMOS, NOMBRES_NIVEL, DISCLAIMER, GLOSARIO_BOLSILLO, LEYENDA_ASESORIA, PERIODO_PRUEBA,
-                                  SUBTITULO_BANNER, TOOLTIPS)
+from app.dashboard.textos import (ALGORITMOS, NOMBRES_NIVEL, DISCLAIMER, GLOSARIO_BOLSILLO, LEYENDA_ASESORIA, NOTA_FUNDAMENTAL,
+                                  PERIODO_PRUEBA, PREGUNTAS, SUBTITULO_BANNER, TOOLTIPS)
 
 # Paleta del mockup (validada con el validador de dataviz: azul y naranja separables con visión normal y con daltonismo)
 AZUL, NARANJA = "#1f6aa5", "#c2571a"
@@ -90,8 +90,8 @@ def avisos(res):
         st.error("Credenciales inválidas")
     for a in lec["advertencias"]:
         st.warning(a)
-    if any("fuera del rango entrenado" in a for a in lec["advertencias"]):
-        st.caption("Fuera del rango entrenado: " + TOOLTIPS["fuera del rango entrenado"])
+    if any((n.get("tecnica") or {}).get("fuera_rango") for n in lec["niveles"]):
+        st.caption(TOOLTIPS["fuera del rango entrenado"])      # una sola explicación general; cada aviso trae las cifras del nivel
     for a in res.get("avisos", []):
         st.warning(a)
     if not lec["industria_validada"]:
@@ -101,8 +101,7 @@ def avisos(res):
 
 
 def franja_glosario():
-    with st.container(border=True):
-        st.markdown("**Cómo leer esta pantalla (glosario de bolsillo)**")
+    with st.expander("Cómo leer esta pantalla (glosario de bolsillo)", expanded=False):
         for t, d in GLOSARIO_BOLSILLO.items():
             st.markdown(f"**{t}:** {d}")
 
@@ -130,7 +129,8 @@ def _fila(i, n, adv, industria_validada):
     tec, prob = "—", "—"
     if es_ent:
         t = n["tecnica"]
-        tec = (f"{pct(t['prob'])} · línea base {pct(t['linea_base'])} · rango de la calibración histórica "
+        pref = {"lejos": "como máximo ", "cerca": "al menos "}.get(t.get("fuera_rango") if t else None, "")
+        tec = (f"{pref}{pct(t['prob'])} · línea base {pct(t['linea_base'])} · rango de la calibración histórica "
                f"{rango(t['ic_lo'], t['ic_hi'])}" if t and t["prob"] is not None else
                f"{SIN_DATO}: " + _motivo(adv, "técnica", "historia", defecto="sin lectura técnica para este nivel"))
     else:
@@ -147,7 +147,8 @@ def _fila(i, n, adv, industria_validada):
 
 def tabla_niveles(res):
     lec = res["lecturas"]
-    st.markdown("**Seis niveles del usuario** (3 de entrada, en azul, y 3 de salida, en naranja), con sus tres lecturas.")
+    st.markdown("**Seis niveles del usuario** (3 de entrada, en azul, y 3 de salida, en naranja)")
+    st.caption(PREGUNTAS["tabla"])
     filas = [_fila(i, n, lec["advertencias"], lec["industria_validada"]) for i, n in enumerate(lec["niveles"])]
     df = pd.DataFrame(filas)
     tipos = [n["tipo"] for n in lec["niveles"]]
@@ -170,16 +171,19 @@ def tabla_niveles(res):
 def notas_fundamental(res):
     lec = res["lecturas"]
     with st.container(border=True):
-        st.markdown("**Notas de la columna Fundamental** (lectura comparativa, solo entradas)")
+        st.markdown("**Notas de la columna Fundamental** (solo entradas)")
+        st.caption(PREGUNTAS["fundamental"])
+        if any(n["lectura_trampa"] for n in lec["niveles"][:3]):
+            st.markdown(NOTA_FUNDAMENTAL)
         for i, n in enumerate(lec["niveles"][:3]):
             if n["lectura_trampa"]:
                 txt = n["lectura_trampa"]
             elif not lec["industria_validada"]:
-                txt = "sin lectura de posible deterioro de utilidades: el ticker está fuera de la industria piloto."
+                txt = "sin nota: el ticker está fuera de la industria piloto."
             elif n["pe_implicito"] is None:
-                txt = "sin lectura de posible deterioro de utilidades: " + _motivo(lec["advertencias"], "utilidad", "p/e", defecto="sin datos de utilidad por acción")
+                txt = "sin nota: " + _motivo(lec["advertencias"], "utilidad", "p/e", defecto="sin datos de utilidad por acción")
             else:
-                txt = "sin lectura de posible deterioro de utilidades para este nivel."
+                txt = "sin nota para este nivel."
             st.markdown(f"**Nota {i + 1} ({_nombre(n)}).** {txt}")
 
 
@@ -197,6 +201,7 @@ def _txt_caida(rg):
 
 def panel_riesgo(rg):
     st.markdown("**Panel de riesgo** (descriptivo, con datos pasados)")
+    st.caption(PREGUNTAS["riesgo"])
     fc = rg["frec_caidas_fuertes"]
     filas = [
         ("Cuánto se mueve en un año típico (volatilidad)", pct(rg["vol_anual"]), TOOLTIPS["σ (volatilidad)"],
@@ -204,12 +209,12 @@ def panel_riesgo(rg):
         ("Peor semana típica (1 de cada 20 cae al menos esto)", pct(rg["p5_semanal"]), TOOLTIPS["peor semana típica"],
          "percentil 5 del retorno semanal."),
         ("Caídas semanales fuertes: observadas vs esperadas", f"{pct(fc['observada'])} vs {pct(fc['esperada'])}",
-         TOOLTIPS["caídas semanales fuertes"], "fracción de semanas con caída fuerte, observada frente a la esperada en un mercado sin rachas."),
+         TOOLTIPS["caídas semanales fuertes"], "semanas con caída fuerte: observadas frente a las esperadas si fueran independientes y con forma normal."),
         (f"Peor caída desde un pico (desde {(rg.get('desde') or '')[:4] or 'el inicio de los datos'})", pct(rg["caida_maxima"]),
          TOOLTIPS["caída máxima"], _txt_caida(rg)),
-        ("Cuánto se mueve con el sector (R² · ΔR²)",
+        ("Cuánto se mueve con el mercado y el sector (R² · ΔR²)",
          f"R² {num(rg['r2_mercado_sector'])} · ΔR² {num(rg['delta_r2_sector'])}", TOOLTIPS["R² y ΔR²"],
-         "R²: parte del movimiento explicada por mercado y sector; ΔR²: lo que el sector añade al mercado."),
+         "mercado = S&P 500 (SPY); sector = XLP, consumo defensivo. Fuera de la piloto solo se compara con el SPY."),
     ]
     for etiqueta, valor, ayuda, expl in filas:
         c1, c2 = st.columns([3, 1.4])
@@ -278,6 +283,7 @@ def _posicion(lec):
 
 def grafico_niveles(res):
     st.markdown("**Precio diario, últimos 5 años, y los 6 niveles** (azul: entrada, naranja: salida)")
+    st.caption(PREGUNTAS["grafico"])
     fig = figura_niveles(res["serie"], res["lecturas"])
     st.pyplot(fig, width="stretch")
     plt.close(fig)
@@ -288,16 +294,16 @@ def figura_calibracion(modelo):
     tramos = modelo["calibracion_prueba"]
     fig, ax = plt.subplots(figsize=(4.6, 4.0), dpi=110, facecolor="white")
     ax.set_facecolor("white")
-    ax.plot([0, 1], [0, 1], color="#888888", ls="--", lw=1, label="Calibración perfecta")
+    ax.plot([0, 1], [0, 1], color="#888888", ls="--", lw=1, label="Acierto perfecto")
     for k, t in enumerate(tramos):
         ax.fill_between([t["tramo_lo"], t["tramo_hi"]], t["ic_lo"], t["ic_hi"], color=AZUL, alpha=0.16, lw=0,
-                        label="IC95 de la frecuencia real" if k == 0 else None)
+                        label="Rango probable" if k == 0 else None)
         ax.plot([t["tramo_lo"], t["tramo_hi"]], [t["tasa_obs"]] * 2, color=AZUL, lw=3, solid_capstyle="butt",
-                label="Frecuencia real en el tramo" if k == 0 else None)
+                label="Lo que pasó de verdad" if k == 0 else None)
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 0.7)
-    ax.set_xlabel("Probabilidad que dio el modelo (tramos)", fontsize=8, color="#333333")
-    ax.set_ylabel("Frecuencia real de toque", fontsize=8, color="#333333")
+    ax.set_xlabel("Lo que dijo el modelo", fontsize=8, color="#333333")
+    ax.set_ylabel("Lo que pasó de verdad", fontsize=8, color="#333333")
     f = mt.FuncFormatter(lambda v, _: f"{v * 100:.0f} %")
     ax.xaxis.set_major_formatter(f)
     ax.yaxis.set_major_formatter(f)
@@ -313,14 +319,22 @@ def figura_calibracion(modelo):
 
 
 # ------------------------------------------------------------------ recuadro de desempeño del modelo
-def _veredicto(m):
+def _ic(lo, hi):
+    return f"IC95 [{num(lo, 3)}; {num(hi, 3)}]"
+
+
+def _explicacion(modelo, m):
+    """Por qué la línea base rinde igual o mejor, con cifras y conteos leídos del modelo."""
+    deciles, dist, hojas = len(modelo["cortes_decil_sigma"]) + 1, len(modelo["k_grid"]), len(modelo["calibracion_prueba"])
     lo, hi = m["delta_auc_ic95"]
-    cifras = f"ΔAUC {num(m['delta_auc'], 3)}, IC95 [{num(lo, 3)}; {num(hi, 3)}]"
-    if hi < 0:
-        return f"En {PERIODO_PRUEBA} el modelo ordenó peor que la línea base ({cifras}): no aporta sobre ella."
-    if lo > 0:
-        return f"En {PERIODO_PRUEBA} el modelo ordenó mejor que la línea base ({cifras})."
-    return f"En {PERIODO_PRUEBA} el modelo no se distinguió de la línea base ({cifras})."
+    orden = ("ordena un poco peor" if hi < 0 else "ordena un poco mejor" if lo > 0 else "ordena igual")
+    blo, bhi = m["bss_vs_linea_base_ic95"]
+    exacto = "empatan" if blo <= 0 <= bhi else ("el modelo es más exacto" if blo > 0 else "la línea base es más exacta")
+    return (f"Que el precio toque un nivel depende casi solo de qué tan lejos está, medido en volatilidades, y la línea base ya usa "
+            f"eso: una tabla de {deciles} grupos de volatilidad × {dist} distancias = {deciles * dist} casillas. El árbol es más simple: "
+            f"solo da {hojas} probabilidades distintas, por eso {orden} (ΔAUC {num(m['delta_auc'], 3)}, {_ic(lo, hi)}). En exactitud "
+            f"de la probabilidad {exacto} ({num(m['bss_vs_linea_base'], 3)}, {_ic(blo, bhi)}"
+            f"{', incluye el 0' if blo <= 0 <= bhi else ''}). Úsalo como referencia junto a la línea base.")
 
 
 def recuadro_desempeno(modelo):
@@ -328,10 +342,10 @@ def recuadro_desempeno(modelo):
     alg = ALGORITMOS.get(modelo.get("algoritmo"), modelo.get("algoritmo", "modelo"))
     with st.container(border=True):
         st.markdown(f"**Desempeño histórico del modelo técnico ({alg})**")
+        st.caption(PREGUNTAS["desempeno"])
         st.caption(f"Período de prueba: {PERIODO_PRUEBA}, datos que el modelo no vio al entrenarse. "
                    "Se incluye para leer la probabilidad con contexto, errores incluidos.")
-        st.info(_veredicto(m) + " Úsalo como referencia informativa junto a la línea base: el modelo ordena sobre todo "
-                "por qué tan lejos queda el nivel, y la línea base (volatilidad y distancia) hace casi lo mismo.")
+        st.info(_explicacion(modelo, m))
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("AUC del modelo", num(m["auc"], 3), help=TOOLTIPS["AUC"])
         c1.caption(f"IC95 [{num(m['auc_ic95'][0], 3)}; {num(m['auc_ic95'][1], 3)}]")
@@ -351,12 +365,13 @@ def recuadro_desempeno(modelo):
         fig = figura_calibracion(modelo)
         g.pyplot(fig, width="stretch")
         plt.close(fig)
-        t.markdown(f"Cada tramo agrupa lecturas por la probabilidad que dio el modelo (franja horizontal). El modelo está "
-                   f"calibrado donde la franja cruza la diagonal. En {coh} de {len(tramos)} tramos la frecuencia real es "
-                   f"compatible con lo prometido; {arriba} quedó por encima y {abajo} por debajo.")
-        t.dataframe(pd.DataFrame([{"Tramo del modelo": f"{pct(x['tramo_lo'])} a {pct(x['tramo_hi'])}",
-                                   "Frecuencia real": pct(x["tasa_obs"]), "IC95": rango(x["ic_lo"], x["ic_hi"]),
+        t.markdown(f"Cuando el modelo dijo x %, ¿pasó x % de las veces? La barra azul muestra lo que pasó de verdad; si toca "
+                   f"la diagonal, acertó. Acertó en {coh} de {len(tramos)} tramos; en {arriba} pasó más de lo que dijo (el modelo "
+                   f"se quedó corto) y en {abajo}, menos.")
+        t.dataframe(pd.DataFrame([{"El modelo dijo": f"{pct(x['tramo_lo'])} a {pct(x['tramo_hi'])}",
+                                   "Pasó de verdad": pct(x["tasa_obs"]), "Rango probable": rango(x["ic_lo"], x["ic_hi"]),
                                    "Lecturas": f"{x['n']:,}".replace(",", ".")} for x in tramos]),
+                    column_config={"Rango probable": st.column_config.TextColumn("Rango probable", help=TOOLTIPS["rango probable"])},
                     hide_index=True, width="stretch")
 
 
@@ -417,6 +432,7 @@ def edicion_niveles(res, cliente_fn):
     ss = st.session_state
     errores = ss.get("err_niveles") or {}
     with st.expander("Editar niveles (precio en dólares o múltiplo P/E)", expanded=True):
+        st.caption(PREGUNTAS["edicion"])
         with st.form("form_niveles"):
             cols = st.columns(2)
             slots = {}
@@ -452,6 +468,7 @@ def registro_decisiones(res, cliente_fn):
     lec = res["lecturas"]
     with st.container(border=True):
         st.markdown("**Registro de decisión** (lo escribe el usuario)")
+        st.caption(PREGUNTAS["registro"])
         if res["acceso"] != "ok":
             st.info("Inicia sesión con tu alias y código (barra lateral) y pulsa Calcular para registrar decisiones y ver "
                     "tu historial y tus niveles guardados.")

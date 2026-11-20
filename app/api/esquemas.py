@@ -53,7 +53,8 @@ class Tecnica(BaseModel):
     ic_lo: float | None
     ic_hi: float | None
     linea_base: float | None
-    k: float | None
+    k: float | None                                       # k evaluado (recortado a la rejilla entrenada)
+    fuera_rango: Literal["lejos", "cerca"] | None = None  # lejos: k real > máx (prob. mostrada = cota superior); cerca: k real < mín (cota inferior)
 
 
 class Probabilistica(BaseModel):

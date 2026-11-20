@@ -11,10 +11,32 @@ NOMBRES_NIVEL = ["deep value", "value", "valoración histórica", "negativo", "b
 ALGORITMOS = {"arbol": "árbol de decisión", "svm_lineal": "SVM lineal", "svm_rbf": "SVM con núcleo RBF"}
 PERIODO_PRUEBA = "2019 en adelante"
 
+# Pregunta que responde cada sección (una línea bajo su título)
+PREGUNTAS = {
+    "tabla": "**Fundamental:** ¿es razonable este precio para esta empresa? **Técnica** (entradas): ¿compro ya o espero? "
+             "Es la probabilidad de que el precio baje hasta la entrada en 60 días hábiles. **Simulación** (salidas): "
+             "¿qué tan probable es vender a ese precio en el próximo año?",
+    "fundamental": "¿Es razonable este precio para esta empresa?",
+    "grafico": "¿Dónde queda el precio de hoy frente a mis niveles?",
+    "riesgo": "¿Cuánto me puede doler mientras espero?",
+    "desempeno": "¿Cuánto confiar en la probabilidad técnica?",
+    "edicion": "¿Qué cambia si muevo mis niveles?",
+    "registro": "¿Qué decidí y por qué?",
+}
+
+# Explicación común de las notas de la columna Fundamental (una sola vez; cada nivel solo agrega su dato)
+NOTA_FUNDAMENTAL = ("El percentil dice dónde queda el P/E normalizado del nivel frente a la historia de la empresa (bajo = barato). "
+                    "Qué se midió: en las 21 empresas de consumo defensivo, de 2013 a 2023, las que estaban entre el 20 % más barato "
+                    "de su propia historia tuvieron, 3 años después, una utilidad promedio cerca de 36 % peor que las más caras, "
+                    "mientras el precio subió casi igual en los dos grupos. Es una asociación histórica: no anticipa lo que pasará "
+                    "con esta empresa.")
+
 GLOSARIO_BOLSILLO = {
     "P/E": "precio ÷ utilidad por acción (TTM = últimos 12 meses). Dice cuántos dólares se pagan por cada dólar de utilidad.",
     "P/B": "precio ÷ patrimonio por acción. Dice cuántos dólares se pagan por cada dólar de patrimonio contable.",
     "percentil": "«entre los valores pasados, ¿en qué puesto queda el de hoy?». p6 = más barato que el 94 % de su historia.",
+    "mercado y sector": "mercado = S&P 500, medido con el SPY (fondo que lo replica); sector = XLP (fondo de consumo defensivo). "
+                        "Fuera de la industria piloto solo se compara con el SPY.",
     "industria piloto": "consumo defensivo (alimentos, bebidas, aseo personal y del hogar, y tabaco): productos que la gente "
                         "consume en cualquier fase del ciclo económico.",
     "modelo técnico": "un árbol de decisión simple que estima la probabilidad de tocar el nivel a partir de la volatilidad "
@@ -30,27 +52,29 @@ TOOLTIPS = {
     "AUC": "Qué tan bien el modelo separa los casos en que el precio sí tocó el nivel de los que no: 0,5 es azar y 1 es separación perfecta.",
     "ΔAUC": "AUC del modelo menos AUC de la línea base: si es positivo, el modelo ordena mejor que la línea base.",
     "Brier": "Error cuadrático medio de las probabilidades frente a lo que pasó: va de 0 a 1 y menos es mejor.",
-    "calibración": "Compara la probabilidad que da el modelo con la frecuencia real: un modelo calibrado que dice 20 % acierta cerca de 2 de cada 10 veces.",
+    "calibración": "Compara lo que el modelo dijo con lo que pasó: si dice 20 % y está bien calibrado, el precio toca el nivel cerca de 2 de cada 10 veces.",
+    "rango probable": "IC95: rango en el que, con 95 % de confianza, cae lo que pasó de verdad.",
     "línea base": GLOSARIO_BOLSILLO["línea base"],
     "percentil": GLOSARIO_BOLSILLO["percentil"],
     "σ (volatilidad)": "Cuánto se mueve el precio: la desviación típica de los retornos diarios del último año, expresada en términos anuales.",
     "P/E": GLOSARIO_BOLSILLO["P/E"],
     "P/B": GLOSARIO_BOLSILLO["P/B"],
     "P/E normalizado": "Precio ÷ utilidad promedio de los últimos 3 años: evita que un solo año excepcional haga ver barata a una acción.",
-    "R²": "Fracción del movimiento del precio que explican el mercado y el sector; va de 0 a 1.",
-    "ΔR²": "Cuánto mejora esa explicación al añadir el sector a la del mercado; es la dependencia del sector que el mercado solo no explica.",
+    "R²": "Fracción del movimiento semanal del precio que explican el mercado (S&P 500, medido con el SPY) y el sector (XLP, fondo de consumo defensivo); va de 0 a 1. Fuera de la industria piloto solo cuenta el SPY.",
+    "ΔR²": "Cuánto mejora esa explicación al añadir el sector (XLP) a la del mercado (SPY); es lo que el mercado solo no explica.",
     "simulación": "Reconstruye muchos años posibles repitiendo trozos seguidos del pasado de la acción y cuenta en cuántos el precio llega a la salida. No es un pronóstico.",
-    "R² y ΔR²": "R²: fracción del movimiento explicada por mercado y sector. ΔR²: lo que añade el sector al mercado.",
+    "R² y ΔR²": "R²: fracción del movimiento semanal explicada por el mercado (SPY) y el sector (XLP). ΔR²: lo que añade el sector al mercado.",
     "modelo técnico": GLOSARIO_BOLSILLO["modelo técnico"],
     "lectura técnica": GLOSARIO_BOLSILLO["lectura técnica"],
     "lectura probabilística": GLOSARIO_BOLSILLO["lectura probabilística"],
-    "rango de la calibración histórica": "Rango en el que cayó la frecuencia real de toque cuando el modelo daba probabilidades de ese tramo, en 2019 en adelante.",
+    "rango de la calibración histórica": "Rango en el que cayó lo que pasó de verdad cuando el modelo daba probabilidades de ese tramo, en 2019 en adelante.",
     "error de simulación": "Mide la precisión del cálculo de la simulación (cuánto cambiaría repitiéndola), no la incertidumbre del futuro.",
     "horizonte 52 semanas": "La simulación mira un año (52 semanas) hacia adelante; este plazo es fijo y no se edita.",
     "% vs. precio actual": "Distancia del nivel frente al último precio: negativa si el nivel queda por debajo.",
     "peor semana típica": "Percentil 5 del retorno semanal: 1 de cada 20 semanas cayó al menos esto.",
     "caída máxima": "La mayor pérdida acumulada desde un máximo hasta el mínimo siguiente en los datos.",
-    "caídas semanales fuertes": "Fracción de semanas con una caída mayor que 2 veces la volatilidad reciente, frente a la que daría un mercado normal sin rachas.",
+    "caídas semanales fuertes": "Fracción de semanas con una caída mayor que 2 veces la volatilidad reciente. "
+    "«Esperada»: la que habría si las semanas fueran independientes y con forma normal; si la observada la supera, las caídas fuertes se dan en rachas.",
     "nivel": "Precio que fijaste: tres de entrada (por debajo del precio actual) y tres de salida (por encima).",
     "nivel: deep value": "Deep value (entrada): el precio al que, según tú, la empresa estaría muy barata; el más lejano por debajo del precio actual.",
     "nivel: value": "Value (entrada): el precio al que, según tú, la empresa estaría barata; intermedio entre los tres de entrada.",
@@ -58,5 +82,6 @@ TOOLTIPS = {
     "nivel: negativo": "Negativo (salida): el precio objetivo en un escenario negativo; la salida más cercana por encima del precio actual.",
     "nivel: base": "Base (salida): el precio objetivo en el escenario que consideras más probable.",
     "nivel: positivo": "Positivo (salida): el precio objetivo en un escenario positivo; la salida más lejana por encima del precio actual.",
-    "fuera del rango entrenado": "El nivel está más lejos o más cerca del precio de lo que el modelo vio al entrenarse; se evalúa con la distancia más cercana que sí conoce.",
+    "fuera del rango entrenado": "El modelo se entrenó con niveles de entre 0,5 y 2 volatilidades del precio. Fuera de ese rango lo evalúa en el borde más cercano, "
+                                 "por eso su probabilidad se marca «como máximo» (nivel más lejos) o «al menos» (más cerca).",
 }

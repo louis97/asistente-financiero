@@ -91,13 +91,23 @@ def percentil_industria(datos: dt.DatosTicker, pe: float | None, fecha_corte=Non
 
 
 def _texto_trampa(p: float) -> str:
+    """Solo lo propio del nivel; la explicación de la evidencia es común y la muestra el dashboard una vez."""
     pc = f"{p * 100:.0f} %"
     if p <= QUINTIL:
-        return (f"Está entre el 20 % más barato de su propia historia (percentil {pc}). En la industria piloto, las empresas de ese "
-                "grupo tuvieron a 3 años una utilidad promedio menor que las del grupo más caro (asociación histórica de la entrega 1; "
-                "no anticipa lo que ocurrirá con esta empresa).")
-    return (f"Percentil {pc} de su propia historia: queda fuera del 20 % más barato, el grupo en el que la entrega 1 midió la "
-            "asociación con una caída posterior de la utilidad promedio.")
+        return f"Percentil {pc} de su historia: queda en el 20 % más barato."
+    return f"Percentil {pc} de su historia: queda fuera del 20 % más barato."
+
+
+def _coma(x: float, dec: int) -> str:
+    return f"{x:.{dec}f}".replace(".", ",")
+
+
+def _aviso_rango(nombre: str, k: float, vol60: float, lejos: bool) -> str:
+    """Una frase: distancia del nivel en volatilidades, qué es 1 volatilidad y hacia dónde puede estar sesgada la probabilidad."""
+    sesgo = ("más lejos de lo que el modelo conoce; la probabilidad real probablemente es menor que la mostrada" if lejos else
+             "más cerca de lo que el modelo conoce; la probabilidad real probablemente es mayor que la mostrada")
+    return (f"«{nombre}» queda a {_coma(k, 2 if k < 1 else 1)} volatilidades del precio (1 volatilidad = {_coma(vol60 * 100, 1)} %, "
+            f"lo que esta acción se mueve típicamente en 60 días hábiles), {sesgo}.")
 
 
 def _fundamental(datos, precio, eps, bvps) -> dict:
@@ -167,12 +177,15 @@ def _tecnica(datos, entradas: list[LecturaNivel], adv: list[str]):
             k = cm.k_de_nivel(datos.precio, ln.precio, sigma)
             if not np.isfinite(k):
                 continue
+            fuera = None
             if not (lo <= k <= hi):
-                adv.append(f"El nivel «{ln.nombre}» queda fuera del rango entrenado: se evaluó con el nivel más cercano que el modelo conoce")
+                fuera = "lejos" if k > hi else "cerca"
+                adv.append(_aviso_rango(ln.nombre, k, sigma * math.sqrt(meta["n"]), fuera == "lejos"))
             k = min(max(k, lo), hi)                       # k de la rejilla más cercano si se sale del rango
             prob = md.prob_toque(pipe, vars_, k)
             ic_lo, ic_hi = md.ic_prob(prob, meta)
-            ln.tecnica = Tecnica(prob=prob, ic_lo=ic_lo, ic_hi=ic_hi, linea_base=md.linea_base(sigma, k, meta), k=k)
+            ln.tecnica = Tecnica(prob=prob, ic_lo=ic_lo, ic_hi=ic_hi, linea_base=md.linea_base(sigma, k, meta), k=k,
+                              fuera_rango=fuera)
     except Exception:
         adv.append("No se pudo calcular la lectura técnica")
 
