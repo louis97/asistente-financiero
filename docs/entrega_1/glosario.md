@@ -36,7 +36,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **caída máxima (drawdown)** · La peor pérdida acumulada desde un máximo histórico de la serie hasta el siguiente mínimo. Se expresa como fracción. Ejemplo: en nb03 §1 cada ticker tiene su `drawdown` máximo observado. Un drawdown de −0,30 significa que el precio llegó a estar un 30 % por debajo de su máximo anterior.
 
-**calibración (diagrama de calibración)** · Compara la probabilidad que promete un modelo con la frecuencia con la que el evento ocurrió, por tramos de probabilidad. Un modelo calibrado que dice 60 % acierta cerca de 6 de cada 10 veces: los puntos quedan sobre la diagonal. Se usará en la entrega 2 (punto 4 §4.4).
+**calibración (diagrama de calibración)** · Compara la probabilidad que promete un modelo con la frecuencia con la que el evento ocurrió, por tramos de probabilidad. Un modelo calibrado que dice 60 % acierta cerca de 6 de cada 10 veces: los puntos quedan sobre la diagonal. Se usa en la entrega 2 (punto 4 §4.4). Si un tramo de probabilidad tiene pocos casos, su rango probable es ancho.
 
 **canal Donchian** · Franja entre el máximo y el mínimo de los últimos N períodos. Se usa como indicador `donchian20`, que mide la posición del cierre dentro de ese canal (0 toca el mínimo, 1 toca el máximo). nb04 §5.
 
@@ -94,6 +94,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **frecuencia diaria y semanal** · Dos resoluciones de precios: `precios_diarios` tiene una fila por día hábil; `precios_semanales` una fila por lunes de la semana. nb03 maneja P1 en semanal y P6 en diaria y semanal.
 
+**fuera del rango entrenado** · Nivel cuya distancia k queda por debajo de 0,5 o por encima de 2, fuera de lo visto al entrenar. El modelo lo evalúa en el borde más cercano, por lo que su probabilidad se marca "como máximo" (nivel más lejos) o "al menos" (nivel más cerca), y no se muestra rango de calibración.
+
 **fuga (de información)** · Información del conjunto de evaluación que se cuela, sin querer, en el ajuste del modelo (por ejemplo, una etiqueta que mira dentro de la prueba, o una media calculada con datos posteriores). Hace que el resultado parezca mejor de lo que será en la realidad. Ejemplo: sin la brecha de 60 sesiones, 5 040 filas por frontera tendrían fuga (notebook 06 §4).
 
 **fuerza relativa (a 14 días)** · Nombre común del **RSI** (ver más abajo). Mide la fuerza de las variaciones positivas frente a las negativas en las últimas 14 sesiones.
@@ -115,6 +117,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 **instantánea (snapshot)** · Archivo con fecha congelada que fija la versión exacta de los datos usada en el análisis. Garantiza que correr el proyecto con la misma instantánea reproduce las mismas cifras aunque la fuente cambie. Las del proyecto viven en `data/snapshots/` (fecha de corte: 2026-10-15).
 
 **intervalo de confianza (IC)** · Rango de valores plausibles para un parámetro, con un nivel de confianza fijado (95 % en el proyecto). Ejemplo P1: IC = [0,0246; 0,0392] para la tasa de caídas fuertes (nb03.json). "El 95 %" se refiere al procedimiento, no a la probabilidad del parámetro.
+
+**k (distancia del nivel en volatilidades)** · Cuántas veces la volatilidad de 60 días hábiles (σ252 diaria × √60) separa un nivel del precio actual. k = 1 es lo que la acción se mueve típicamente en ese plazo; k = 2, el doble. El modelo técnico se entrenó con k entre 0,5 y 2 (nb07).
 
 **línea base por decil de σ** · Puntaje que ordena las observaciones por su decil de σ252 diaria y toma el decil como predictor. Es la **base del modelo técnico** (sobre todas las filas): el modelo de la entrega 2 debe superarla por al menos ΔAUC = 0,03 para ser accionable (`04_enfoque_analitico.md` §4.4). En la entrega 2 se afina: es la tasa de toque del entrenamiento por decil de σ252 y por la distancia del nivel (k). Ejemplo: su AUC en la prueba es 0,591 (`nb04_p4.json`). *Nota.* En P4 cada indicador no se compara contra esta base, sino contra el **modelo A** (regresión logística con `|r_t|`, `σ20/σ252` y `σ252`) sobre la submuestra sin solapamiento (AUC 0,577); P4 mide el aporte **lineal** de cada indicador frente al modelo A.
 
@@ -178,6 +182,8 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **R²** · Fracción de la variación de la variable respuesta que explica una regresión. Va de 0 a 1. nb04 §6.3 (P5).
 
+**rango probable** · Nombre en el dashboard del IC95 (ver **intervalo de confianza**): con 95 % de confianza, el valor real está dentro de ese rango. Ejemplo: en C2, el crecimiento de la utilidad promedio de 3 años del grupo barato es entre 19 % y 50 % menor que el del caro.
+
 **ratio** · Razón entre dos magnitudes contables (p. ej. `ROE = utilidad ÷ patrimonio`). A diferencia del **múltiplo**, no mezcla precio con contabilidad: compara partes del negocio entre sí. Ejemplo: KO con `roe_ttm = 0,41` (41 %).
 
 **reexpresión** · Un reporte posterior modifica cifras ya publicadas. En este proyecto se usa la **primera publicación** (fecha `filed` original) para no incorporar información que no estaba disponible en `t`. nb02 §3.
@@ -220,7 +226,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **splits (instantánea `splits.parquet`)** · Tabla con los eventos de split por ticker: `ticker`, `fecha` y `ratio`. Se descarga para auditar la trazabilidad del precio ajustado.
 
-**SPY** · ETF que replica al S&P 500. En el proyecto representa "el mercado": el referente de los retornos del universo accionario estadounidense. nb04 §6 (P5).
+**SPY** · ETF que replica al S&P 500. En el proyecto representa "el mercado": el referente de los retornos del universo accionario estadounidense. En el dashboard es el "mercado"; fuera de la industria piloto es la única referencia. nb04 §6 (P5).
 
 **submuestra sin solapamiento** · De la tabla diaria se toma una fila cada N días hábiles (misma fecha para todas las acciones). Reduce la dependencia entre observaciones consecutivas de la etiqueta. nb04 §5 construye la submuestra con N = 60 y §5.3b explora su sensibilidad al tamaño del bloque.
 
@@ -252,7 +258,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **XBRL** · Formato estándar en el que la autoridad de EE.UU. (SEC) obliga a publicar los estados financieros: cada cifra lleva una etiqueta (p. ej. `NetIncomeLoss`) que permite leerla por software y compararla entre empresas y entre reportes. En este proyecto se usa para construir la tabla trimestral y los ratios TTM (nb01 §3).
 
-**XLP** · ETF sectorial de consumo defensivo (Consumer Staples Select Sector SPDR Fund). Representa "la industria" en P3 y P5. nb04 §3 y §6.
+**XLP** · ETF sectorial de consumo defensivo (Consumer Staples Select Sector SPDR Fund). Representa "la industria" en P3 y P5 y el "sector" en el dashboard (la entrega 2 lo compara con el SPY, el mercado). nb04 §3 y §6.
 
 **z-score (estandarización)** · Restar la media de una variable y dividir por su desviación estándar, para que todas queden en una escala comparable (media 0, desviación 1). En el modelo la media y la desviación se calculan solo con el entrenamiento y se reutilizan en validación y prueba. Ejemplo: notebook 05 §6.2.
 
