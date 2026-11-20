@@ -1,6 +1,6 @@
 {
-  "ultimo_dato": "2026-10-15",
-  "ultimo_recalculo": "2026-11-20T00:27:31Z",
+  "ultimo_dato": "2026-11-18",
+  "ultimo_recalculo": "2026-11-20T02:13:31Z",
   "fuentes_ok": {
     "yfinance": true,
     "edgar": true
