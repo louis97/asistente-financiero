@@ -1,4 +1,4 @@
--- Tablas del asistente bursátil. Se ejecuta UNA vez en el editor SQL de Supabase (idempotente).
+-- Tablas del asistente bursátil. Se ejecuta en el editor SQL de Supabase; se puede volver a ejecutar completo sin riesgo.
 -- Solo guarda alias, decisiones y niveles: sin datos personales.
 
 create table if not exists decisiones (
@@ -33,9 +33,12 @@ insert into salud (id) values (1) on conflict do nothing;
 alter table salud enable row level security;
 
 -- Permisos mínimos para la clave de servicio: los proyectos nuevos de Supabase no los conceden por defecto
--- (sin ellos, cada consulta responde 42501 "permission denied"). anon y authenticated no reciben ninguno.
+-- (sin ellos, cada consulta responde 42501 "permission denied"). A anon y authenticated se les retira todo,
+-- por si el proyecto es antiguo y traía permisos por defecto (RLS sin políticas ya los bloquea igual).
 grant usage on schema public to service_role;
 grant select, insert         on decisiones      to service_role;
 grant usage, select          on sequence decisiones_id_seq to service_role;
 grant select, insert, update on niveles_usuario to service_role;
 grant select                 on salud           to service_role;
+revoke all on decisiones, niveles_usuario, salud from anon, authenticated;
+revoke all on sequence decisiones_id_seq from anon, authenticated;
