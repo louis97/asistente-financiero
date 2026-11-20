@@ -180,7 +180,7 @@ def _tecnica(datos, entradas: list[LecturaNivel], adv: list[str]):
             if not (lo <= k <= hi):
                 fuera = "lejos" if k > hi else "cerca"
                 adv.append(_aviso_rango(ln.nombre, k, sigma * math.sqrt(meta["n"]), fuera == "lejos"))
-            k = min(max(k, lo), hi)                       # k de la rejilla más cercano si se sale del rango
+            k = min(max(k, lo), hi)                       # fuera de [0,5; 2] se evalúa en el borde más cercano
             prob = md.prob_toque(pipe, vars_, k)
             ic_lo, ic_hi = md.ic_prob(prob, meta)
             ln.tecnica = Tecnica(prob=prob, ic_lo=ic_lo, ic_hi=ic_hi, linea_base=md.linea_base(sigma, k, meta), k=k,

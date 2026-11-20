@@ -182,7 +182,7 @@ El orden es alfabético (los números y letras griegas se ordenan por su nombre:
 
 **R²** · Fracción de la variación de la variable respuesta que explica una regresión. Va de 0 a 1. nb04 §6.3 (P5).
 
-**rango probable** · Nombre en el dashboard del IC95 (ver **intervalo de confianza**): con 95 % de confianza, el valor real está dentro de ese rango. Ejemplo: en C2, el crecimiento de la utilidad promedio de 3 años del grupo barato es entre 19 % y 50 % menor que el del caro.
+**rango probable** · Nombre en el dashboard del IC95 (ver **intervalo de confianza**): con 95 % de confianza, el valor real (por ejemplo, la frecuencia real de un tramo) está dentro de ese rango. Ejemplo: en C2, el crecimiento de la utilidad promedio de 3 años del grupo barato es entre 19 % y 50 % menor que el del caro.
 
 **ratio** · Razón entre dos magnitudes contables (p. ej. `ROE = utilidad ÷ patrimonio`). A diferencia del **múltiplo**, no mezcla precio con contabilidad: compara partes del negocio entre sí. Ejemplo: KO con `roe_ttm = 0,41` (41 %).
 
