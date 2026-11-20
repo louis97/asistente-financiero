@@ -68,7 +68,7 @@ Esta guía conecta el repositorio con las cuentas gratuitas que usa el producto:
 
 1. Tarea diaria: `gh workflow run actualizar.yml --ref entrega-2 && sleep 20 && gh run list --workflow=actualizar.yml --limit 1` y luego `gh run watch`. Esperado: `completed success`; si no había datos nuevos, el paso "Commit" no crea commit.
 2. API: `curl -s --max-time 120 "$API_URL/estado"`. Esperado: JSON con `ultimo_dato`, `ultimo_recalculo` y `supabase_ok: true` (la primera llamada puede tardar cerca de 1 minuto).
-3. Dashboard: `curl -s -o /dev/null -w "%{http_code}\n" --max-time 60 "$URL_DASHBOARD"`. Esperado: `200`.
+3. Dashboard: `curl -sL -c /tmp/cookies -b /tmp/cookies -o /dev/null -w "%{http_code}\n" --max-time 60 "$URL_DASHBOARD"`. Esperado: `200`. Sin `-L` y las cookies se ve `303`: es la redirección normal con la que Streamlit pone su cookie, no un error.
 4. Lecturas públicas: `curl -s -X POST "$API_URL/lecturas" -H 'Content-Type: application/json' -d '{"ticker":"KO","entradas":[],"salidas":[]}' | head -c 300`. Esperado: una respuesta de la API (un 422 por niveles vacíos es aceptable); nunca 500 ni 401.
 5. Supabase en vivo (con la clave real; las variables se exportan en la terminal, no en archivos):
    1. En "Table Editor" las tres tablas (`decisiones`, `niveles_usuario`, `salud`) con RLS activado.
