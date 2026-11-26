@@ -60,42 +60,30 @@ La exploración previa mostró que, en este sector, el movimiento semanal del XL
 
 ## 1.6 Objetivos
 
-*(borrador: se confirma en la sesión 2).* El objetivo general y los específicos los elige el colega inversor entre las opciones de abajo, que son las mismas de las preguntas A1 y A2 de la hoja de la sesión 2 (con el mismo texto). Los objetivos de la entrega 1 son el punto de partida: unificar el análisis en una sola vista, recalcular los niveles por múltiplo al salir un reporte, estimar la probabilidad con su incertidumbre y registrar las decisiones. Se piden pocos objetivos, medibles y atados a un KPI de la sección 1.7.
+Los objetivos los fijó el colega inversor junto con el autor en la sesión 2 (2026-11-26), eligiendo entre las opciones de las preguntas A1 y A2 de la hoja de esa sesión; el detalle de las respuestas y de los votos está en la [bitácora](../entrega_2/12_bitacora.md) (interacción 3). Los objetivos de la entrega 1 eran el punto de partida: unificar el análisis en una sola vista, recalcular los niveles por múltiplo al salir un reporte, estimar la probabilidad con su incertidumbre y registrar las decisiones. Se piden pocos objetivos, medibles y atados a un KPI de la sección 1.7.
 
-**Objetivo general (se elige una).** Pregunta A1: ¿cuál describe mejor lo que quiere lograr con la herramienta?
+**Objetivo general (elegido por los dos).** Ver en una sola pantalla el análisis de una acción (si está cara o barata frente a su historia, qué tan probable es llegar a mis precios de compra y de venta, y cuánto puede doler), para gastar menos tiempo y cambiar menos de pantalla. Lo miden el KPI 1 y el KPI 2.
 
-| Opción | Texto | KPI que lo mide |
-|---|---|---|
-| A1 a | Ver en una sola pantalla el análisis de una acción (si está cara o barata frente a su historia, qué tan probable es llegar a mis precios de compra y de venta, y cuánto puede doler), para gastar menos tiempo y cambiar menos de pantalla. | KPI 1 y KPI 2 |
-| A1 b | Mantener mis precios de compra y de venta al día cada vez que una empresa publica un reporte, sin recalcularlos a mano. | KPI 3 |
-| A1 c | Saber qué tan probable es que el precio llegue a mis niveles, con su margen de error, para decidir cuándo esperar. | KPI 5 |
-| A1 d | Otro (una línea) | A definir con el colega |
+**Objetivos específicos (marcados por los dos).**
 
-**Objetivos específicos (se eligen hasta 4).** Pregunta A2: ¿cuáles de estos logros le parecen indispensables?
+| Objetivo | KPI que lo mide |
+|---|---|
+| Abrir menos páginas o ventanas por acción. | KPI 2 |
+| Dejar anotada cada decisión con fecha, nivel y motivo. | KPI 4 |
+| Entender y confiar en lo que muestra la pantalla. | KPI 5 |
 
-| Opción | Texto | KPI que lo mide |
-|---|---|---|
-| A2 a | Gastar menos tiempo en analizar una acción. | KPI 1 |
-| A2 b | Abrir menos páginas o ventanas por acción. | KPI 2 |
-| A2 c | Que mis niveles por múltiplo (el precio dividido por la utilidad por acción) se actualicen solos cuando sale un reporte. | KPI 3 |
-| A2 d | Ver para cada nivel su probabilidad, con rango y comparada con una referencia simple. | KPI 5 y las métricas del [punto 4](04_enfoque_analitico.md) §4.4 |
-| A2 e | Dejar anotada cada decisión con fecha, nivel y motivo. | KPI 4 |
-| A2 f | Entender y confiar en lo que muestra la pantalla. | KPI 5 |
-
-Las metas numéricas de cada KPI (por ejemplo, menos de 5 minutos por acción) están en la tabla de la sección 1.7 y no cambian con la elección.
+Dos logros recibieron un voto cada uno y se reportan como opciones, no como objetivos: que los niveles por múltiplo (el precio dividido por la utilidad por acción) se actualicen solos cuando sale un reporte (KPI 3, colega inversor) y ver para cada nivel su probabilidad, con rango y comparada con una referencia simple (KPI 5 y las métricas del [punto 4](04_enfoque_analitico.md) §4.4, autor). Las metas numéricas de cada KPI (por ejemplo, menos de 5 minutos por acción) están en la tabla de la sección 1.7 y no cambian con estas elecciones.
 
 ## 1.7 KPI de negocio
 
-*(borrador: se confirma en la sesión 2).* La pregunta A3 de la hoja de la sesión 2 le pide al colega elegir cuál de los cinco indicadores es la mejor forma de medir si la herramienta le sirvió (a: minutos por acción, b: páginas o ventanas abiertas por acción, c: días entre un reporte y los niveles actualizados, d: porcentaje de decisiones que quedan anotadas, e: calificación de claridad y confianza, que corresponden a los KPI 1 a 5 en ese orden). Las preguntas B1 a B5 de la misma hoja miden la línea base de los cinco indicadores con las dos personas del grupo, y la versión final de la tabla las incorpora.
+Los cinco indicadores se conservan: en la pregunta A3 (¿cuál sería la mejor forma de medir si la herramienta le sirvió?) cada participante eligió uno distinto, el colega inversor los días entre un reporte y los niveles actualizados (KPI 3) y el autor los minutos por acción (KPI 1). La tabla define cada indicador con su fórmula o procedimiento y la meta. La **línea base** de los cinco se midió en la sesión 2 con las dos personas del grupo (preguntas B1 a B5) y vive en la tabla "Mediciones de los KPI" de la [bitácora](../entrega_2/12_bitacora.md); aquí no se repite, para tener una sola fuente. Donde los rangos de los dos no se solapan se reportan ambos. Los KPI 1 a 4 se miden con el producto en la entrega 2; los valores de las metas no se afirman como logrados en esta entrega, porque aquí el producto solo se diseña.
 
-La tabla define cada indicador con su fórmula o procedimiento, la línea base de la entrevista o el formulario (un participante más el autor; ver la cautela de la sección 1.2) y la meta. Los KPI 1 a 4 se miden en la validación con prototipo navegable o en la fase de construcción; los valores de las metas no se afirman como logrados en esta entrega, porque el producto solo se diseña aquí.
-
-| KPI | Definición operativa y fórmula | Línea base (fuente) | Meta | Cómo se mide |
+| KPI | Definición operativa y fórmula | Línea base | Meta | Cómo se mide |
 |---|---|---|---|---|
-| 1. Tiempo de análisis por activo | T = minutos entre que el usuario escoge un ticker y que tiene sus seis niveles con las tres lecturas y el panel de riesgo | 2 a 3 horas por ciclo de análisis tras un reporte (formulario). El formulario no precisa cuántos activos abarca un ciclo; para comparar con T (que es por activo) se toma, como supuesto explícito, que el ciclo cubre un activo, de modo que la línea base por activo es de 2 a 3 horas. Si la validación con prototipo navegable muestra otra cosa, se corrige la unidad | Menos de 5 minutos | Prueba cronometrada sobre 3 tickers, comparada con el tiempo declarado; se reporta la mediana. La línea base definitiva sale de la validación con prototipo navegable; la medición operativa es parte de la entrega 2 (requiere dashboard) |
-| 2. Cambios de pantalla por activo | C = número de cambios de herramienta o ventana para completar el análisis de un activo | Entre 2 y 15 (entrevista: 10 a 15; autor: 2 como mínimo) | 1 | Conteo por observación directa en la misma prueba; se reporta el máximo. La línea base definitiva sale de la validación con prototipo navegable; la medición operativa es parte de la entrega 2 (requiere dashboard) |
-| 3. Latencia de actualización tras un reporte | L = fecha de recálculo de los niveles por múltiplo − fecha de publicación del reporte, en días | Días (formulario: a veces se deja pasar días por falta de tiempo) | L ≤ 1 día, de forma automática | Para los reportes (trimestrales y anuales, usando la utilidad por acción de los últimos 12 meses construida en esta entrega) de las 21 empresas de la industria piloto, se compara la fecha de publicación con la marca de tiempo del recálculo en el log de la API. La medición operativa es parte de la entrega 2 |
-| 4. Decisiones documentadas | D = decisiones con registro (fecha, nivel, lectura y nota) ÷ decisiones tomadas × 100 | 0 % (entrevista y formulario: no hay un lugar donde anotar) | 100 % | En el piloto, se pregunta al participante cuántas órdenes puso en su bróker y se compara con las decisiones registradas en el log del dashboard |
-| 5. Confianza y adopción | Puntaje medio en escala 1 a 5 de claridad, confianza y explicabilidad, y proporción de participantes que dice que lo usaría. Cuentan los ítems 2.1 a 2.6 y 2.9 de la parte 2 del guion; se excluyen el 2.8 (ítem inverso, formulado al revés), el 2.7 (preferencia por el control, no confianza) y las preguntas abiertas | Sin línea base (no existe una herramienta comparable) | Puntaje medio de al menos 4 en cada ítem | Encuesta del guion de validación: se aplicará tras la primera sesión moderada; en la validación asíncrona del 2026-10-18 no se obtuvo (ver [validacion_stakeholder.md](validacion_stakeholder.md)) |
+| 1. Tiempo de análisis por activo | T = minutos entre que el usuario escoge un ticker y que tiene sus seis niveles con las tres lecturas y el panel de riesgo | Sesión 2: minutos por acción (B1a y B1b), ver la bitácora | Menos de 5 minutos | Prueba cronometrada sobre 3 tickers, comparada con el tiempo declarado; se reporta la mediana. La medición operativa es parte de la entrega 2 (requiere dashboard) |
+| 2. Cambios de pantalla por activo | C = número de cambios de herramienta o ventana para completar el análisis de un activo | Sesión 2: páginas o ventanas por acción (B2), ver la bitácora | 1 | Conteo por observación directa en la misma prueba; se reporta el máximo. La medición operativa es parte de la entrega 2 (requiere dashboard) |
+| 3. Latencia de actualización tras un reporte | L = fecha de recálculo de los niveles por múltiplo − fecha de publicación del reporte, en días | Sesión 2: días hasta actualizar los niveles (B3), ver la bitácora | L ≤ 1 día, de forma automática | Para los reportes (trimestrales y anuales, usando la utilidad por acción de los últimos 12 meses construida en esta entrega) de las 21 empresas de la industria piloto, se compara la fecha de publicación con la marca de tiempo del recálculo en el log de la API. La medición operativa es parte de la entrega 2 |
+| 4. Decisiones documentadas | D = decisiones con registro (fecha, nivel, lectura y nota) ÷ decisiones tomadas × 100 | Sesión 2: decisiones anotadas de cada 10 (B4a), ver la bitácora | 100 % | En el piloto, se pregunta al participante cuántas órdenes puso en su bróker y se compara con las decisiones registradas en el log del dashboard |
+| 5. Confianza y adopción | Puntaje medio en escala 1 a 5 de claridad, confianza y explicabilidad, y proporción de participantes que dice que lo usaría. Cuentan los ítems 2.1 a 2.6 y 2.9 de la parte 2 del guion; se excluyen el 2.8 (ítem inverso, formulado al revés), el 2.7 (preferencia por el control, no confianza) y las preguntas abiertas | Sesión 2: los ítems 6.1 a 6.7 sobre la pantalla de ejemplo (B5), ver la bitácora | Puntaje medio de al menos 4 en cada ítem | Los mismos ítems tras usar el dashboard (sesión 3 de la entrega 2). En la validación asíncrona del 2026-10-18 no se obtuvo (ver [validacion_stakeholder.md](validacion_stakeholder.md)) |
 
 Con esta tabla se cierra el punto 1: el problema, el contexto, el alcance y los objetivos quedan atados a indicadores medibles, y los puntos [2](02_ideacion.md) y [4](04_enfoque_analitico.md) desarrollan, respectivamente, el diseño que los materializa y las hipótesis y métricas del modelo, que no se tratan como KPI de negocio.

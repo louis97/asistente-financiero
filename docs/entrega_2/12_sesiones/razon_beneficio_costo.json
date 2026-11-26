@@ -1,0 +1,18 @@
+{
+  "min": 0.78,
+  "central": 1.26,
+  "max": 1.97,
+  "entradas": {
+    "participante_1": {
+      "C1": "sin respuesta",
+      "C2": "e (20–30 %)",
+      "C3": "b (0,2–0,5 %)"
+    },
+    "participante_2": {
+      "C1": "d (12–20 %)",
+      "C2": "texto libre, se toma 0 %",
+      "C3": "a (menos de 0,2 %)"
+    }
+  },
+  "nota": "Beneficio B = C1 y costo C = C2 + C3, en % del monto, con el punto medio de cada categoría; el costo mínimo de cada participante tiene piso de 0,1 %. Decisión 1: el participante 1 no respondió C1 (tachó 0–3 % y marcó que no entiende la pregunta), así que B sale solo del participante 2 (12; 16; 20 %). Decisión 2: el participante 2 respondió C2 con texto libre (espera a que el precio toque el nivel y no persigue el precio), y se toma C2 = 0 % con límites [0, 0, 0]. C: promedio de los dos participantes (mínimo 10,15; medio 12,725; máximo 15,35 %). Ningún valor se recortó: los tres quedan dentro de la rejilla 0,5–3."
+}
