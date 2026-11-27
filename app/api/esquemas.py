@@ -5,7 +5,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field, field_validator
 
 TICKER_RE = r"^[A-Z.\-]{1,6}$"
-NOMBRES_ENTRADAS = ["deep value", "value", "valoración histórica"]
+NOMBRES_ENTRADAS = ["valoración histórica", "deep value", "value"]
 NOMBRES_SALIDAS = ["negativo", "base", "positivo"]
 
 

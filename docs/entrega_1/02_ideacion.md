@@ -48,7 +48,7 @@ Los requerimientos se priorizan con MoSCoW (Must, Should, Could, Won't para esta
 
 | ID | Requerimiento funcional | MoSCoW | Verificación |
 |---|---|---|---|
-| RF1 | Mostrar 3 niveles de entrada (deep value, value, valoración histórica) y 3 de salida (negativo, base, positivo), definidos en precio y en múltiplo en paralelo | Must | Para un ticker, aparecen los 6 niveles con ambas definiciones |
+| RF1 | Mostrar 3 niveles de entrada (valoración histórica, deep value, value; de la más lejana a la más cercana al precio actual) y 3 de salida (negativo, base, positivo), definidos en precio y en múltiplo en paralelo | Must | Para un ticker, aparecen los 6 niveles con ambas definiciones |
 | RF2 | Lectura fundamental comparativa por nivel: múltiplo implícito, percentil frente a la historia propia (P/E sobre la [utilidad por acción de los últimos 12 meses (EPS TTM)](glosario.md)) y percentil frente a su industria, más el percentil del P/E normalizado (precio ÷ promedio de 3 años de utilidad por acción) como lectura principal del "barata frente a su historia"; cuando aplique, lectura de [trampa de valor](glosario.md) según la descomposición de la pregunta P2 (precio frente a utilidades promedio); ROE, margen y deuda como contexto de calidad | Must | Cada fila muestra ambos percentiles con datos ≤ t, incluyendo el P/E normalizado |
 | RF3 | Lectura técnica diaria por nivel de entrada: probabilidad del modelo técnico explicable (árbol de decisión o SVM, según la selección de la entrega 2) frente a la línea base por decil de volatilidad y su incertidumbre | Must | La probabilidad se muestra junto a la línea base y al desempeño histórico del modelo |
 | RF4 | Lectura probabilística semanal por nivel de salida: probabilidad y tiempo estimado de alcance mediante simulación por **remuestreo de bloques de semanas históricas** de la acción (el XLP solo alinea las fechas del remuestreo y no cambia la probabilidad de alcance) | Must | Cada nivel muestra la probabilidad con su rango de incertidumbre y la fecha de los datos usados |
@@ -66,9 +66,9 @@ El ejemplo es **ilustrativo** y es el mismo del mockup: una acción a 70,00 USD 
 
 | Entrada (compra) | Qué significa | Ejemplo ilustrativo |
 |---|---|---|
-| Deep value | El precio al que el usuario considera que la empresa está muy barata | 56,00 USD (20 veces la utilidad por acción) |
-| Value | El precio al que el usuario considera que está barata | 61,60 USD (22 veces) |
-| Valoración histórica | Un precio coherente con el múltiplo habitual de la empresa | 67,20 USD (24 veces) |
+| Valoración histórica | El precio al que el usuario considera que hay que empezar a comprar con decisión porque la empresa está muy barata; la entrada más lejana (la más baja) | 56,00 USD (20 veces la utilidad por acción) |
+| Deep value | Un precio por debajo de value, en el que la empresa le resulta más atractiva; la entrada intermedia | 61,60 USD (22 veces) |
+| Value | El precio al que la empresa empieza a sonar atractiva para comprar; la entrada más cercana al precio actual | 67,20 USD (24 veces) |
 
 | Salida (venta) | Qué significa | Ejemplo ilustrativo |
 |---|---|---|
@@ -146,6 +146,8 @@ El recálculo por reporte nuevo entra por la rama de la autoridad de EE.UU.: cam
 El panel de riesgo descriptivo trae las cinco cifras (incluidos [R²](glosario.md) y [ΔR²](glosario.md) del ticker de ejemplo con las cifras reales de nb04 §6.3) y el gráfico de precio con los seis niveles marca el precio actual con una **frase descriptiva** ("entre Valoración histórica $67.20 y Salida negativo $75.60"), sin veredicto. La etiqueta de entrada usa N = 60 días hábiles. Los valores de niveles y probabilidades son ilustrativos y están marcados como tales en la imagen; las cifras del panel de riesgo del ticker de ejemplo salen de las [instantáneas](glosario.md) de `data/snapshots/`. Se genera con `scripts/mockup.py`.
 
 ![Mockup del dashboard (v2, valores ilustrativos). La franja "Cómo leer esta pantalla" define los 8 términos clave (incluye SVM) en una línea; la tabla separa P/E y P/B, agrega la columna "% vs. precio actual" y rotula la columna técnica "modelo SVM, se entrena en la entrega 2"; las notas 1 a 3 bajo la tabla llevan la lectura "¿suele ser temporal?" de la fundamental para las tres entradas; el panel de riesgo descriptivo tiene 5 filas espaciadas con una línea de ayuda cada una; la marca del precio actual sobre el gráfico lleva una frase descriptiva ("entre Valoración histórica $67.20 y Salida negativo $75.60"), sin veredicto. La versión que vio el stakeholder (v1) se conserva en `assets/mockup_v1.png`.](../../entregables/entrega_1/assets/mockup.png)
+
+El mockup usa el orden de la entrega 1; desde la entrega 2 los nombres de las entradas siguen la definición del inversor (ver la tabla [«Los seis niveles, en llano»](#24-requerimientos)).
 
 La tabla relaciona cada elemento del mockup con los requerimientos de la sección 2.4, de modo que ningún requerimiento Must queda sin un elemento que lo represente y ningún elemento queda sin requerimiento. Los botones son de maqueta: no hacen nada en el wireframe.
 

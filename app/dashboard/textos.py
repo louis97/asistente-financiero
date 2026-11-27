@@ -7,7 +7,7 @@ LEYENDA_ASESORIA = ("El contenido de la presente comunicación o mensaje no cons
                     "normas que lo modifiquen, sustituyan o complementen")
 SUBTITULO_BANNER = "Herramienta de apoyo: muestra probabilidades con su incertidumbre y deja la decisión al usuario."
 
-NOMBRES_NIVEL = ["deep value", "value", "valoración histórica", "negativo", "base", "positivo"]
+NOMBRES_NIVEL = ["valoración histórica", "deep value", "value", "negativo", "base", "positivo"]
 ALGORITMOS = {"arbol": "árbol de decisión", "svm_lineal": "SVM lineal", "svm_rbf": "SVM con núcleo RBF"}
 PERIODO_PRUEBA = "2019 en adelante"
 
@@ -75,9 +75,9 @@ TOOLTIPS = {
     "caídas semanales fuertes": "Fracción de semanas con una caída mayor que 2 veces la volatilidad reciente. "
     "«Esperada»: la que habría si las semanas fueran independientes y con forma normal; si la observada la supera, las caídas fuertes se dan en rachas.",
     "nivel": "Precio que fijaste: tres de entrada (por debajo del precio actual) y tres de salida (por encima).",
-    "nivel: deep value": "Deep value (entrada): el precio al que, según tú, la empresa estaría muy barata; el más lejano por debajo del precio actual.",
-    "nivel: value": "Value (entrada): el precio al que, según tú, la empresa estaría barata; intermedio entre los tres de entrada.",
-    "nivel: valoración histórica": "Valoración histórica (entrada): un precio coherente con el múltiplo habitual de la empresa; el más cercano al precio actual.",
+    "nivel: valoración histórica": "Valoración histórica (entrada): el precio al que, según tú, hay que empezar a comprar con decisión porque la empresa estaría muy barata; la entrada más lejana (la más baja).",
+    "nivel: deep value": "Deep value (entrada): un precio por debajo de value, en el que la empresa te resulta más atractiva; la entrada intermedia.",
+    "nivel: value": "Value (entrada): el precio al que, según tú, la empresa empieza a sonar atractiva para comprar; la entrada más cercana al precio actual.",
     "nivel: negativo": "Negativo (salida): el precio objetivo en un escenario negativo; la salida más cercana por encima del precio actual.",
     "nivel: base": "Base (salida): el precio objetivo en el escenario que consideras más probable.",
     "nivel: positivo": "Positivo (salida): el precio objetivo en un escenario positivo; la salida más lejana por encima del precio actual.",

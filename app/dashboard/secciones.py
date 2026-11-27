@@ -437,9 +437,9 @@ def edicion_niveles(res, cliente_fn):
             cols = st.columns(2)
             slots = {}
             for g, (col, titulo, rot, ini) in enumerate([(cols[0], "Entradas (por debajo del precio actual)",
-                                                          ["deep value", "value", "valoración histórica"], 0),
+                                                          NOMBRES_NIVEL[:3], 0),
                                                          (cols[1], "Salidas (por encima del precio actual)",
-                                                          ["negativo", "base", "positivo"], 3)]):
+                                                          NOMBRES_NIVEL[3:], 3)]):
                 with col:
                     st.markdown(f"**{titulo}**")
                     slots["entradas" if g == 0 else "salidas"] = st.empty()
