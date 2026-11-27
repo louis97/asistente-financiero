@@ -19,6 +19,7 @@ PREGUNTAS = {
     "grafico": "¿Dónde queda el precio de hoy frente a mis niveles?",
     "riesgo": "¿Cuánto me puede doler mientras espero?",
     "desempeno": "¿Cuánto confiar en la probabilidad técnica?",
+    "simulacion": "¿Cuánto confiar en la probabilidad de las salidas?",
     "edicion": "¿Qué cambia si muevo mis niveles?",
     "registro": "¿Qué decidí y por qué?",
 }
@@ -52,6 +53,7 @@ TOOLTIPS = {
     "ΔAUC": "AUC del modelo menos AUC de la línea base: si es positivo, el modelo ordena mejor que la línea base.",
     "Brier": "Error cuadrático medio de las probabilidades frente a lo que pasó: va de 0 a 1 y menos es mejor.",
     "calibración": "Compara lo que el modelo dijo con lo que pasó: si dice 20 % y calibra bien, toca el nivel unas 2 de cada 10 veces.",
+    "mejora frente a una tasa constante": "Puntaje de Brier skill (BSS): qué tanto menos se equivoca la simulación que predecir siempre la tasa histórica de entrenamiento; 0 = igual y 1 = perfecta. IC95: si excluye el 0, la mejora no es azar.",
     "rango probable": "IC95: con 95 % de confianza, la frecuencia real de ese tramo está en este rango.",
     "línea base": GLOSARIO_BOLSILLO["línea base"],
     "percentil": GLOSARIO_BOLSILLO["percentil"],

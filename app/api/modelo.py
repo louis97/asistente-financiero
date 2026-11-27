@@ -70,3 +70,17 @@ def ic_prob(prob: float, meta: dict) -> tuple[float, float]:
         if prob <= t["tramo_hi"]:
             return float(t["ic_lo"]), float(t["ic_hi"])
     return float(tramos[-1]["ic_lo"]), float(tramos[-1]["ic_hi"])
+
+
+def simulacion_prueba() -> dict | None:
+    """Evaluación de la simulación de las salidas en la prueba (fuente única: data/resultados/nb08.json).
+    Devuelve, por distancia k (en volatilidades), lo que dijo la simulación, lo que pasó y la mejora frente a la referencia.
+    Si el archivo falta o no tiene la forma esperada devuelve None (la pantalla dice «sin datos de evaluación»)."""
+    try:
+        prueba = json.loads((config.ROOT / "data" / "resultados" / "nb08.json").read_text(encoding="utf-8"))["evaluacion_simulacion"]["prueba"]
+        return {"horizonte_semanas": cm.SIM_HORIZONTE_SEMANAS,
+                "por_k": [{"k": float(k), "prob_media": v["prob_media"], "tasa_obs": v["tasa_obs"], "bss": v["bss"],
+                           "bss_ic95": v["ic"]["bss"][1:], "n_origenes": v["n_origenes"], "calibracion": v["calibracion"]}
+                          for k, v in sorted(prueba.items(), key=lambda kv: float(kv[0]))]}
+    except (OSError, KeyError, ValueError, TypeError, IndexError):
+        return None

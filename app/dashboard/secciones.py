@@ -375,6 +375,76 @@ def recuadro_desempeno(modelo):
                     hide_index=True, width="stretch")
 
 
+# ------------------------------------------------------------------ confianza en la probabilidad de las salidas (simulación)
+SERIES_SIM = [("#2a78d6", "o"), ("#eb6834", "s"), ("#1baf7a", "^")]     # azul, naranja, aguamarina (primeras tres de la paleta validada) + marcador
+
+
+def _vol(k):
+    return f"{num(k, 1)} volatilidades" if k != 1 else "1 volatilidad"
+
+
+def figura_calibracion_simulacion(sim):
+    fig, ax = plt.subplots(figsize=(5.2, 4.2), dpi=110, facecolor="white")
+    ax.set_facecolor("white")
+    ax.plot([0, 1], [0, 1], color="#888888", ls="--", lw=1)
+    ax.text(0.97, 0.935, "Acierto perfecto", color="#666666", fontsize=7.5, rotation=40, ha="right", va="center")
+    for (color, marca), g in zip(SERIES_SIM, sim["por_k"]):
+        x, y = [t["p_media"] for t in g["calibracion"]], [t["tasa_obs"] for t in g["calibracion"]]
+        ax.plot(x, y, color=color, lw=2, marker=marca, ms=5, mec="white", mew=0.8)
+        ax.annotate(_vol(g["k"]), (x[-1], y[-1]), xytext=(6, -3), textcoords="offset points", fontsize=8, color="#333333",
+                    ha="left", va="top")
+    ax.set_xlim(0, 1.02)
+    ax.set_ylim(0, 1)
+    ax.set_xlabel("Lo que dijo la simulación", fontsize=8, color="#333333")
+    ax.set_ylabel("Lo que pasó de verdad", fontsize=8, color="#333333")
+    f = mt.FuncFormatter(lambda v, _: f"{v * 100:.0f} %")
+    ax.xaxis.set_major_formatter(f)
+    ax.yaxis.set_major_formatter(f)
+    ax.grid(color="#e3e3e3", lw=0.6)
+    ax.tick_params(colors="#555555", labelsize=8, length=0)
+    for lado in ("top", "right"):
+        ax.spines[lado].set_visible(False)
+    for lado in ("left", "bottom"):
+        ax.spines[lado].set_color("#bbbbbb")
+    fig.tight_layout()
+    return fig
+
+
+def confianza_simulacion(modelo):
+    """Plegable (cerrado al cargar) con la evaluación de la simulación de las salidas; los datos vienen de /modelo."""
+    sim = modelo.get("simulacion_prueba")
+    with st.expander(PREGUNTAS["simulacion"], expanded=False):
+        if not sim or not sim.get("por_k"):
+            st.info("Sin datos de evaluación de la simulación.")
+            return
+        g = sim["por_k"]
+        lista = lambda campo: ", ".join(pct(x[campo]) for x in g[:-1]) + " y " + pct(g[-1][campo])
+        difs = [x["prob_media"] - x["tasa_obs"] for x in g]
+        sobre = all(d > 0 for d in difs)
+        mejora = all(x["bss_ic95"][0] > 0 for x in g)
+        st.markdown(
+            f"Probada en {PERIODO_PRUEBA}, con datos que no vio: dijo {lista('prob_media')} y pasó {lista('tasa_obs')}. "
+            + (f"Sobreestima de {round(min(difs) * 100)} a {round(max(difs) * 100)} puntos" if sobre else "No muestra un sesgo claro")
+            + (", pero aun así supera a una tasa constante." if mejora else "."))
+        tabla = pd.DataFrame([{"Distancia de la salida": _vol(x["k"]), "La simulación dijo": pct(x["prob_media"]),
+                               "Pasó de verdad": pct(x["tasa_obs"]),
+                               "Mejora frente a una tasa constante": f"{num(x['bss'], 2)} (IC95 [{num(x['bss_ic95'][0], 2)}; {num(x['bss_ic95'][1], 2)}])"}
+                              for x in g])
+        izq, der = st.columns([1, 1])
+        with izq:
+            st.dataframe(tabla, hide_index=True, width="stretch", column_config={
+                "La simulación dijo": st.column_config.TextColumn("La simulación dijo", help=TOOLTIPS["simulación"]),
+                "Pasó de verdad": st.column_config.TextColumn("Pasó de verdad", help=TOOLTIPS["calibración"]),
+                "Mejora frente a una tasa constante": st.column_config.TextColumn("Mejora frente a una tasa constante",
+                                                                                  help=TOOLTIPS["mejora frente a una tasa constante"])})
+            st.caption(f"{g[0]['n_origenes']:,}".replace(",", ".") + f" fechas de partida, horizonte de {sim['horizonte_semanas']} semanas. "
+                       + f"Cada punto del gráfico es un tramo de unas {g[0]['calibracion'][0]['n']} fechas.")
+        with der:
+            fig = figura_calibracion_simulacion(sim)
+            st.pyplot(fig, width="stretch")
+            plt.close(fig)
+
+
 # ------------------------------------------------------------------ edición de niveles (RF7)
 def _leer_niveles_form():
     ss = st.session_state

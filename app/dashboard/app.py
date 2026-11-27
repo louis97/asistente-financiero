@@ -7,7 +7,7 @@ import os
 import streamlit as st
 
 from app.dashboard.cliente import Cliente, ErrorAcceso, ErrorServicio, ErrorValidacion
-from app.dashboard.secciones import (avisos, banner, edicion_niveles, encabezado, franja_glosario, grafico_niveles,
+from app.dashboard.secciones import (avisos, banner, confianza_simulacion, edicion_niveles, encabezado, franja_glosario, grafico_niveles,
                                      notas_fundamental, panel_riesgo, pie, recuadro_desempeno, registro_decisiones,
                                      tabla_niveles)
 
@@ -142,6 +142,7 @@ if res:
     encabezado(res)
     avisos(res)
     tabla_niveles(res)
+    confianza_simulacion(res["modelo"])
     izq, der = st.columns([1.6, 1])
     with izq:
         grafico_niveles(res)
