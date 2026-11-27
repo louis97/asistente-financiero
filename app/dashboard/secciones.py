@@ -423,7 +423,8 @@ def confianza_simulacion(modelo):
         sobre = all(d > 0 for d in difs)
         mejora = all(x["bss_ic95"][0] > 0 for x in g)
         st.markdown(
-            f"Probada en {PERIODO_PRUEBA}, con datos que no vio: dijo {lista('prob_media')} y pasó {lista('tasa_obs')}. "
+            f"Probada en {PERIODO_PRUEBA}, con datos que no vio, para salidas a {', '.join(num(x['k'], 1).removesuffix(',0') for x in g[:-1])} y {num(g[-1]['k'], 1).removesuffix(',0')} volatilidades: "
+            f"dijo {lista('prob_media')} y pasó {lista('tasa_obs')}. "
             + (f"Sobreestima de {round(min(difs) * 100)} a {round(max(difs) * 100)} puntos" if sobre else "No muestra un sesgo claro")
             + (", pero aun así supera a una tasa constante." if mejora else "."))
         tabla = pd.DataFrame([{"Distancia de la salida": _vol(x["k"]), "La simulación dijo": pct(x["prob_media"]),

@@ -53,7 +53,7 @@ TOOLTIPS = {
     "ΔAUC": "AUC del modelo menos AUC de la línea base: si es positivo, el modelo ordena mejor que la línea base.",
     "Brier": "Error cuadrático medio de las probabilidades frente a lo que pasó: va de 0 a 1 y menos es mejor.",
     "calibración": "Compara lo que el modelo dijo con lo que pasó: si dice 20 % y calibra bien, toca el nivel unas 2 de cada 10 veces.",
-    "mejora frente a una tasa constante": "Puntaje de Brier skill (BSS): qué tanto menos se equivoca la simulación que predecir siempre la tasa histórica de entrenamiento; 0 = igual y 1 = perfecta. IC95: si excluye el 0, la mejora no es azar.",
+    "mejora frente a una tasa constante": "Qué tanto menos se equivoca la simulación que repetir siempre la frecuencia histórica: 0 = igual, 1 = perfecta. Entre corchetes, el rango probable; si no incluye el 0, la mejora es real.",
     "rango probable": "IC95: con 95 % de confianza, la frecuencia real de ese tramo está en este rango.",
     "línea base": GLOSARIO_BOLSILLO["línea base"],
     "percentil": GLOSARIO_BOLSILLO["percentil"],
