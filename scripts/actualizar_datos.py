@@ -1,8 +1,10 @@
-"""Tarea diaria: refresca `data/produccion/` (precios, ratios TTM, estado y latencia) y no toca nada si algo falla.
+"""Tarea diaria: refresca `data/produccion/` (precios con y sin ajuste por dividendos, splits, ratios TTM, estado y latencia) y no toca nada si algo falla.
 
 Uso (sin argumentos):  SEC_USER_AGENT="<nombre y correo>" uv run python scripts/actualizar_datos.py
 
 Solo orquesta: la descarga y el cálculo viven en `notebooks/comunes.py` (una sola fuente).
+Los precios semanales sin ajuste por dividendos (`precios_semanales_sd`) y los splits (`splits`) alimentan los múltiplos y percentiles de la API;
+si faltan en la carpeta (producción anterior a este cambio) se descargan y se escriben sin sembrar nada: la siembra solo ocurre si faltan los tres parquet básicos.
 Variables de entorno: DATA_DIR (por defecto data/produccion) y SEC_USER_AGENT (obligatoria; su valor nunca se imprime ni se guarda).
 Códigos de salida: 0 = bien (con o sin cambios, o recién sembrado); 1 = falló (la carpeta de datos queda intacta).
 """
@@ -20,7 +22,8 @@ RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ / "notebooks"))
 import comunes as cm  # noqa: E402
 
-PARQUETS = ["precios_diarios", "precios_semanales", "ratios_ttm"]
+PARQUETS = ["precios_diarios", "precios_semanales", "ratios_ttm"]          # básicos: si falta alguno, se siembra
+PARQUETS_NUEVOS = ["precios_semanales_sd", "splits"]                        # se refrescan igual, pero su ausencia no dispara la siembra
 COLS_LATENCIA = ["ticker", "form", "filed", "fecha_recalculo", "dias"]
 MIN_FILAS = 0.99                       # una descarga con menos del 99 % de las filas actuales se trata como falla
 
@@ -67,13 +70,18 @@ def igual(a: pd.DataFrame, b: pd.DataFrame) -> bool:
 
 
 def sembrar(dir_datos: Path) -> bool:
-    """Copia la instantánea si falta algún parquet requerido. Devuelve True si sembró (y entonces el script termina)."""
+    """Copia la instantánea si falta algún parquet básico. Devuelve True si sembró (y entonces el script termina).
+
+    Solo los básicos disparan la siembra. Si faltan únicamente `precios_semanales_sd` o `splits`, no se siembra: así no se
+    sobrescriben los precios y ratios actuales con los de la instantánea; `main` los descarga y los escribe como cualquier cambio.
+    En una siembra completa, de los nuevos solo se copian los que faltan."""
     if all((dir_datos / f"{n}.parquet").exists() for n in PARQUETS):
         return False
     dir_datos.mkdir(parents=True, exist_ok=True)
+    copiar = PARQUETS + [n for n in PARQUETS_NUEVOS if not (dir_datos / f"{n}.parquet").exists()]
     tmps = []
     try:
-        for n in PARQUETS:
+        for n in copiar:
             tmps.append((escribir_atomico(dir_datos / f"{n}.parquet", lambda t, n=n: shutil.copyfile(cm.DIR_SNAPSHOTS / f"{n}.parquet", t)), dir_datos / f"{n}.parquet"))
         px = pd.read_parquet(cm.DIR_SNAPSHOTS / "precios_diarios.parquet", columns=["fecha"])
         estado = {"ultimo_dato": px.fecha.max().strftime("%Y-%m-%d"), "ultimo_recalculo": ahora_utc(),
@@ -85,7 +93,7 @@ def sembrar(dir_datos: Path) -> bool:
     finally:
         for tmp, _ in tmps:
             tmp.unlink(missing_ok=True)
-    print(f"Siembra: copiados {', '.join(PARQUETS)} desde data/snapshots; último dato {estado['ultimo_dato']}. "
+    print(f"Siembra: copiados {', '.join(copiar)} desde data/snapshots; último dato {estado['ultimo_dato']}. "
           "Sin descargas ni filas de latencia (la primera ejecución solo siembra).")
     return True
 
@@ -120,18 +128,27 @@ def main() -> int:
         primera = estado_ant["primera_ejecucion"]
         simbolos = cm.tickers() + [cm.BENCHMARK] + list(cm.ETF_SECTOR.values())          # 21 empresas + SPY + XLP
         inicio_lunes = (pd.Timestamp(cm.INICIO) + pd.offsets.Week(weekday=0)).strftime("%Y-%m-%d")
+        # Los nuevos pueden faltar en una carpeta anterior: se comparan contra la instantánea y se escriben como cambio
         actual = {n: pd.read_parquet(dir_datos / f"{n}.parquet") for n in PARQUETS}
+        actual.update({n: pd.read_parquet(dir_datos / f"{n}.parquet" if (dir_datos / f"{n}.parquet").exists() else cm.DIR_SNAPSHOTS / f"{n}.parquet")
+                       for n in PARQUETS_NUEVOS})
+        faltan_nuevos = [n for n in PARQUETS_NUEVOS if not (dir_datos / f"{n}.parquet").exists()]
 
         # 3. Precios (descarga completa: el ajuste por dividendos cambia toda la historia) y validación antes de escribir
         try:
             dia, falt_d = cm.descargar_precios(simbolos, cm.INICIO, "1d")
             sem, falt_s = cm.descargar_precios(simbolos, inicio_lunes, "1wk")
+            sem_sd, falt_sd = cm.descargar_precios(simbolos, inicio_lunes, "1wk", ajuste_dividendos=False)   # precio pagado, para los múltiplos
+            splits = cm.descargar_splits(cm.tickers())          # una consulta que lanza error es falla; sin splits para un ticker es válido
         except Exception as e:
             raise Falla(f"yfinance: {type(e).__name__}: {str(e)[:150]}") from None
-        if falt_d or falt_s:
-            raise Falla(f"yfinance: símbolos sin precios (diario {falt_d}, semanal {falt_s})")
+        if falt_d or falt_s or falt_sd:
+            raise Falla(f"yfinance: símbolos sin precios (diario {falt_d}, semanal {falt_s}, semanal sin dividendos {falt_sd})")
         validar_precios(dia, actual["precios_diarios"], simbolos, "precios_diarios", ultimo_dato)
         validar_precios(sem, actual["precios_semanales"], simbolos, "precios_semanales", None)
+        validar_precios(sem_sd, actual["precios_semanales_sd"], simbolos, "precios_semanales_sd", None)
+        if len(splits) < len(actual["splits"]):                 # los splits solo se acumulan: menos filas que antes es una consulta incompleta
+            raise Falla(f"yfinance: splits trae {len(splits)} filas, menos de las {len(actual['splits'])} actuales")
 
         # 4. EDGAR: hechos de las 21 empresas, ratios TTM recalculados y reportes nuevos para la latencia (KPI 3)
         try:
@@ -142,8 +159,8 @@ def main() -> int:
         if set(ratios.ticker) != set(cm.tickers()):
             raise Falla(f"EDGAR: faltan empresas en los ratios: {sorted(set(cm.tickers()) - set(ratios.ticker))}")
 
-        nuevos = {"precios_diarios": dia, "precios_semanales": sem, "ratios_ttm": ratios}
-        cambiaron = [n for n in PARQUETS if not igual(nuevos[n], actual[n])]
+        nuevos = {"precios_diarios": dia, "precios_semanales": sem, "ratios_ttm": ratios, "precios_semanales_sd": sem_sd, "splits": splits}
+        cambiaron = [n for n in PARQUETS + PARQUETS_NUEVOS if n in faltan_nuevos or not igual(nuevos[n], actual[n])]
 
         lat = pd.read_csv(dir_datos / "latencia.csv", dtype=str)
         lat["filed"] = pd.to_datetime(lat["filed"]).astype(hechos.filed.dtype)      # vacío o no, `filed` es fecha
@@ -153,7 +170,7 @@ def main() -> int:
         filas = rep.assign(fecha_recalculo=hoy_utc(), dias=(pd.Timestamp(hoy_utc()) - rep.filed).dt.days)[COLS_LATENCIA]
 
         if not cambiaron and filas.empty:
-            print("Sin cambios en precios, ratios ni reportes nuevos: no se escribe nada.")
+            print("Sin cambios en precios, splits, ratios ni reportes nuevos: no se escribe nada.")
             return 0
 
         # 5. Escritura: todo a `.tmp` primero; luego os.replace; estado.json al final

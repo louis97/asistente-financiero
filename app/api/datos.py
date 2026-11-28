@@ -58,7 +58,7 @@ def _firma(carpeta) -> tuple:
 
 
 def _leer(nombre: str, carpeta) -> pd.DataFrame:
-    """Un parquet de la carpeta; si no está (precios sin dividendos y splits no están en producción) el de la instantánea."""
+    """Un parquet de la carpeta; si no está (carpeta de producción vieja) el de la instantánea, solo como respaldo."""
     ruta = carpeta / f"{nombre}.parquet"
     return pd.read_parquet(ruta if ruta.exists() else config.DIR_SNAPSHOTS / f"{nombre}.parquet")
 
@@ -173,9 +173,7 @@ def _descargar_largo(simbolo: str, intervalo: str, ajuste: bool) -> pd.DataFrame
 
 
 def _splits_yf(t: str) -> pd.DataFrame:
-    import yfinance as yf
-    s = yf.Ticker(t).splits
-    return pd.DataFrame({"ticker": t, "fecha": pd.to_datetime(s.index).tz_localize(None), "ratio": s.to_numpy(dtype=float)})
+    return cm.descargar_splits([t])
 
 
 def _descargar_ticker(t: str) -> DatosTicker:

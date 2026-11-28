@@ -327,6 +327,20 @@ def descargar_precios(simbolos, inicio, intervalo, ajuste_dividendos=True):
                       progress=False, group_by="column")
     return a_formato_largo(raw, simbolos)
 
+def descargar_splits(simbolos):
+    """Splits por empresa (ticker, fecha, ratio); solo aparecen las empresas que tuvieron alguno (sin ninguno: tabla vacía)."""
+    import yfinance as yf
+    partes = []
+    for t in simbolos:
+        s = yf.Ticker(t).splits
+        if len(s):
+            f = pd.DatetimeIndex(s.index)
+            f = (f.tz_localize(None) if f.tz is not None else f).normalize()   # fecha sin zona horaria
+            partes.append(pd.DataFrame({"ticker": t, "fecha": f, "ratio": s.to_numpy(dtype=float)}))
+    if not partes:
+        return pd.DataFrame({"ticker": pd.Series(dtype=object), "fecha": pd.Series(dtype="datetime64[ns]"), "ratio": pd.Series(dtype=float)})
+    return pd.concat(partes, ignore_index=True)
+
 # --- Descarga de hechos de EDGAR (de nb01 §3) ---
 URL_TICKERS = "https://www.sec.gov/files/company_tickers.json"
 URL_FACTS = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
