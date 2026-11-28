@@ -41,11 +41,11 @@ GLOSARIO_BOLSILLO = {
                         "consume en cualquier fase del ciclo económico.",
     "modelo técnico": "un árbol de decisión simple que estima la probabilidad de tocar el nivel a partir de la volatilidad "
                       "reciente y de la distancia del nivel; se eligió entre árbol, SVM lineal y SVM RBF.",
+    "línea base (lectura técnica)": "frecuencia histórica con la que el precio tocó niveles a la misma distancia en días de volatilidad parecida. "
+                                    "Si el modelo técnico no la supera, no aporta.",
     "lectura técnica": "probabilidad de que el precio toque el nivel en 60 días hábiles, con el modelo técnico. Solo en entradas.",
     "lectura probabilística": "probabilidad de que el precio alcance la salida en el horizonte de 52 semanas, por simulación "
                               "con la historia. Solo en salidas.",
-    "línea base": "frecuencia histórica con la que el precio tocó niveles a la misma distancia en días de volatilidad parecida. "
-                  "Si el modelo no la supera, no aporta.",
 }
 
 TOOLTIPS = {
@@ -55,7 +55,7 @@ TOOLTIPS = {
     "calibración": "Compara lo que el modelo dijo con lo que pasó: si dice 20 % y calibra bien, toca el nivel unas 2 de cada 10 veces.",
     "mejora frente a una tasa constante": "Qué tanto menos se equivoca la simulación que repetir siempre la frecuencia histórica: 0 = igual, 1 = perfecta. Entre corchetes, el rango probable; si no incluye el 0, la mejora es real.",
     "rango probable": "IC95: con 95 % de confianza, la frecuencia real de ese tramo está en este rango.",
-    "línea base": GLOSARIO_BOLSILLO["línea base"],
+    "línea base": GLOSARIO_BOLSILLO["línea base (lectura técnica)"],
     "percentil": GLOSARIO_BOLSILLO["percentil"],
     "σ (volatilidad)": "Cuánto se mueve el precio: la desviación típica de los retornos diarios del último año, expresada en términos anuales.",
     "P/E": GLOSARIO_BOLSILLO["P/E"],
