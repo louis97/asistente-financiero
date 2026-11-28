@@ -1,4 +1,4 @@
-# Tarea diaria: descarga precios y reportes, recalcula los ratios y sube los cambios de data/produccion/.
+# Tarea diaria: descarga precios y reportes, recalcula los ratios y sube los cambios de data/produccion/ (lista de archivos: docs/entrega_2/11_producto.md, sección 6).
 #
 # - Render (API) y Streamlit Community Cloud (dashboard) se redespliegan solos por el webhook de push de GitHub
 #   cuando llega el commit de datos a la rama que cada uno vigila (no por Actions).

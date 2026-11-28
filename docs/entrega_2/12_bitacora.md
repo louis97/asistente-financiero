@@ -71,3 +71,8 @@ Notas de la línea base (sesión 2):
 Nota: la parte del KPI 5 "proporción que lo usaría" no tiene línea base (solo se pregunta en la sesión 3).
 
 Limitaciones: dos personas, una es el autor, los rangos son declarados, no medidos.
+
+## Decisión de datos del producto (2026-11-27)
+- **Decisión:** la tarea diaria también refresca los precios semanales sin ajuste por dividendos y los splits, para que los múltiplos y los percentiles (historia, industria y P/E normalizado) queden al día. La lista de archivos que refresca está en `docs/entrega_2/11_producto.md`, sección 6.
+- **Causa:** desde el 2026-10-26 el dashboard decía "industria sin comparar" para las 21 empresas piloto: esos dos archivos se leían de la instantánea del 2026-10-12 y los pares quedaban con más de 14 días de desfase.
+- **Efecto medido:** con datos frescos entran 16 pares al percentil de industria (los otros 4 tienen P/E no calculable) con 2 días de desfase.
