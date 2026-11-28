@@ -139,7 +139,7 @@ def main() -> int:
             dia, falt_d = cm.descargar_precios(simbolos, cm.INICIO, "1d")
             sem, falt_s = cm.descargar_precios(simbolos, inicio_lunes, "1wk")
             sem_sd, falt_sd = cm.descargar_precios(simbolos, inicio_lunes, "1wk", ajuste_dividendos=False)   # precio pagado, para los múltiplos
-            splits = cm.descargar_splits(cm.tickers())          # una consulta que lanza error es falla; sin splits para un ticker es válido
+            splits = cm.descargar_splits(cm.tickers())          # una consulta que lanza error es falla; sin splits para un ticker es válido (se une con los existentes)
         except Exception as e:
             raise Falla(f"yfinance: {type(e).__name__}: {str(e)[:150]}") from None
         if falt_d or falt_s or falt_sd:
@@ -147,8 +147,9 @@ def main() -> int:
         validar_precios(dia, actual["precios_diarios"], simbolos, "precios_diarios", ultimo_dato)
         validar_precios(sem, actual["precios_semanales"], simbolos, "precios_semanales", None)
         validar_precios(sem_sd, actual["precios_semanales_sd"], simbolos, "precios_semanales_sd", None)
-        if len(splits) < len(actual["splits"]):                 # los splits solo se acumulan: menos filas que antes es una consulta incompleta
-            raise Falla(f"yfinance: splits trae {len(splits)} filas, menos de las {len(actual['splits'])} actuales")
+        # Los splits solo se acumulan: se une con los que ya había (un vacío transitorio de yfinance para un ticker no borra nada)
+        splits = (pd.concat([actual["splits"], splits.astype(actual["splits"].dtypes.to_dict())]).drop_duplicates(["ticker", "fecha"])
+                  .sort_values(["ticker", "fecha"]).reset_index(drop=True))
 
         # 4. EDGAR: hechos de las 21 empresas, ratios TTM recalculados y reportes nuevos para la latencia (KPI 3)
         try:
